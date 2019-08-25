@@ -34,7 +34,7 @@ Three steps:
   
    *start-ehtereum-event-scan-infura.sh*
 
-3) 
+3) Enter ABI and contract address *or* load abi-file from ./kovan-abi  
 
 
 ---
