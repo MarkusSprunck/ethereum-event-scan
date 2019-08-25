@@ -1,0 +1,145 @@
+body {
+    font-size: medium;
+}
+
+table {
+    width: 100% !important;
+    margin-bottom: 0px !important;
+    font-size: medium;
+}
+
+tr, td, th, thead {
+    line-height: 1.1em !important;
+    text-align: left;
+}
+
+label {
+    font-weight: normal;
+    padding: 0.3em;
+    margin: 0.2em;
+    line-height: 1.5em;
+    height: 30px;
+    font-size: smaller;
+}
+
+.header_container {
+    display: flex;
+    flex-direction: row;
+}
+
+.header_area {
+    padding: 0.25em;
+    margin: 0.25em;
+    border-radius: 0.3em;
+    background-color: #1b1e20;
+}
+
+.progress {
+    padding: 0.175em;
+    height: 1.0em !important;
+    margin-left: 4px !important;
+    margin-right: 4px !important;
+    margin-top: 0.25em !important;
+    margin-bottom: 0.25em !important;
+}
+
+.progress-bar {
+    border-radius: 0.3em;
+}
+
+.modal-dialog {
+    max-width: 1500px !important;
+}
+
+.close {
+    font-size: 30px;
+}
+
+input[type="text"] {
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+    flex-grow: 2;
+    width: max-content;
+    border: none;
+    border-radius: 4px;
+    text-indent: 0.5em;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    margin-right: 0.3em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+
+button {
+    overflow: hidden;
+    display: block;
+    border: 0 none;
+    float: right;
+    border-radius: 4px;
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    margin-left: 0.2em;
+}
+
+
+.import_button {
+    overflow: hidden;
+    display: block;
+    border: 0 none;
+    float: right;
+    border-radius: 4px;
+    margin-top: 0.2em;
+    margin-right: 0.2em;
+    margin-left: 0.2em;
+    text-align: center;
+}
+
+.container_main {
+    margin: 1.0em;
+}
+
+.content_area {
+    padding: 0.2em;
+    margin: 0.2em;
+    padding-top: 0px;
+    border-radius: 4px;
+}
+
+.detail {
+    font-family: courier, monospace;
+    font-size: medium;
+    margin: 10px;
+    border-radius: 4px;
+}
+
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+img {
+    width: 16px;
+    height: 16px;
+}
+
+.pagination-sm > li:first-child > a, .pagination-sm > li:first-child > span {
+    border-bottom-left-radius: 4px !important;
+    border-top-left-radius: 4px !important
+}
+
+.pagination-sm > li:last-child > a, .pagination-sm > li:last-child > span {
+    border-top-right-radius: 4px !important;
+    border-bottom-right-radius: 4px !important
+}
+
+.pagination {
+    margin-top: 8px !important;
+    margin-bottom: 8px !important;
+}

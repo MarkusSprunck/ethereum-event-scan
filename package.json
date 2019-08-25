@@ -1,0 +1,30 @@
+{
+  "name": "ethereum-event-scan",
+  "version": "1.0.0",
+  "description": "Lightweight ethereum event explorer for smart contracts",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarkusSprunck/ethereum-event-scan.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "atob": "2.1.2",
+    "blockies": "0.0.2",
+    "bootstrap": "4.3.1",
+    "browserify": "16.3.0",
+    "btoa": "1.2.1",
+    "fs": "0.0.2",
+    "http": "0.0.0",
+    "jquery": "3.3.1",
+    "popper.js": "1.15.0",
+    "twbs-pagination": "^1.4.1",
+    "web3": "1.0.0-beta.55",
+    "zlib": "^1.0.5"
+  }
+}

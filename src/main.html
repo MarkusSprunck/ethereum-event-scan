@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>contract-event-scan</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="../css/main.css" rel="stylesheet">
+</head>
+
+
+<body class="">
+<div class="container_main mt-3">
+
+    <!-- Modal dialog details | START-->
+    <div class="modal" id="myModal1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" style="width:1035px; height:400px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Details</h4>
+                </div>
+                <div class="modal-body">
+                    <iframe frameBorder="0" sandbox="allow-scripts" name="myFrame" style="width:1000px;height:400px;"
+                            src=""></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal dialog details | END-->
+
+    <!-- Modal dialog information | START-->
+    <div class="modal" id="myModal2" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" style="width:60%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Information</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success" id="success">
+                        <strong>Connected to Node</strong>
+                        <p id="success-text"></p>
+                    </div>
+                    <div class="alert alert-warning" id="warning">
+                        <strong>Unable to Connect to Node</strong>
+                        <p id="warning-text"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" id="reload_button" class="btn btn-primary"
+                            onclick="history.go(0)">
+                        Reload
+                    </button>
+                    <button type="button" data-dismiss="modal" id="cancel_button" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal dialog information | END -->
+
+    <div class="row">
+        <div class="col-12">
+
+            <!-- header area | START -->
+            <div class="row">
+
+                <div class="col-2">
+                    <div class="header_area">
+                        <label>Current Block:</label>
+                    </div>
+                </div>
+
+                <div class="col-10">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label id="status_message_text2" style="width: 5.5em;">ABI:</label>
+                            <input class="form-control form-control-sm is-valid" id="contract_abi" type="text" value=""
+                                   style="width: 75%;">
+                            <input type="file" id="file-input" class="inputfile"/>
+                            <label class="btn-link" for="file-input"
+                                   style="width: 5em; text-align: center;">Import</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="header_area">
+                        <label id="counter" style="margin-top: 0.2em;">&nbsp;</label>
+                        <br>
+                    </div>
+                </div>
+
+                <div class="col-10">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label id="status_message_text3" style="width: 5.5em;">Contract:</label>
+                            <input class="form-control form-control-sm" id="contract_address" type="text" value=""
+                                   style="width: 75%;">
+                            <button class="btn btn-primary btn-sm" id="loadAbiButton" disabled style="width: 5em;">
+                                Load
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div class="col-2">
+                    <div class="header_area">
+                        <div>
+                            <label class="text-warning" id="status_message_text">Not Connected</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10">
+                    <div class="header_area" style="display: flex;">
+                        <label id="status_message_text4" style="width: 5.5em;">Provider:</label>
+                        <input class="form-control form-control-sm is-invalid" id="input_provider_url" type="text" value=""
+                               style="width: 75%;">
+                        <button class="btn btn-primary btn-sm" id="connectButton" disabled style="width: 5em;">Load
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- header area | END -->
+
+            <div class="progress">
+                <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                     aria-valuemin="0"
+                     aria-valuemax="100"></div>
+            </div>
+
+            <div class="d-none wrapper d-flex flex-row-reverse" style="margin-right: 3px">
+                <div id="paginationholder">
+                    <ul id="pagination" class="pagination"></ul>
+                </div>
+            </div>
+
+            <div id="event_table" class="d-none">
+                <div class="content_area">
+                    <table id="employee" class="table">
+                        <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Method</th>
+                            <th>Block</th>
+                            <th>Transaction</th>
+                            <th>Time</th>
+                            <th>Key</th>
+                            <th>Value</th>
+                        </tr>
+                        </thead>
+                        <tbody id="event_table_body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="./libs/bundle.js"></script>
+</html>
