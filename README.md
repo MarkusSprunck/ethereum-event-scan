@@ -7,13 +7,9 @@ This lightweight ethereum event explorer for smart contracts.
 
 ## Motivation
 
+
 It is a simple node.js application. A helpful tool when you develop smart 
 contracts and your source codes is not submitted to Etherscan.
-
-
-## Connection to local Parity Node
-
----
 
 ## Run Ethereum-Event-Scan via Blockchain Gateway
 
@@ -37,10 +33,10 @@ Three steps:
 3) Enter ABI and contract address *or* load abi-file from ./kovan-abi  
 
 
----
+## Run Ethereum-Event-Scan via local parity node
 
 
-#### Install Parity
+#### Install parity
 
 Open your terminal and enter:
 
@@ -74,7 +70,38 @@ Expected result:
 ...
 ```
 
-The synchronization will need some hours.
+The synchronization may need a day. In the case the synchronization got stuck, just restart. 
+
+Expected log output after complete sync:
+
+```
+2019-08-26 21:43:26  Starting Parity-Ethereum/v2.5.6-stable-ff398fe7ff-20190812/x86_64-macos/rustc1.36.0
+2019-08-26 21:43:26  Keys path /Users/markus/Library/Application Support/io.parity.ethereum/keys/kovan
+2019-08-26 21:43:26  DB path /Users/markus/Library/Application Support/io.parity.ethereum/chains/kovan/db/9bf388941c25ea98
+2019-08-26 21:43:26  State DB configuration: fast
+2019-08-26 21:43:26  Operating mode: active
+2019-08-26 21:43:26  Configured for Kovan Testnet using AuthorityRound engine
+2019-08-26 21:43:27  Listening for new connections on 0.0.0.0:8546.
+2019-08-26 21:43:32  Public node URL: enode://5f47c99c2d609a50ec6b017837ff8a4004dee2483332512b1e532361ff788604b978f72cd5267b4fd2f13a7904817b3db44894d7cabf9decc1bc4728abaccee7@192.168.178.48:30303
+2019-08-26 21:43:36  Imported #13086063 0x9259…a376 (1 txs, 0.11 Mgas, 3 ms, 1.72 KiB) + another 12 block(s) containing 8 tx(s)
+2019-08-26 21:43:40  Imported #13086064 0x3af8…730d (2 txs, 0.13 Mgas, 2 ms, 1.45 KiB)
+2019-08-26 21:43:44  Imported #13086065 0x3dad…79a9 (0 txs, 0.00 Mgas, 1 ms, 0.57 KiB)
+2019-08-26 21:43:48  Imported #13086066 0xdb79…9e2d (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2019-08-26 21:43:52  Imported #13086067 0xb916…eaca (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2019-08-26 21:43:56  Imported #13086068 0x58c4…104a (1 txs, 0.07 Mgas, 3 ms, 1.34 KiB)
+2019-08-26 21:44:00  Imported #13086069 0xae6a…eb64 (1 txs, 0.10 Mgas, 2 ms, 1.63 KiB)
+2019-08-26 21:44:02     4/25 peers   162 KiB chain 9 MiB db 0 bytes queue 223 KiB sync  RPC:  0 conn,    3 req/s,   15 µs
+2019-08-26 21:44:04  Imported #13086070 0xd70e…48da (8 txs, 0.70 Mgas, 11 ms, 3.54 KiB)
+2019-08-26 21:44:08  Imported #13086071 0xeff5…6c8d (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2019-08-26 21:44:12  Imported #13086072 0x5bab…1b1d (0 txs, 0.00 Mgas, 1 ms, 0.57 KiB)
+2019-08-26 21:44:16  Imported #13086073 0xee70…343e (2 txs, 0.15 Mgas, 3 ms, 1.89 KiB)
+2019-08-26 21:44:20  Imported #13086074 0x4485…181b (0 txs, 0.00 Mgas, 0 ms, 0.57 KiB)
+2019-08-26 21:44:24  Imported #13086075 0x34fa…e284 (1 txs, 0.07 Mgas, 3 ms, 1.34 KiB)
+2019-08-26 21:44:28  Imported #13086076 0x8473…1745 (1 txs, 0.17 Mgas, 9 ms, 0.97 KiB)
+2019-08-26 21:44:32     4/25 peers   179 KiB chain 9 MiB db 0 bytes queue 223 KiB sync  RPC:  0 conn,    3 req/s,   13 µs
+
+```
+
 
 #### Run Monitor
 
