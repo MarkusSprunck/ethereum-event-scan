@@ -1,36 +1,30 @@
 # Ethereum-Event-Scan
 
 
-This lightweight ethereum event explorer for smart contracts. 
+This lightweight ethereum event explorer for smart contracts. It is a simple node.js application. A helpful tool when 
+you develop smart contracts and your source codes is not submitted to Etherscan.
 
 ![Image 1](./images/ethereum-event-scan.png "Connected via Infura.io")
 
-## Motivation
-
-
-It is a simple node.js application. A helpful tool when you develop smart 
-contracts and your source codes is not submitted to Etherscan.
 
 ## Run Ethereum-Event-Scan via Blockchain Gateway
 
-Use Infura.io to connect to a Blockcain ist the fastest way to 
-get events from an deployed contract.
+Use Infura.io to connect to a Blockcain is the fastest way to get events from an deployed contract.
 
-You will need a accout and project id. To get events via infura you 
-must use the web socket connection provider.
+You will need an account and project id. To get events via infura you must use the web socket connection provider.
 
-like: wss://kovan.infura.io/ws/v3/{your-infura-project-id}
+Like:
+ 
+ `wss://kovan.infura.io/ws/v3/{your-infura-project-id}`
+ 
 
 Three steps:
 
-1) create infura-project and get ID
+- Create infura-project and get *the Infura Project ID*
 
-
-2) Enter this ID in the start script
-  
-   *start-ehtereum-event-scan-infura.sh*
-
-3) Enter ABI and contract address *or* load abi-file from ./kovan-abi  
+- Edit *start-ehtereum-event-scan-infura.sh* this ID in the start script
+   
+- Enter ABI and contract address *or* load abi-file from ./kovan-abi  
 
 
 ## Run Ethereum-Event-Scan via local parity node
@@ -101,7 +95,6 @@ Expected log output after complete sync:
 2019-08-26 21:44:32     4/25 peers   179 KiB chain 9 MiB db 0 bytes queue 223 KiB sync  RPC:  0 conn,    3 req/s,   13 µs
 
 ```
-
 
 #### Run Monitor
 
