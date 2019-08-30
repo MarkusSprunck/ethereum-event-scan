@@ -10,4 +10,6 @@ docker run -dit                                               \
            -p $LOCAL_IP:55226:55226                           \
            -e LOCAL_IP=$LOCAL_IP                              \
            -e PARITY_NODE_IP_PORT=http://$LOCAL_IP:8545       \
-           --name ethereum-event-scan
+           --name ethereum-event-scan                         \
+           ethereum-event-scan:latest
+

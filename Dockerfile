@@ -11,7 +11,6 @@ ADD ./ $HOME/
 RUN rm -r ./docker && \
     rm -r ./.idea && \
     rm ./Dockerfile && \
-    rm -r ./input && \
     rm ./.gitignore && \
     rm ./README.md && \
     rm ./*.sh
