@@ -7,7 +7,7 @@ npm install --quiet
 browserify ./src/main.js -o ./libs/bundle.js
 
 #TODO: insert your personal infura project id here...
-export INFURA_PROJECT_ID=12345
+export INFURA_PROJECT_ID={change-me}
 
 # start node server
 node ./src/server.js wss://kovan.infura.io/ws/v3/${INFURA_PROJECT_ID} localhost
