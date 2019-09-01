@@ -5,7 +5,7 @@ export LOCAL_IP=$(ipconfig getifaddr en0)
 
 docker stop     ethereum-event-scan
 docker rm       ethereum-event-scan
-docker build -t ethereum-event-scan:latest ../.
+docker build -t ethereum-event-scan:latest ./.
 docker run -dit                                               \
            -p $LOCAL_IP:55226:55226                           \
            -e LOCAL_IP=$LOCAL_IP                              \

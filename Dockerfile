@@ -8,10 +8,11 @@ RUN apt-get update  -y && \
 
 ADD ./ $HOME/
 
-RUN rm -r ./docker && \
-    rm -r ./.idea && \
-    rm ./Dockerfile && \
+RUN rm -r ./.idea && \
+    rm -r ./images && \
+    rm -r ./test-files-abi-kovan && \
     rm ./.gitignore && \
+    rm ./Dockerfile && \
     rm ./README.md && \
     rm ./*.sh
 
