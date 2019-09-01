@@ -63945,8 +63945,8 @@ const ALERT_UNABLE_TO_GET_EVENTS = "Unable to get events";
 const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
 
-const TIMER_FETCH_EVENTS = 10000;
-const TIMER_FETCH_BLOCK_NUMBER = 5000;
+const TIMER_FETCH_EVENTS = 30000;
+const TIMER_FETCH_BLOCK_NUMBER = 15000;
 const TIMER_UPDATE_UI_DETAILS = 500;
 const TIMER_UPDATE_UI_TABLE = 2000;
 const EVENT_TABLE_RECORDS_PER_PAGE = 10;
