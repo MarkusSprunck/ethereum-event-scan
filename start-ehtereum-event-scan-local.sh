@@ -7,4 +7,4 @@ npm install --quiet
 browserify ./src/main.js -o ./libs/bundle.js
 
 # start node server
-node ./src/server.js ws://0.0.0.0:8546 localhost
+node ./src/server.js ws://127.0.0.1:8546 localhost
