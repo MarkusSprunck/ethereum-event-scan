@@ -1,14 +1,17 @@
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Load all libraries
+ */
 let Web3 = require('web3');             // Connect to Ethereum network
 let zlib = require('zlib');             // Compression of abi file for URL parameter encoding
 let blockies = require('blockies');     // Render coloured images
 let $ = require("jquery");              // UI helpers
-global.jQuery = $;
-require("bootstrap");
-require("twbs-pagination");
+global.jQuery = $;                      // Needed to run Bootstrap with jQuery
+require("bootstrap");                   // UI framework
+require("twbs-pagination");             // Paginator support
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Global constants and message texts
+ */
 const DEFAULT_PROVIDER = "localhost:8545";
 const MESSAGE_CONNECTED = 'Connected';
 const MESSAGE_NOT_CONNECTED = 'Not connected';
@@ -16,7 +19,6 @@ const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
 const ALERT_UNABLE_TO_GET_EVENTS = "Unable to get events";
 const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
-
 const TIMER_FETCH_EVENTS = 30000;
 const TIMER_FETCH_BLOCK_NUMBER = 15000;
 const TIMER_UPDATE_UI_DETAILS = 500;
@@ -24,22 +26,10 @@ const TIMER_UPDATE_UI_TABLE = 2000;
 const EVENT_TABLE_RECORDS_PER_PAGE = 10;
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class HtmlUtil {
-
-    /**
-     *  Replaces all spaces with non breaking spaces in html
-     */
-    static spaces(value) {
-        return value.replace(/\s/g, '&nbsp;')
-    }
-
-}
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class StringUtils {
-
+/**
+ * The class Utils provides methods for string manipulation
+ */
+class Utils {
 
     /**
      * Creates a human readable time format
@@ -55,11 +45,10 @@ class StringUtils {
         return dd + '.' + MM + '.' + yy + ' ' + hh + ':' + mm + ':' + ss + 'h';
     }
 
-
     /**
      * Truncate middle part of string in the case it exceeds the maximum length
      */
-    static stringTruncateFromCenter(str, maxLength) {
+    static truncate(str, maxLength) {
         if (str.length <= maxLength) {
             return str;
         }
@@ -68,41 +57,52 @@ class StringUtils {
         return str.substr(0, left) + "…" + str.substring(right);
     }
 
+    /**
+     *  Replaces all spaces with non breaking spaces in html
+     */
+    static spaces(value) {
+        return value.replace(/\s/g, '&nbsp;')
+    }
+
+    /**
+     * Sleep time expects milliseconds
+     */
+    static sleep(time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The class Entity stores the connection status and all loaded events.
+ */
 class Entity {
-
 
     constructor() {
         this.web3 = null;
-
         this.events = [];
         this.currentBlock = 0;
         this.highestBlock = 0;
         this.syncing = false;
-
         this.connectionWorking = false;
         this.connectionMessage = MESSAGE_NOT_CONNECTED;
     }
 
-
     /**
-     * Change provider
+     * Set new provider
      */
     setWeb3(web3) {
         this.web3 = web3;
     }
 
-
     /**
      * Create connection to blockchain
      * */
     init(providerUrl) {
-        // Select a proper provider
+        // Select the needed provider
         if (providerUrl.startsWith('http')) {
-            this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl, 1));
+            this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
         } else if (providerUrl.startsWith('ws')) {
             this.web3 = new Web3(providerUrl);
         }
@@ -117,32 +117,28 @@ class Entity {
         this.isSyncing();
     }
 
-
     /**
      * The current value is maybe not the last status of syncing
      */
     isSyncing() {
-        let _that = this;
         this.web3.eth.isSyncing((error, sync) => {
             if (!error) {
                 if (sync) {
-                    _that.currentBlock = sync.currentBlock;
-                    _that.highestBlock = sync.highestBlock;
-                    _that.syncing = true;
+                    this.currentBlock = sync.currentBlock;
+                    this.highestBlock = sync.highestBlock;
+                    this.syncing = true;
                 } else {
-                    _that.syncing = false;
+                    this.syncing = false;
                 }
             }
         });
         return this.syncing;
     }
 
-
     /**
      * The current value is maybe not the last status of connection
      */
     isConnectionWorking() {
-
         this.web3.eth.net.isListening()
             .then(() => {
                 this.connectionWorking = true;
@@ -158,12 +154,14 @@ class Entity {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The class Control manages the connection and loads events. With two timers the current block number is loaded and
+ * all new events. The configuration is completely url encoded, so the current setting of provider, contract address
+ * and abi can be bookmarked. Because the abi can be larger than the url allowed, it will be compressed as parameter.
+ */
 class Control {
 
-
     constructor(entity) {
-
         // Connection to blockchain
         this.entity = entity;
 
@@ -196,12 +194,10 @@ class Control {
         this.getCurrentBlockNumber();
     }
 
-
     runLoadTable() {
         setInterval(this.fetchCurrentBlockNumber.bind(this), TIMER_FETCH_BLOCK_NUMBER);
         setInterval(this.fetchEvents.bind(this), TIMER_FETCH_EVENTS);
     }
-
 
     fetchCurrentBlockNumber() {
         if (this.entity.isConnectionWorking()) {
@@ -209,13 +205,11 @@ class Control {
         }
     }
 
-
     fetchEvents() {
         if (this.entity.isConnectionWorking()) {
             this.getPastEvents();
         }
     }
-
 
     /**
      * Creates the active contract based on the ABI and contract address
@@ -244,7 +238,6 @@ class Control {
         }
     }
 
-
     /**
      * The current value is maybe not the last block number
      */
@@ -256,7 +249,6 @@ class Control {
         }
         return this.entity.currentBlock;
     }
-
 
     /**
      * Get all past events for the current contract and stores the results in the class Entity
@@ -349,10 +341,12 @@ class Control {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The base class Boundary and the sub-classes manage the user interface. Almost all ui related things are done here,
+ * just updating of progress bar are done in class Control.  
+ */
 class Boundary {
-
-
+    
     constructor(control) {
         this.control = control;
         this.entity = control.entity;
@@ -360,29 +354,35 @@ class Boundary {
 
     trxDetailLink(hash) {
         let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&rpc=' + this.control.provider;
-        return '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + hash + '</a>';
+        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + hash + '</a>';
+        return result;
     }
 
     trxDetailLinkTruncated(hash) {
         let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&rpc=' + this.control.provider;
-        return '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + StringUtils.stringTruncateFromCenter(hash, 12) + '</a>';
+        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 12) + '</a>';
+        return result;
     }
 
     blockDetailLink(block) {
         let url = 'http://' + this.control.serverHost + '/details.html?block=' + block + '&rpc=' + this.control.provider;
-        return '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + block + '</a>';
+        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + block + '</a>';
+        return result;
     }
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The base class BoundaryDetails shows the details view for a block or a transaction..
+ */
 class BoundaryDetails extends Boundary {
-
 
     constructor(control) {
         super(control);
+
         this.elementDetails = document.querySelector(".detail");
         this.ready = false;
+
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_DETAILS);
     }
 
@@ -393,7 +393,6 @@ class BoundaryDetails extends Boundary {
             this.ready = true;
         }
     }
-
 
     /** Load details view of distinct trxNumber */
     runLoadTrx() {
@@ -408,7 +407,6 @@ class BoundaryDetails extends Boundary {
         });
     }
 
-
     /**
      * Load details view of distinct blockNumber
      */
@@ -422,9 +420,7 @@ class BoundaryDetails extends Boundary {
         });
     }
 
-
     printBlock(block) {
-
         // print block details
         let number = block.number;
         let numberLast = this.control.getCurrentBlockNumber();
@@ -432,18 +428,18 @@ class BoundaryDetails extends Boundary {
         let current = this.blockDetailLink(number);
         let parent = (number > 0) ? this.blockDetailLink(number - 1) : "0";
         let result = 'BLOCK<br/><br/>'
-            + HtmlUtil.spaces('Number            : ') + current + "<br/>"
-            + HtmlUtil.spaces('Parent            : ') + parent + '<br/>'
-            + HtmlUtil.spaces('Child             : ') + child + '<br/>'
-            + HtmlUtil.spaces('Time              : ') + StringUtils.convertTimestamp(block.timestamp) + '<br/>'
-            + HtmlUtil.spaces('Current hash      : ') + block.hash + '<br/>'
-            + HtmlUtil.spaces('Sha3Uncles        : ') + block.sha3Uncles + '<br/>'
-            + HtmlUtil.spaces('StateRoot         : ') + block.stateRoot + '<br/>'
-            + HtmlUtil.spaces('Miner             : ') + block.miner + '<br/>'
-            + HtmlUtil.spaces('ExtraData         : ') + block.extraData + '<br/>'
-            + HtmlUtil.spaces('Size              : ') + block.size + '<br/>'
-            + HtmlUtil.spaces('GasUsed           : ') + block.gasUsed + '<br/>'
-            + HtmlUtil.spaces('TransactionsCount : ') + block.transactions.length + '<br/>';
+            + Utils.spaces('Number            : ') + current + "<br/>"
+            + Utils.spaces('Parent            : ') + parent + '<br/>'
+            + Utils.spaces('Child             : ') + child + '<br/>'
+            + Utils.spaces('Time              : ') + Utils.convertTimestamp(block.timestamp) + '<br/>'
+            + Utils.spaces('Current hash      : ') + block.hash + '<br/>'
+            + Utils.spaces('Sha3Uncles        : ') + block.sha3Uncles + '<br/>'
+            + Utils.spaces('StateRoot         : ') + block.stateRoot + '<br/>'
+            + Utils.spaces('Miner             : ') + block.miner + '<br/>'
+            + Utils.spaces('ExtraData         : ') + block.extraData + '<br/>'
+            + Utils.spaces('Size              : ') + block.size + '<br/>'
+            + Utils.spaces('GasUsed           : ') + block.gasUsed + '<br/>'
+            + Utils.spaces('TransactionsCount : ') + block.transactions.length + '<br/>';
 
         // print all transactions of block
         if (block.transactions.length > 0) {
@@ -451,10 +447,10 @@ class BoundaryDetails extends Boundary {
             let _that = this;
             block.transactions.forEach(function (trxHash) {
                 if (0 === index) {
-                    result += HtmlUtil.spaces('Transactions      : ');
+                    result += Utils.spaces('Transactions      : ');
                     result += _that.trxDetailLink(trxHash) + '<br/>';
                 } else {
-                    result += HtmlUtil.spaces('                    ');
+                    result += Utils.spaces('                    ');
                     result += _that.trxDetailLink(trxHash) + '<br/>';
                 }
                 index++;
@@ -463,7 +459,6 @@ class BoundaryDetails extends Boundary {
 
         return result;
     }
-
 
     printTrx(tx, receipt) {
 
@@ -477,36 +472,35 @@ class BoundaryDetails extends Boundary {
         // Print transaction details
         let contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
         return "Transaction<br/><br/>"
-            + HtmlUtil.spaces('Hash              : ') + this.trxDetailLink(tx.hash) + '<br/>'
-            + HtmlUtil.spaces('Index             : ') + tx.transactionIndex + '<br/>'
-            + HtmlUtil.spaces('Block             : ') + this.blockDetailLink(tx.blockNumber) + '<br/>'
-            + HtmlUtil.spaces('From              : ') + tx.from + '<br/>'
-            + HtmlUtil.spaces('To                : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            + HtmlUtil.spaces('Value             : ') + tx.value + '<br/>'
-            + HtmlUtil.spaces('Nonce             : ') + tx.nonce + '<br/>'
-            + HtmlUtil.spaces('ContractAddress   : ') + contractAddress + '<br/>'
-            + HtmlUtil.spaces('GasUsed           : ') + receipt.gasUsed + '<br/>'
-            + HtmlUtil.spaces('GasPrice          : ') + tx.gasPrice + '<br/>'
-            + HtmlUtil.spaces('CumulativeGasUsed : ') + receipt.cumulativeGasUsed + '<br/>'
-            + HtmlUtil.spaces('InputLength       : ') + tx.input.length + '<br/>'
-            + HtmlUtil.spaces('Input             : ') + '<br/><p>' + input + "</p>";
+            + Utils.spaces('Hash              : ') + this.trxDetailLink(tx.hash) + '<br/>'
+            + Utils.spaces('Index             : ') + tx.transactionIndex + '<br/>'
+            + Utils.spaces('Block             : ') + this.blockDetailLink(tx.blockNumber) + '<br/>'
+            + Utils.spaces('From              : ') + tx.from + '<br/>'
+            + Utils.spaces('To                : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
+            + Utils.spaces('Value             : ') + tx.value + '<br/>'
+            + Utils.spaces('Nonce             : ') + tx.nonce + '<br/>'
+            + Utils.spaces('ContractAddress   : ') + contractAddress + '<br/>'
+            + Utils.spaces('GasUsed           : ') + receipt.gasUsed + '<br/>'
+            + Utils.spaces('GasPrice          : ') + tx.gasPrice + '<br/>'
+            + Utils.spaces('CumulativeGasUsed : ') + receipt.cumulativeGasUsed + '<br/>'
+            + Utils.spaces('InputLength       : ') + tx.input.length + '<br/>'
+            + Utils.spaces('Input             : ') + '<br/><p>' + input + "</p>";
     }
 
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The class BoundaryEventTable shows the main page with the event table, inputs and paginator.
+ */
 class BoundaryEventTable extends Boundary {
 
-
     constructor(control) {
-
         super(control);
 
         this.elementProgress = $('.progress');
         this.elementPaginationwrapper = $('.wrapper');
         this.elementProgress.fadeOut(0);
-
 
         this.elementEventTable = $("#event_table");
         this.elementEventTableBody = $('#event_table_body');
@@ -527,7 +521,7 @@ class BoundaryEventTable extends Boundary {
         this.initEventHandlerKeyboardInput();
 
         let fileInput = document.getElementById('file-input');
-        fileInput.addEventListener('change', this.readSingleFile, false);
+        fileInput.addEventListener('change', this.loadAbiFile, false);
 
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_TABLE);
 
@@ -538,11 +532,10 @@ class BoundaryEventTable extends Boundary {
         this.updateProviderInput();
     }
 
-
-    readSingleFile(event) {
+    loadAbiFile(event) {
 
         function displayContents(contents) {
-
+            // Check the content of abi file
             try {
                 let web3 = new Web3();
                 web3.eth.Contract(JSON.parse(contents));
@@ -552,7 +545,6 @@ class BoundaryEventTable extends Boundary {
             }
 
             if (document.getElementById('contract_abi').value !== contents) {
-
                 const elementLoadButton = document.getElementById('loadAbiButton');
                 elementLoadButton.removeAttribute("disabled");
             }
@@ -573,11 +565,9 @@ class BoundaryEventTable extends Boundary {
         reader.readAsText(file);
     }
 
-
     initEventHandlerUpdateContractAddressButton() {
         const _that = this;
         this.elementLoadAbiButton.click(function () {
-
             _that.elementEventTable.removeClass('d-block');
             _that.elementPaginationwrapper.removeClass('d-block');
 
@@ -598,7 +588,6 @@ class BoundaryEventTable extends Boundary {
                     '?contract=' + contractAddress + '&');
             }
             window.history.pushState('', '', paramsString);
-
 
             zlib.deflate(_that.elementAbiInput.value, function (err, buffer1) {
                 if (!err) {
@@ -625,7 +614,6 @@ class BoundaryEventTable extends Boundary {
             });
         });
     }
-
 
     initEventHandlerConnectButton() {
         const _that = this;
@@ -682,13 +670,11 @@ class BoundaryEventTable extends Boundary {
         });
     }
 
-
     initProviderUrl() {
         this.elementProviderInput.value = (this.control.provider);
         this.elementContractAddressInput.value = (this.control.contractAddress);
         this.elementAbiInput.value = (this.control.abi);
     }
-
 
     initEventHandlerKeyboardInput() {
 
@@ -734,13 +720,6 @@ class BoundaryEventTable extends Boundary {
         });
     }
 
-    /**
-     * Sleep time expects milliseconds
-     */
-    sleep(time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
     generate_table() {
         let _that = this;
         this.elementEventTableBody.html('');
@@ -752,43 +731,15 @@ class BoundaryEventTable extends Boundary {
             let row = _that.displayRecords[_index];
 
             if (row.time.length === 0) {
-
+                // transactions have not timestamp, so this is the lazy loading of the block
                 _that.entity.web3.eth.getBlock(_that.displayRecords[_index].block, false)
                     .then(block => {
-
-                        row.time = StringUtils.convertTimestamp(block.timestamp);
+                        row.time = Utils.convertTimestamp(block.timestamp);
                         row.image = blockies({seed: row.name, size: 8, scale: 16}).toDataURL();
-
-                        // Create image for row
-                        let image = document.createElement("img");
-                        image.src = row.image;
-
-                        _that.elementEventTableBody.append('<tr>'
-                            + '<td>' + row.number + '</td>'
-                            + '<td><img alt=\"miner\" src=\"' + image.src + '\"/>&nbsp;&nbsp;' + row.name + "</td>"
-                            + "<td>" + _that.blockDetailLink(row.block) + "</td>"
-                            + "<td>" + _that.trxDetailLinkTruncated(row.hash) + "</td>"
-                            + "<td>" + row.time + "</td>"
-                            + row.value
-                            + "</tr>");
-
-
+                        this.printRow(_that, row);
                     });
-
             } else {
-
-                // Create image for row
-                let image = document.createElement("img");
-                image.src = row.image;
-
-                _that.elementEventTableBody.append('<tr>'
-                    + '<td>' + row.number + '</td>'
-                    + '<td><img alt=\"miner\" src=\"' + image.src + '\"/>&nbsp;&nbsp;' + row.name + "</td>"
-                    + "<td>" + _that.blockDetailLink(row.block) + "</td>"
-                    + "<td>" + _that.trxDetailLinkTruncated(row.hash) + "</td>"
-                    + "<td>" + row.time + "</td>"
-                    + row.value
-                    + "</tr>");
+                this.printRow(_that, row);
             }
         }
 
@@ -796,6 +747,16 @@ class BoundaryEventTable extends Boundary {
         this.elementPaginationwrapper.addClass('d-block');
     }
 
+    printRow(_that, row) {
+        _that.elementEventTableBody.append('<tr>'
+            + '<td>' + row.number + '</td>'
+            + '<td><img alt=\"miner\" src=\"' + row.image + '\"/>&nbsp;&nbsp;' + row.name + "</td>"
+            + "<td>" + _that.blockDetailLink(row.block) + "</td>"
+            + "<td>" + _that.trxDetailLinkTruncated(row.hash) + "</td>"
+            + "<td>" + row.time + "</td>"
+            + row.value
+            + "</tr>");
+    }
 
     updateTable(force) {
         if (this.control.entity.events.length > this.lastNumbeOfRecords || force) {
@@ -820,7 +781,7 @@ class BoundaryEventTable extends Boundary {
                 });
 
             if (!force) {
-                this.sleep(1000).then(() => {
+                Utils.sleep(1000).then(() => {
                     this.updateTable(true);
                 });
             }
@@ -883,7 +844,6 @@ class BoundaryEventTable extends Boundary {
         }
     }
 
-
     updateStatusText() {
         this.elementConnectionStatusLabel.textContent = (this.entity.connectionMessage);
         if (this.entity.syncing) {
@@ -896,28 +856,20 @@ class BoundaryEventTable extends Boundary {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * The class Main is used to start the application
+ */
 class Main {
-
 
     constructor() {
         this.control = new Control(new Entity());
     }
 
-
-    /**
-     * Sleep time expects milliseconds
-     */
-    sleep(time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
-
     /**
      * Delayed start of user interface (to fetch last blockNumber number and status first)
      */
     run() {
-        this.sleep(100).then(() => {
+        Utils.sleep(100).then(() => {
 
             // Determine the content to be displayed
             if ((new URL(document.location).pathname === '/main.html')) {
@@ -945,7 +897,6 @@ class Main {
         });
     }
 }
-
 
 /**
  *  Start application
