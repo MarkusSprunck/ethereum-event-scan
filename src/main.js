@@ -19,10 +19,10 @@ const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
 const ALERT_UNABLE_TO_GET_EVENTS = "Unable to get events";
 const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
-const TIMER_FETCH_EVENTS = 30000;
-const TIMER_FETCH_BLOCK_NUMBER = 15000;
-const TIMER_UPDATE_UI_DETAILS = 500;
-const TIMER_UPDATE_UI_TABLE = 2000;
+const TIMER_FETCH_EVENTS = 5000;
+const TIMER_FETCH_BLOCK_NUMBER = 5000;
+const TIMER_UPDATE_UI_DETAILS = 100;
+const TIMER_UPDATE_UI_TABLE = 1000;
 const EVENT_TABLE_RECORDS_PER_PAGE = 10;
 
 
@@ -343,10 +343,10 @@ class Control {
 
 /**
  * The base class Boundary and the sub-classes manage the user interface. Almost all ui related things are done here,
- * just updating of progress bar are done in class Control.  
+ * just updating of progress bar are done in class Control.
  */
 class Boundary {
-    
+
     constructor(control) {
         this.control = control;
         this.entity = control.entity;
@@ -396,28 +396,34 @@ class BoundaryDetails extends Boundary {
 
     /** Load details view of distinct trxNumber */
     runLoadTrx() {
-        let _that = this;
-        this.entity.web3.eth.getTransaction(this.control.trxNumber).then(tx => {
-            if (tx === null) {
-                return
-            }
-            _that.entity.web3.eth.getTransactionReceipt(this.control.trxNumber).then(receipt => {
-                _that.control.detailsHtml = _that.printTrx(tx, receipt);
+        if (this.entity.isConnectionWorking()) {
+
+            let _that = this;
+            this.entity.web3.eth.getTransaction(this.control.trxNumber).then(tx => {
+                if (tx === null) {
+                    return
+                }
+                _that.entity.web3.eth.getTransactionReceipt(this.control.trxNumber).then(receipt => {
+                    _that.control.detailsHtml = _that.printTrx(tx, receipt);
+                });
             });
-        });
+        }
+
     }
 
     /**
      * Load details view of distinct blockNumber
      */
     runLoadBlock() {
-        let _that = this;
-        this.entity.web3.eth.getBlock(this.control.blockNumber).then(block => {
-            if (block === null) {
-                return
-            }
-            _that.control.detailsHtml = _that.printBlock(block);
-        });
+        if (this.entity.isConnectionWorking()) {
+            let _that = this;
+            this.entity.web3.eth.getBlock(this.control.blockNumber).then(block => {
+                if (block === null) {
+                    return
+                }
+                _that.control.detailsHtml = _that.printBlock(block);
+            });
+        }
     }
 
     printBlock(block) {
@@ -538,7 +544,7 @@ class BoundaryEventTable extends Boundary {
             // Check the content of abi file
             try {
                 let web3 = new Web3();
-                web3.eth.Contract(JSON.parse(contents));
+                let contract = new web3.eth.Contract(JSON.parse(contents));
             } catch (e) {
                 alert(ALERT_ABI_IS_NOT_WELL_FORMED);
                 return
