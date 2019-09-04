@@ -54,7 +54,7 @@ class Utils {
         }
         let left = Math.ceil(maxLength / 2);
         let right = str.length - Math.floor(maxLength / 2) + 1;
-        return str.substr(0, left) + "…" + str.substring(right);
+        return str.substr(0, left) + "… " + str.substring(right);
     }
 
     /**
@@ -360,7 +360,7 @@ class Boundary {
 
     trxDetailLinkTruncated(hash) {
         let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&rpc=' + this.control.provider;
-        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 12) + '</a>';
+        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 14) + '</a>';
         return result;
     }
 
