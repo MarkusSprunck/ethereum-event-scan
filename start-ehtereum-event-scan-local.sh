@@ -4,7 +4,7 @@
 npm install --quiet
 
 # resolve all dependencies of node libs to run in the browser
-browserify ./src/main.js -o ./libs/bundle.js
+browserify ./src/main.js -o ./dist/bundle.js
 
 # start node server
 node ./src/server.js ws://127.0.0.1:8546 localhost

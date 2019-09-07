@@ -21,7 +21,7 @@ const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
 const TIMER_FETCH_EVENTS = 5000;
 const TIMER_FETCH_BLOCK_NUMBER = 5000;
-const TIMER_UPDATE_UI_DETAILS = 100;
+const TIMER_UPDATE_UI_DETAILS = 1000;
 const TIMER_UPDATE_UI_TABLE = 1000;
 const EVENT_TABLE_RECORDS_PER_PAGE = 10;
 
@@ -396,8 +396,6 @@ class BoundaryDetails extends Boundary {
 
     /** Load details view of distinct trxNumber */
     runLoadTrx() {
-        if (this.entity.isConnectionWorking()) {
-
             let _that = this;
             this.entity.web3.eth.getTransaction(this.control.trxNumber).then(tx => {
                 if (tx === null) {
@@ -407,15 +405,12 @@ class BoundaryDetails extends Boundary {
                     _that.control.detailsHtml = _that.printTrx(tx, receipt);
                 });
             });
-        }
-
     }
 
     /**
      * Load details view of distinct blockNumber
      */
     runLoadBlock() {
-        if (this.entity.isConnectionWorking()) {
             let _that = this;
             this.entity.web3.eth.getBlock(this.control.blockNumber).then(block => {
                 if (block === null) {
@@ -423,7 +418,6 @@ class BoundaryDetails extends Boundary {
                 }
                 _that.control.detailsHtml = _that.printBlock(block);
             });
-        }
     }
 
     printBlock(block) {
@@ -869,6 +863,8 @@ class Main {
 
     constructor() {
         this.control = new Control(new Entity());
+
+       
     }
 
     /**
@@ -878,7 +874,7 @@ class Main {
         Utils.sleep(100).then(() => {
 
             // Determine the content to be displayed
-            if ((new URL(document.location).pathname === '/main.html')) {
+            if (new URL(document.location).pathname === '/main.html') {
 
                 // Create table view
                 this.boundary = new BoundaryEventTable(this.control);
@@ -886,7 +882,7 @@ class Main {
                 // Run event table
                 this.control.runLoadTable();
 
-            } else {
+            } else if (new URL(document.location).pathname === '/details.html') {
                 // Create details view
                 this.boundary = new BoundaryDetails(this.control);
 
