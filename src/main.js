@@ -12,7 +12,7 @@ require("twbs-pagination");             // Paginator support
 /**
  * Global constants and message texts
  */
-const DEFAULT_PROVIDER = "localhost:8545";
+const DEFAULT_PROVIDER = "";
 const MESSAGE_CONNECTED = 'Connected';
 const MESSAGE_NOT_CONNECTED = 'Not connected';
 const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
@@ -121,6 +121,12 @@ class Entity {
      * The current value is maybe not the last status of syncing
      */
     isSyncing() {
+
+        if (this.web3 === null) {
+            this.connectionMessage = MESSAGE_NOT_CONNECTED;
+            return false
+        }
+
         this.web3.eth.isSyncing((error, sync) => {
             if (!error) {
                 if (sync) {
@@ -139,6 +145,12 @@ class Entity {
      * The current value is maybe not the last status of connection
      */
     isConnectionWorking() {
+
+        if (this.web3 === null) {
+            this.connectionMessage = MESSAGE_NOT_CONNECTED;
+            return false
+        }
+
         this.web3.eth.net.isListening()
             .then(() => {
                 this.connectionWorking = true;
@@ -242,7 +254,8 @@ class Control {
      * The current value is maybe not the last block number
      */
     getCurrentBlockNumber() {
-        if (!this.entity.isSyncing()) {
+
+        if (this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
             this.entity.web3.eth.getBlockNumber().then(data => {
                 this.entity.currentBlock = data;
             });
@@ -662,7 +675,7 @@ class BoundaryEventTable extends Boundary {
 
                 })
                 .catch(e => {
-                    $("#warning-text").html(providerUrl + "<br>Please check RPC API at this URL is accessible");
+                    $("#warning-text").html(providerUrl + "<br>Please check that RPC API is accessible");
                     $("#success").addClass('d-none');
                     $("#warning").removeClass('d-none');
                     $('#myModal2').modal();
