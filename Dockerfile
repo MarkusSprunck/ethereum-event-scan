@@ -10,7 +10,7 @@ ADD ./ $HOME/
 
 RUN rm -r ./.idea && \
     rm -r ./images && \
-    rm -r ./test-files-abi-kovan && \
+    rm -r ./input && \
     rm ./.gitignore && \
     rm ./Dockerfile && \
     rm ./README.md && \
@@ -18,7 +18,7 @@ RUN rm -r ./.idea && \
 
 RUN npm install --production
 
-RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh  &&\
+RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh && \
     chmod +x /startscript.sh
 
 ENTRYPOINT ["/startscript.sh"]
