@@ -2,7 +2,7 @@
  * Load all libraries
  */
 let Web3 = require('web3');             // Connect to Ethereum network
-let zlib = require('zlib');             // Compression of abi file for URL parameter encoding
+let ZLib = require('zlib');             // Compression of abi file for URL parameter encoding
 let blockies = require('blockies');     // Render coloured images
 let $ = require("jquery");              // UI helpers
 global.jQuery = $;                      // Needed to run Bootstrap with jQuery
@@ -233,7 +233,7 @@ class Control {
             _that.AbiBase64Data = this.serverUrl.searchParams.get("abi") || '';
             if (_that.AbiBase64Data.length > 0) {
                 let buf = new Buffer(_that.AbiBase64Data, 'base64');
-                zlib.unzip(buf, function (err, buffer) {
+                ZLib.unzip(buf, function (err, buffer) {
                     if (!err) {
                         _that.abi = buffer.toString('utf8');
 
@@ -581,12 +581,12 @@ class BoundaryEventTable extends Boundary {
     initEventHandlerUpdateContractAddressButton() {
         const _that = this;
         this.elementLoadAbiButton.click(function () {
+
             _that.elementEventTable.removeClass('d-block');
             _that.elementPaginationwrapper.removeClass('d-block');
 
-            const contractAddress = _that.elementContractAddressInput.value.trim();
-
-            // Update URL
+            // Update URL with contract address (replace all double spaces)
+            const contractAddress = _that.elementContractAddressInput.value.trim().replace(/  +/g, ' ');
             let paramsString = (new URL(document.location)).search;
             if (paramsString.search('contract=') > 0) {
                 if (contractAddress.length === 42) {
@@ -602,15 +602,13 @@ class BoundaryEventTable extends Boundary {
             }
             window.history.pushState('', '', paramsString);
 
-            zlib.deflate(_that.elementAbiInput.value, function (err, buffer1) {
+            // Update URL with compressed abi array
+            ZLib.deflate(_that.elementAbiInput.value, function (err, buffer1) {
                 if (!err) {
                     const abiNew = encodeURIComponent(buffer1.toString('base64'));
-
-                    zlib.deflate(_that.control.abi, function (err, buffer2) {
+                    ZLib.deflate(_that.control.abi, function (err, buffer2) {
                         if (!err) {
                             const abiOld = encodeURIComponent(buffer2.toString('base64'));
-
-                            // Update URL
                             let paramsString = (new URL(document.location)).search;
                             if (paramsString.search('abi=') > 0) {
                                 paramsString = paramsString.replace('abi=' + abiOld,

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JavaScript-modules-diagram</ID>
+  <OriginalElement>/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js</OriginalElement>
+  <nodes>
+    <node x="276.0" y="117.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/bootstrap/dist/js/bootstrap.js</node>
+    <node x="5.0" y="271.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3/src/index.js</node>
+    <node x="130.0" y="347.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/blockies/build/index.js</node>
+    <node x="0.0" y="114.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/jquery/dist/jquery.js</node>
+    <node x="85.0" y="27.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/twbs-pagination/jquery.twbsPagination.js</node>
+    <node x="146.5" y="207.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;</node>
+    <node x="309.0" y="267.0">/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/zlib/lib/zlib.js</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3/src/index.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/blockies/build/index.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/zlib/lib/zlib.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/twbs-pagination/jquery.twbsPagination.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/bootstrap/dist/js/bootstrap.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;" target="/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/jquery/dist/jquery.js">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Orthogonal" zoom="1.3000000000000003" x="243.00000000000003" y="208.61538461538458" />
+  <SelectedNodes>
+    <node>/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#$#265;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#Web3#34;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#ZLib#105;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#blockies#199;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#bootstrap.js#394;/Users/markus/Projects/IntelliJ/ethereum-event-scan/src/main.js#jquery.twbsPagination.js#450;</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>All</Category>
+  </Categories>
+  <VISIBILITY>Overview</VISIBILITY>
+</Diagram>
+

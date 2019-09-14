@@ -4,8 +4,6 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jQuery" level="project" />
-    <orderEntry type="library" name="@types/web3" level="application" />
-    <orderEntry type="library" name="zlib" level="project" />
+    <orderEntry type="library" name="node_modules" level="project" />
   </component>
 </module>
