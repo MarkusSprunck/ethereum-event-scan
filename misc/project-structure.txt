@@ -1,5 +1,4 @@
 ethereum-event-scan
- ┃
  ┣ dist                              ⇦ Folder with web app
  ┃ ┣ bootstrap.min.css               ⇦ Basic bootstrap style
  ┃ ┣ bundle.js                       ⇦ Output of browserify
@@ -10,7 +9,8 @@ ethereum-event-scan
  ┣ src                               ⇦ Folder with all sources
  ┃ ┣ main.js                         ⇦ Input file of browserify
  ┃ ┗ server.js                       ⇦ Minimal node.js web server
- ┗ input                             ⇦ Test files (ABI arrays)
+ ┣ input                             ⇦ Test files with ABI arrays
+ ┗ misc                              ⇦ Some images and diagrams
  Dockerfile                          ⇦ Docker build
  docker_build.sh                     ⇦ Build and start docker
  docker_push.sh                      ⇦ Push to DockerHub
