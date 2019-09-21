@@ -6,7 +6,7 @@ const fs = require('fs');
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let SERVER_PORT = 55226;
 let SERVER_IP = 'localhost';
-let PROVIDER = "http://localhost:8545";
+let PROVIDER = "ws://127.0.0.1:8546";
 
 let args = process.argv.slice(2);
 if (args.length === 2) {
