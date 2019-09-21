@@ -6,6 +6,7 @@ RUN echo 'Ethereum-Event-Scan for events of smart contracts'
 
 RUN apt-get update  -y && \
     apt-get install -y curl git-core && \
+    apt-get install -y curl git vim make build-essential  && \
     curl -sL https://deb.nodesource.com/setup_11.x | bash - && \
     apt-get update  -y && \
     apt-get install -y nodejs
