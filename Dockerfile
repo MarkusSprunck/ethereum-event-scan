@@ -12,12 +12,6 @@ RUN apt-get update  -y && \
 
 ADD ./ $HOME/
 
-RUN rm -r ./.idea && \
-    rm -r ./input && \
-    rm ./.gitignore && \
-    rm ./Dockerfile && \
-    rm ./*.sh
-
 RUN npm install --production
 
 RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh && \
