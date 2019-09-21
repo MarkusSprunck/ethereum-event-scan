@@ -13,7 +13,9 @@ RUN apt-get update  -y && \
 
 ADD ./ $HOME/
 
-RUN npm install --production
+RUN npm install --production  && \
+    npm install -g browserify && \
+    browserify ./src/main.js -o ./dist/bundle.js
 
 RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh && \
     chmod +x /startscript.sh
