@@ -1,5 +1,9 @@
 FROM debian
 
+MAINTAINER sprunck.markus@gmail.com
+
+RUN echo 'Ethereum-Event-Scan for events of smart contracts'
+
 RUN apt-get update  -y && \
     apt-get install -y curl git-core && \
     curl -sL https://deb.nodesource.com/setup_11.x | bash - && \
@@ -9,11 +13,9 @@ RUN apt-get update  -y && \
 ADD ./ $HOME/
 
 RUN rm -r ./.idea && \
-    rm -r ./images && \
     rm -r ./input && \
     rm ./.gitignore && \
     rm ./Dockerfile && \
-    rm ./README.md && \
     rm ./*.sh
 
 RUN npm install --production
