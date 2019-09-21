@@ -2,9 +2,7 @@ FROM debian
 
 MAINTAINER sprunck.markus@gmail.com
 
-RUN echo 'Ethereum-Event-Scan for events of smart contracts'
-
-EXPOSE 55226/tcp
+RUN echo 'Ethereum-Event-Scan for events from smart contracts'
 
 RUN apt-get update  -y && \
     apt-get install -y curl git-core && \
@@ -21,5 +19,7 @@ RUN npm install --production  && \
 
 RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh && \
     chmod +x /startscript.sh
+
+EXPOSE 55226/tcp
 
 ENTRYPOINT ["/startscript.sh"]
