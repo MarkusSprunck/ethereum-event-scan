@@ -4,6 +4,8 @@ MAINTAINER sprunck.markus@gmail.com
 
 RUN echo 'Ethereum-Event-Scan for events of smart contracts'
 
+EXPOSE 55226/tcp
+
 RUN apt-get update  -y && \
     apt-get install -y curl git-core && \
     apt-get install -y curl git vim make build-essential  && \
