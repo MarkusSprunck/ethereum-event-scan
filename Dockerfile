@@ -1,8 +1,8 @@
 FROM debian
 
-MAINTAINER sprunck.markus@gmail.com
-
-RUN echo 'Ethereum-Event-Scan for events from smart contracts'
+LABEL description="Ethereum-Event-Scan for events from smart contracts"
+LABEL maintainer="sprunck.markus@gmail.com"
+LABEL version="v0.2.0"
 
 RUN apt-get update  -y && \
     apt-get install -y curl git-core && \
