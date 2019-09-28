@@ -42,7 +42,6 @@ const DEFAULT_PROVIDER = "";
 const MESSAGE_CONNECTED = 'Connected';
 const MESSAGE_NOT_CONNECTED = 'Not connected';
 const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
-const ALERT_UNABLE_TO_GET_EVENTS = "Unable to get events";
 const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
 const TIMER_FETCH_EVENTS = 5000;
@@ -120,6 +119,10 @@ class Entity {
      */
     setWeb3(web3) {
         this.web3 = web3;
+
+        // Update status
+        this.isConnectionWorking();
+        this.isSyncing();
     }
 
     /**
@@ -305,7 +308,6 @@ class Control {
 
                 if (errors) {
                     if (_that.firstAlert) {
-                        alert(ALERT_UNABLE_TO_GET_EVENTS + '\n' + errors.message);
                         _that.firstAlert = false;
                     }
 
@@ -435,28 +437,28 @@ class BoundaryDetails extends Boundary {
 
     /** Load details view of distinct trxNumber */
     runLoadTrx() {
-            let _that = this;
-            this.entity.web3.eth.getTransaction(this.control.trxNumber).then(tx => {
-                if (tx === null) {
-                    return
-                }
-                _that.entity.web3.eth.getTransactionReceipt(this.control.trxNumber).then(receipt => {
-                    _that.control.detailsHtml = _that.printTrx(tx, receipt);
-                });
+        let _that = this;
+        this.entity.web3.eth.getTransaction(this.control.trxNumber).then(tx => {
+            if (tx === null) {
+                return
+            }
+            _that.entity.web3.eth.getTransactionReceipt(this.control.trxNumber).then(receipt => {
+                _that.control.detailsHtml = _that.printTrx(tx, receipt);
             });
+        });
     }
 
     /**
      * Load details view of distinct blockNumber
      */
     runLoadBlock() {
-            let _that = this;
-            this.entity.web3.eth.getBlock(this.control.blockNumber).then(block => {
-                if (block === null) {
-                    return
-                }
-                _that.control.detailsHtml = _that.printBlock(block);
-            });
+        let _that = this;
+        this.entity.web3.eth.getBlock(this.control.blockNumber).then(block => {
+            if (block === null) {
+                return
+            }
+            _that.control.detailsHtml = _that.printBlock(block);
+        });
     }
 
     printBlock(block) {
@@ -662,48 +664,42 @@ class BoundaryEventTable extends Boundary {
 
             const providerUrl = _that.elementProviderInput.value.trim();
 
-            let web3Candidate;
-            if (providerUrl.startsWith('http')) {
-                web3Candidate = new Web3(new Web3.providers.HttpProvider(providerUrl, 1));
-            } else if (providerUrl.startsWith('ws')) {
-                web3Candidate = new Web3(providerUrl);
-            }
+            setTimeout(function () {
+                $('#contract_abi').addClass('is-invalid');
+                $('#contract_input_provider_url').addClass('is-invalid');
+                $('#contract_address').addClass('is-invalid');
 
-            web3Candidate.eth.net.isListening()
-                .then(() => {
+                _that.control.getEventsSucceeded = false;
 
-                    if (providerUrl.startsWith('http')) {
-                        let providerHttp = new Web3.providers.HttpProvider(providerUrl, 1);
-                        _that.entity.setWeb3(new Web3(providerHttp));
-                    } else if (providerUrl.startsWith('ws')) {
-                        _that.entity.setWeb3(new Web3(providerUrl));
-                    }
+                let paramsString = (new URL(document.location)).search;
+                if (paramsString.search('rpc=') > 0) {
+                    paramsString = paramsString.replace('rpc=' + _that.control.provider,
+                        'rpc=' + providerUrl);
+                } else {
+                    paramsString = paramsString.replace('?',
+                        '?rpc=' + providerUrl + '&');
+                }
+                window.history.pushState('', '', paramsString);
+            }, 50);
 
-                    let paramsString = (new URL(document.location)).search;
-                    if (paramsString.search('rpc=') > 0) {
-                        paramsString = paramsString.replace('rpc=' + _that.control.provider,
-                            'rpc=' + providerUrl);
-                    } else {
-                        paramsString = paramsString.replace('?',
-                            '?rpc=' + providerUrl + '&');
-                    }
-                    window.history.pushState('', '', paramsString);
+            setTimeout(function () {
 
-                    $("#success-text").text(providerUrl);
-                    $("#warning").addClass('d-none');
-                    $("#success").removeClass('d-none');
-                    $('#myModal2').modal();
-                    setTimeout(function () {
-                        $('#cancel_button').focus();
-                    }, 500);
+                let web3Candidate;
+                if (providerUrl.startsWith('http')) {
+                    web3Candidate = new Web3(new Web3.providers.HttpProvider(providerUrl, 1));
+                } else if (providerUrl.startsWith('ws')) {
+                    web3Candidate = new Web3(providerUrl);
+                }
 
-                })
-                .catch(e => {
-                    $("#warning-text").html(providerUrl + "<br>Please check that RPC API is accessible");
-                    $("#success").addClass('d-none');
-                    $("#warning").removeClass('d-none');
-                    $('#myModal2').modal();
-                });
+                if (providerUrl.startsWith('http')) {
+                    let providerHttp = new Web3.providers.HttpProvider(providerUrl, 1);
+                    _that.entity.setWeb3(new Web3(providerHttp));
+                } else if (providerUrl.startsWith('ws')) {
+                    _that.entity.setWeb3(new Web3(providerUrl));
+                }
+
+                history.go(0);
+            }, 500);
         });
     }
 
@@ -901,7 +897,7 @@ class Main {
     constructor() {
         this.control = new Control(new Entity());
 
-       
+
     }
 
     /**
