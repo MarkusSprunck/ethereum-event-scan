@@ -216,6 +216,7 @@ class Control {
         // Defines the valid block range
         this.eventsBlockTo = this.serverUrl.searchParams.get("stop") || 0;
         this.eventsBlockFrom = this.serverUrl.searchParams.get("start") || 0;
+        this.eventsBlockFromInitial = this.serverUrl.searchParams.get("start") || 0;
 
         // Initialize the provider
         this.provider = this.serverUrl.searchParams.get("rpc") || DEFAULT_PROVIDER;
@@ -550,7 +551,9 @@ class BoundaryEventTable extends Boundary {
         this.elementContractAddressInput = document.querySelector('#contract_address');
         this.elementAbiInput = document.querySelector('#contract_abi');
         this.elementConnectionStatusLabel = document.querySelector('#status_message_text');
-        this.elementCounterLabel = document.querySelector('#counter');
+        this.elementCounterLabel = document.querySelector('#counter_view');
+        this.elementStartLabel = document.querySelector('#start-block');
+
 
         this.elementConnectButton = $("#connectButton");
         this.elementLoadAbiButton = $("#loadAbiButton");
@@ -563,6 +566,8 @@ class BoundaryEventTable extends Boundary {
 
         let fileInput = document.getElementById('file-input');
         fileInput.addEventListener('change', this.loadAbiFile, false);
+
+        this.elementStartLabel.value = (this.control.eventsBlockFromInitial);
 
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_TABLE);
 
@@ -729,9 +734,8 @@ class BoundaryEventTable extends Boundary {
         inputContract.addEventListener('keyup', function (event) {
             const contractAddressNew = _that.elementContractAddressInput.value.trim();
             const contractAddressOld = _that.control.contractAddress;
-            const same = (contractAddressOld === contractAddressNew);
             const wrongLength = (contractAddressNew.length !== 42);
-            _that.elementLoadAbiButton.attr("disabled", same || wrongLength);
+            _that.elementLoadAbiButton.attr("disabled", wrongLength);
 
             if (event.code === "Enter") {
                 event.preventDefault();
@@ -751,6 +755,27 @@ class BoundaryEventTable extends Boundary {
                 document.getElementById('loadAbiButton').click();
             }
         });
+
+        const inputStart = document.getElementById('start-block');
+        inputStart.addEventListener('keyup', function (event) {
+            const startNew = inputStart.value;
+            const startOld = _that.control.eventsBlockFromInitial;
+            if (event.code === "Enter" ) {
+                event.preventDefault();
+                let paramsString = (new URL(document.location)).search;
+                if (paramsString.search('start=') > 0) {
+                    paramsString = paramsString.replace('start=' + startOld,
+                        'start=' + startNew);
+                } else {
+                    paramsString = paramsString.replace('?',
+                        '?start=' + startNew + '&');
+                }
+                window.history.pushState('', '', paramsString);
+                history.go(0);
+            }
+        });
+
+
     }
 
     generate_table() {
@@ -827,8 +852,6 @@ class BoundaryEventTable extends Boundary {
         this.updateProviderInput();
         this.updateProgressBar();
         this.updateLinks();
-
-
     }
 
     updateLinks() {
@@ -880,11 +903,11 @@ class BoundaryEventTable extends Boundary {
     updateStatusText() {
         this.elementConnectionStatusLabel.textContent = (this.entity.connectionMessage);
         if (this.entity.syncing) {
-            this.elementCounterLabel.textContent = (this.control.getCurrentBlockNumber() + '/' + this.entity.highestBlock);
+            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber() + '/' + this.entity.highestBlock);
         } else {
-            this.elementCounterLabel.textContent = (this.control.getCurrentBlockNumber());
+            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber());
         }
-    }
+     }
 
 }
 

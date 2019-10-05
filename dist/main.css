@@ -51,6 +51,23 @@ label {
     flex-direction: row;
 }
 
+.col-2 {
+    padding-left: 10pt;
+    padding-right: 0pt;
+    padding-top: 0pt;
+    padding-bottom: 0pt;
+}
+
+.col-10 {
+    padding-left: 5pt;
+    padding-right: 10pt;
+}
+
+.col-12 {
+    padding-left: 10pt;
+    padding-right: 10pt;
+}
+
 .header_area {
     padding: 0.25em;
     margin: 0.25em;
