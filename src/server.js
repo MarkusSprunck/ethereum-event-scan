@@ -35,7 +35,7 @@ if (args.length === 2) {
     SERVER_IP = args[1];
 }
 
-console.log('\nhttp://' + SERVER_IP + ':' + SERVER_PORT + '/main.html?rpc=' + PROVIDER + '\n');
+console.log('\nhttp://' + SERVER_IP + ':' + SERVER_PORT + '/main.html?provider=' + PROVIDER + '\n');
 
 http.createServer(function (request, response) {
         if (request.method === 'GET') {

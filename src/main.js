@@ -214,12 +214,12 @@ class Control {
         this.serverHost = this.serverUrl.host;
 
         // Defines the valid block range
-        this.eventsBlockTo = this.serverUrl.searchParams.get("stop") || 0;
+        this.eventsBlockTo = this.serverUrl.searchParams.get("stop") || "latest";
         this.eventsBlockFrom = this.serverUrl.searchParams.get("start") || 0;
-        this.eventsBlockFromInitial = this.serverUrl.searchParams.get("start") || 0;
+        this.eventsBlockFromInitial = this.eventsBlockFrom;
 
         // Initialize the provider
-        this.provider = this.serverUrl.searchParams.get("rpc") || DEFAULT_PROVIDER;
+        this.provider = this.serverUrl.searchParams.get("provider") || DEFAULT_PROVIDER;
         this.entity.init(this.provider);
 
         // Event table
@@ -249,7 +249,9 @@ class Control {
 
     fetchEvents() {
         if (this.entity.isConnectionWorking()) {
-            this.getPastEvents();
+            this.getPastEvents((value) => {
+                $('.progress-bar').css('width', value + '%');
+            });
         }
     }
 
@@ -296,7 +298,7 @@ class Control {
     /**
      * Get all past events for the current contract and stores the results in the class Entity
      */
-    getPastEvents() {
+    getPastEvents(progressUpdateCallback) {
 
         // Just in the case there is a valid contract
         if (typeof this.activeContract === "undefined" || this.eventsBlockFrom > this.entity.currentBlock) {
@@ -305,7 +307,7 @@ class Control {
 
         let _that = this;
         this.activeContract.getPastEvents(
-            "allEvents", {fromBlock: this.eventsBlockFrom, toBlock: "latest"}, (errors, events) => {
+            "allEvents", {fromBlock: this.eventsBlockFrom, toBlock: this.eventsBlockTo}, (errors, events) => {
 
                 if (errors) {
                     if (_that.firstAlert) {
@@ -358,7 +360,7 @@ class Control {
                             // Store next block number for new events
                             _that.eventsBlockFrom = Math.max(events[event].blockNumber + 1, _that.eventsBlockFrom);
 
-                            $('.progress-bar').css('width', _that.getEventsProgress + '%');
+                            progressUpdateCallback(_that.getEventsProgress);
 
                             let _number = _that.entity.events.length + 1;
                             _that.entity.events.unshift({
@@ -395,19 +397,19 @@ class Boundary {
     }
 
     trxDetailLink(hash) {
-        let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&rpc=' + this.control.provider;
+        let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&provider=' + this.control.provider;
         let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + hash + '</a>';
         return result;
     }
 
     trxDetailLinkTruncated(hash) {
-        let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&rpc=' + this.control.provider;
+        let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&provider=' + this.control.provider;
         let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 14) + '</a>';
         return result;
     }
 
     blockDetailLink(block) {
-        let url = 'http://' + this.control.serverHost + '/details.html?block=' + block + '&rpc=' + this.control.provider;
+        let url = 'http://' + this.control.serverHost + '/details.html?block=' + block + '&provider=' + this.control.provider;
         let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + block + '</a>';
         return result;
     }
@@ -550,10 +552,9 @@ class BoundaryEventTable extends Boundary {
         this.elementProviderInput = document.querySelector('#input_provider_url');
         this.elementContractAddressInput = document.querySelector('#contract_address');
         this.elementAbiInput = document.querySelector('#contract_abi');
-        this.elementConnectionStatusLabel = document.querySelector('#status_message_text');
         this.elementCounterLabel = document.querySelector('#counter_view');
         this.elementStartLabel = document.querySelector('#start-block');
-
+        this.elementStopLabel = document.querySelector('#stop-block');
 
         this.elementConnectButton = $("#connectButton");
         this.elementLoadAbiButton = $("#loadAbiButton");
@@ -568,6 +569,7 @@ class BoundaryEventTable extends Boundary {
         fileInput.addEventListener('change', this.loadAbiFile, false);
 
         this.elementStartLabel.value = (this.control.eventsBlockFromInitial);
+        this.elementStopLabel.value = (this.control.eventsBlockTo);
 
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_TABLE);
 
@@ -590,10 +592,6 @@ class BoundaryEventTable extends Boundary {
                 return
             }
 
-            if (document.getElementById('contract_abi').value !== contents) {
-                const elementLoadButton = document.getElementById('loadAbiButton');
-                elementLoadButton.removeAttribute("disabled");
-            }
             document.getElementById('contract_abi').value = contents;
         }
 
@@ -677,12 +675,12 @@ class BoundaryEventTable extends Boundary {
                 _that.control.getEventsSucceeded = false;
 
                 let paramsString = (new URL(document.location)).search;
-                if (paramsString.search('rpc=') > 0) {
-                    paramsString = paramsString.replace('rpc=' + _that.control.provider,
-                        'rpc=' + providerUrl);
+                if (paramsString.search('provider=') > 0) {
+                    paramsString = paramsString.replace('provider=' + _that.control.provider,
+                        'provider=' + providerUrl);
                 } else {
                     paramsString = paramsString.replace('?',
-                        '?rpc=' + providerUrl + '&');
+                        '?provider=' + providerUrl + '&');
                 }
                 window.history.pushState('', '', paramsString);
             }, 50);
@@ -720,9 +718,6 @@ class BoundaryEventTable extends Boundary {
         inputRPC.addEventListener('keyup', function (event) {
             const contractURLNew = _that.elementProviderInput.value.trim();
             const contractURLOld = _that.control.url;
-            const same = (contractURLOld === contractURLNew);
-            _that.elementConnectButton.attr("disabled", same);
-
             if (event.code === "Enter") {
                 event.preventDefault();
                 document.getElementById('connectButton').click();
@@ -736,7 +731,6 @@ class BoundaryEventTable extends Boundary {
             const contractAddressOld = _that.control.contractAddress;
             const wrongLength = (contractAddressNew.length !== 42);
             _that.elementLoadAbiButton.attr("disabled", wrongLength);
-
             if (event.code === "Enter") {
                 event.preventDefault();
                 document.getElementById('loadAbiButton').click();
@@ -747,35 +741,46 @@ class BoundaryEventTable extends Boundary {
         inputABI.addEventListener('keyup', function (event) {
             const contractAbiNew = _that.elementAbiInput.value.trim();
             const contractAbiOld = _that.control.abi;
-            const same = (contractAbiOld === contractAbiNew);
-            _that.elementLoadAbiButton.attr("disabled", same);
-
             if (event.code === "Enter") {
                 event.preventDefault();
                 document.getElementById('loadAbiButton').click();
             }
         });
 
+
         const inputStart = document.getElementById('start-block');
         inputStart.addEventListener('keyup', function (event) {
             const startNew = inputStart.value;
             const startOld = _that.control.eventsBlockFromInitial;
-            if (event.code === "Enter" ) {
+            if (event.code === "Enter") {
                 event.preventDefault();
                 let paramsString = (new URL(document.location)).search;
                 if (paramsString.search('start=') > 0) {
-                    paramsString = paramsString.replace('start=' + startOld,
-                        'start=' + startNew);
+                    paramsString = paramsString.replace('start=' + startOld, 'start=' + startNew);
                 } else {
-                    paramsString = paramsString.replace('?',
-                        '?start=' + startNew + '&');
+                    paramsString = paramsString.replace('?', '?start=' + startNew + '&');
                 }
                 window.history.pushState('', '', paramsString);
                 history.go(0);
             }
         });
 
-
+        const inputStop = document.getElementById('stop-block');
+        inputStop.addEventListener('keyup', function (event) {
+            const stopNew = inputStop.value;
+            const stopOld = _that.control.eventsBlockTo;
+            if (event.code === "Enter") {
+                event.preventDefault();
+                let paramsString = (new URL(document.location)).search;
+                if (paramsString.search('stop=') > 0) {
+                    paramsString = paramsString.replace('stop=' + stopOld, 'stop=' + stopNew);
+                } else {
+                    paramsString = paramsString.replace('?', '?stop=' + stopNew + '&');
+                }
+                window.history.pushState('', '', paramsString);
+                history.go(0);
+            }
+        });
     }
 
     generate_table() {
@@ -847,7 +852,7 @@ class BoundaryEventTable extends Boundary {
     }
 
     updateUI() {
-        this.updateStatusText();
+        this.updateCounterText();
         this.updateTable(false);
         this.updateProviderInput();
         this.updateProgressBar();
@@ -888,26 +893,20 @@ class BoundaryEventTable extends Boundary {
         if (this.entity.connectionWorking) {
             $('#input_provider_url').removeClass('is-invalid');
             $('#input_provider_url').addClass('is-valid');
-
-            $('#status_message_text').removeClass('text-warning');
-            $('#status_message_text').addClass('text-success');
         } else {
             $('#input_provider_url').addClass('is-invalid');
             $('#input_provider_url').removeClass('is-valid');
-
-            $('#status_message_text').removeClass('text-success');
-            $('#status_message_text').addClass('text-warning');
         }
     }
 
-    updateStatusText() {
-        this.elementConnectionStatusLabel.textContent = (this.entity.connectionMessage);
+
+    updateCounterText() {
         if (this.entity.syncing) {
             this.elementCounterLabel.value = (this.control.getCurrentBlockNumber() + '/' + this.entity.highestBlock);
         } else {
             this.elementCounterLabel.value = (this.control.getCurrentBlockNumber());
         }
-     }
+    }
 
 }
 
