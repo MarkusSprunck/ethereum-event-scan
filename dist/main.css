@@ -28,7 +28,7 @@ body {
 
 table {
     width: 100% !important;
-    margin-bottom: 0px !important;
+    margin-bottom: 0 !important;
     font-size: medium;
 }
 
@@ -53,9 +53,9 @@ label {
 
 .col-2 {
     padding-left: 10pt;
-    padding-right: 0pt;
-    padding-top: 0pt;
-    padding-bottom: 0pt;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .col-10 {
@@ -145,7 +145,7 @@ button {
 .content_area {
     padding: 0.2em;
     margin: 0.2em;
-    padding-top: 0px;
+    padding-top: 0;
     border-radius: 4px;
 }
 
@@ -183,4 +183,8 @@ img {
 .pagination {
     margin-top: 8px !important;
     margin-bottom: 8px !important;
+}
+
+.bmd-modalLink {
+    color: #5bc0de;
 }

@@ -29,8 +29,9 @@
 let Web3 = require('web3');             // Connect to Ethereum network
 let ZLib = require('zlib');             // Compression of abi file for URL parameter encoding
 let blockies = require('blockies');     // Render coloured images
-let $ = require("jquery");              // UI helpers
+let $ = require("jquery");              // UI helper
 global.jQuery = $;                          // Needed to run Bootstrap with jQuery
+require('jquery-ui-dist/jquery-ui');    // UI helper (draggable dialog)
 require("bootstrap");                   // UI framework
 require("twbs-pagination");             // Paginator support
 
@@ -78,7 +79,7 @@ class Utils {
             return str;
         }
         let left = Math.ceil(maxLength / 2);
-        let right = str.length - Math.floor(maxLength / 2) + 1;
+        let right = str.length - Math.floor(maxLength / 2) + 2;
         return str.substr(0, left) + "… " + str.substring(right);
     }
 
@@ -404,7 +405,7 @@ class Boundary {
 
     trxDetailLinkTruncated(hash) {
         let url = 'http://' + this.control.serverHost + '/details.html?trx=' + hash + '&provider=' + this.control.provider;
-        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 14) + '</a>';
+        let result = '<a class="bmd-modalLink" href=' + url + ' target="myFrame" >' + Utils.truncate(hash, 12) + '</a>';
         return result;
     }
 
@@ -572,6 +573,10 @@ class BoundaryEventTable extends Boundary {
         this.elementStopLabel.value = (this.control.eventsBlockTo);
 
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_TABLE);
+
+        $("#myModal1").draggable({
+            handle: ".modal-header"
+        });
 
         // Table with pagination
         this.displayRecords = [];

@@ -1,3 +1,10 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>EthEventScan</title>
+    <link href="bootstrap.min.css" rel="stylesheet"/>
+    <link href="main.css" rel="stylesheet">
+</head>
 <!--
     MIT License
 
@@ -21,28 +28,21 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 -->
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>EthEventScan</title>
-    <link href="bootstrap.min.css" rel="stylesheet"/>
-    <link href="main.css" rel="stylesheet">
-</head>
-
-
 <body class="">
 <div class="container_main mt-3">
 
     <!-- Modal dialog details | START-->
     <div class="modal" id="myModal1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" style="width:1035px; height:480px;">
+        <div class="modal-dialog modal-dialog-centered" style="width:935px; height:360px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Details</h4>
+                    <h5 class="modal-title">Details</h5>
+                    <button type="button" class="close" aria-label="Close" data-dismiss="modal">
+                        <span aria="true" style="color: lightgray;">×</span>
                 </div>
                 <div class="modal-body">
                     <iframe frameBorder="0" sandbox="allow-same-origin allow-scripts" name="myFrame"
-                            style="width:1000px;height:480px;"
+                            style="width:900px;height:360px;"
                             src=""></iframe>
                 </div>
                 <div class="modal-footer">
@@ -172,5 +172,5 @@
 </div>
 
 </body>
-<script src="bundle.js"></script>
+<script type="text/javascript" src="bundle.js"></script>
 </html>

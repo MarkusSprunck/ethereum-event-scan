@@ -44,6 +44,9 @@ http.createServer(function (request, response) {
                 console.log(new Date().toISOString() + ' file=' + path + ' url=' + request.url);
 
                 fs.readFile(path, function (err, data) {
+                    if (path.endsWith('.js')) {
+                        response.setHeader('Content-Type', 'text/javascript');
+                    }
                     response.end(data);
                 });
             } catch (e) {
