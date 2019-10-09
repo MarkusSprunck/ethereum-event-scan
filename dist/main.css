@@ -188,3 +188,34 @@ img {
 .bmd-modalLink {
     color: #5bc0de;
 }
+
+.mt-3, .my-3 {
+    margin-top: 0.3rem !important;
+}
+
+button#hide_details {
+    background-color: #272b30;
+    margin: 0pt !important;
+    border: 0pt !important;
+    padding-top: 0pt !important;
+    padding-bottom: 0pt !important;
+    padding-left: 0pt !important;
+    padding-right: 2pt !important;
+    text-shadow: 0px 0px 0px rgba(0,0,0,0.3);
+}
+
+button#hide_details.btn.collapsed:before {
+    content: '⬇';
+}
+
+button#hide_details.btn:before {
+    content: '⬆';
+}
+
+button#hide_details.btn:hover {
+    background-color: #272b30;
+    padding-top: 0pt !important;
+    padding-bottom: 0pt !important;
+    padding-left: 0pt !important;
+    padding-right: 2pt !important;
+}
