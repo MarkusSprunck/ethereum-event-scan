@@ -308,7 +308,10 @@ class Control {
 
         let _that = this;
         this.activeContract.getPastEvents(
-            "allEvents", {fromBlock: this.eventsBlockFrom, toBlock: this.eventsBlockTo}, (errors, events) => {
+            "allEvents", {
+                fromBlock: this.eventsBlockFrom,
+                toBlock: this.eventsBlockTo
+            }, (errors, events) => {
 
                 if (errors) {
                     if (_that.firstAlert) {
@@ -616,7 +619,7 @@ class BoundaryEventTable extends Boundary {
 
     initEventHandlerUpdateContractAddressButton() {
         const _that = this;
-        this.elementLoadAbiButton.click(function () {
+        this.elementLoadAbiButton.click(function (event) {
 
             _that.elementEventTable.removeClass('d-block');
             _that.elementPaginationwrapper.removeClass('d-block');
@@ -638,27 +641,59 @@ class BoundaryEventTable extends Boundary {
             }
             window.history.pushState('', '', paramsString);
 
-            // Update URL with compressed abi array
-            ZLib.deflate(_that.elementAbiInput.value, function (err, buffer1) {
-                if (!err) {
-                    const abiNew = encodeURIComponent(buffer1.toString('base64'));
-                    ZLib.deflate(_that.control.abi, function (err, buffer2) {
-                        if (!err) {
-                            const abiOld = encodeURIComponent(buffer2.toString('base64'));
-                            let paramsString = (new URL(document.location)).search;
-                            if (paramsString.search('abi=') > 0) {
-                                paramsString = paramsString.replace('abi=' + abiOld,
-                                    'abi=' + abiNew);
-                            } else {
-                                paramsString = paramsString.replace('?',
-                                    '?abi=' + abiNew + '&');
+            if (event.shiftKey) {
+                var domainURLs = [ // try these netowrks to load ABI from verified contract
+                    "http://api.etherscan.io",
+                    "http://api-kovan.etherscan.io",
+                    "http://api-ropsten.etherscan.io"]
+                domainURLs.forEach( function(domain) {
+                    var xmlhttp;
+                    if (window.XMLHttpRequest) {
+                        xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function () {
+                            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                                if ("Contract source code not verified" !== xmlhttp.responseText) {
+                                    _that.elementAbiInput.value = xmlhttp.responseText;
+                                    console.log('loaded -> ' + xmlhttp.responseText);
+                                    _that.updateURLwithCompressedAbi();
+                                    return;
+                                }
                             }
-                            window.history.pushState('', '', paramsString);
-                            history.go(0)
                         }
-                    });
-                }
-            });
+                        let url = domain + '/api?module=contract&action=getabi&address=' + contractAddress + '&format=raw';
+                        console.log('try to load -> ' + url);
+                        xmlhttp.open("GET", url, true);
+                        xmlhttp.send();
+                    }
+                });
+
+            } else {
+                _that.updateURLwithCompressedAbi();
+            }
+        });
+    }
+
+    updateURLwithCompressedAbi() {
+        let _that = this;
+        ZLib.deflate(_that.elementAbiInput.value, function (err, buffer1) {
+            if (!err) {
+                const abiNew = encodeURIComponent(buffer1.toString('base64'));
+                ZLib.deflate(_that.control.abi, function (err, buffer2) {
+                    if (!err) {
+                        const abiOld = encodeURIComponent(buffer2.toString('base64'));
+                        let paramsString = (new URL(document.location)).search;
+                        if (paramsString.search('abi=') > 0) {
+                            paramsString = paramsString.replace('abi=' + abiOld,
+                                'abi=' + abiNew);
+                        } else {
+                            paramsString = paramsString.replace('?',
+                                '?abi=' + abiNew + '&');
+                        }
+                        window.history.pushState('', '', paramsString);
+                        history.go(0)
+                    }
+                });
+            }
         });
     }
 
@@ -803,7 +838,11 @@ class BoundaryEventTable extends Boundary {
                 _that.entity.web3.eth.getBlock(_that.displayRecords[_index].block, false)
                     .then(block => {
                         row.time = Utils.convertTimestamp(block.timestamp);
-                        row.image = blockies({seed: row.name, size: 8, scale: 16}).toDataURL();
+                        row.image = blockies({
+                            seed: row.name,
+                            size: 8,
+                            scale: 16
+                        }).toDataURL();
                         this.printRow(_that, row);
                     });
             } else {
