@@ -1,32 +1,6 @@
 /**
- * MIT License
- *
- * Copyright (c) 2019 Markus Sprunck (sprunck.markus@gmail.com)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-
-/**
  * Load all libraries
  */
-let Web3 = require('web3');             // Connect to Ethereum network
 let ZLib = require('zlib');             // Compression of abi file for URL parameter encoding
 let blockies = require('blockies');     // Render coloured images
 let $ = require("jquery");              // UI helper
@@ -35,358 +9,18 @@ require('jquery-ui-dist/jquery-ui');    // UI helper (draggable dialog)
 require("bootstrap");                   // UI framework
 require("twbs-pagination");             // Paginator support
 
+const Utils = require(  "../src/utils.js");
+const Entity = require(  "../src/entity.js");
+const Control = require(  "../src/control.js");
 
 /**
  * Global constants and message texts
  */
-const DEFAULT_PROVIDER = "";
-const MESSAGE_CONNECTED = 'Connected';
-const MESSAGE_NOT_CONNECTED = 'Not connected';
-const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
 const ALERT_ABI_IS_NOT_WELL_FORMED = "ABI is not valid";
 const ALERT_INVALID_CONTRACT_ADDRESS = "Invalid contract address\n\nExpected are two characters '0x' and 40 hex digits";
-const TIMER_FETCH_EVENTS = 5000;
-const TIMER_FETCH_BLOCK_NUMBER = 5000;
 const TIMER_UPDATE_UI_DETAILS = 1000;
 const TIMER_UPDATE_UI_TABLE = 1000;
 const EVENT_TABLE_RECORDS_PER_PAGE = 10;
-
-
-/**
- * The class Utils provides methods for string manipulation
- */
-class Utils {
-
-    /**
-     * Creates a human readable time format
-     */
-    static convertTimestamp(time) {
-        const d = new Date(time * 1000);
-        const yy = d.getFullYear();
-        const MM = ('0' + (d.getMonth() + 1)).slice(-2);
-        const dd = ('0' + d.getDate()).slice(-2);
-        const hh = ('0' + d.getHours()).slice(-2);
-        const mm = ('0' + d.getMinutes()).slice(-2);
-        const ss = ('0' + d.getSeconds()).slice(-2);
-        return dd + '.' + MM + '.' + yy + ' ' + hh + ':' + mm + ':' + ss + 'h';
-    }
-
-    /**
-     * Truncate middle part of string in the case it exceeds the maximum length
-     */
-    static truncate(str, maxLength) {
-        if (str.length <= maxLength) {
-            return str;
-        }
-        let left = Math.ceil(maxLength / 2);
-        let right = str.length - Math.floor(maxLength / 2) + 2;
-        return str.substr(0, left) + "… " + str.substring(right);
-    }
-
-    /**
-     *  Replaces all spaces with non breaking spaces in html
-     */
-    static spaces(value) {
-        return value.replace(/\s/g, '&nbsp;')
-    }
-
-    /**
-     * Sleep time expects milliseconds
-     */
-    static sleep(time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
-}
-
-
-/**
- * The class Entity stores the connection status and all loaded events.
- */
-class Entity {
-
-    constructor() {
-        this.web3 = null;
-        this.events = [];
-        this.currentBlock = 0;
-        this.highestBlock = 0;
-        this.syncing = false;
-        this.connectionWorking = false;
-        this.connectionMessage = MESSAGE_NOT_CONNECTED;
-    }
-
-    /**
-     * Set new provider
-     */
-    setWeb3(web3) {
-        this.web3 = web3;
-
-        // Update status
-        this.isConnectionWorking();
-        this.isSyncing();
-    }
-
-    /**
-     * Create connection to blockchain
-     * */
-    init(providerUrl) {
-        // Select the needed provider
-        if (providerUrl.startsWith('http')) {
-            this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-        } else if (providerUrl.startsWith('ws')) {
-            this.web3 = new Web3(providerUrl);
-        }
-
-        // Check success
-        if (this.web3 === null) {
-            this.connectionMessage = MESSAGE_NOT_CONNECTED;
-        }
-
-        // Update status
-        this.isConnectionWorking();
-        this.isSyncing();
-    }
-
-    /**
-     * The current value is maybe not the last status of syncing
-     */
-    isSyncing() {
-
-        if (this.web3 === null) {
-            this.connectionMessage = MESSAGE_NOT_CONNECTED;
-            return false
-        }
-
-        this.web3.eth.isSyncing((error, sync) => {
-            if (!error) {
-                if (sync) {
-                    this.currentBlock = sync.currentBlock;
-                    this.highestBlock = sync.highestBlock;
-                    this.syncing = true;
-                } else {
-                    this.syncing = false;
-                }
-            }
-        });
-        return this.syncing;
-    }
-
-    /**
-     * The current value is maybe not the last status of connection
-     */
-    isConnectionWorking() {
-
-        if (this.web3 === null) {
-            this.connectionMessage = MESSAGE_NOT_CONNECTED;
-            return false
-        }
-
-        this.web3.eth.net.isListening()
-            .then(() => {
-                this.connectionWorking = true;
-                this.connectionMessage = MESSAGE_CONNECTED;
-            })
-            .catch(() => {
-                this.connectionWorking = false;
-                this.connectionMessage = MESSAGE_NOT_CONNECTED;
-            });
-        return this.connectionWorking;
-    }
-
-}
-
-
-/**
- * The class Control manages the connection and loads events. With two timers the current block number is loaded and
- * all new events. The configuration is completely url encoded, so the current setting of provider, contract address
- * and abi can be bookmarked. Because the abi can be larger than the url allowed, it will be compressed as parameter.
- */
-class Control {
-
-    constructor(entity) {
-        // Connection to blockchain
-        this.entity = entity;
-
-        // Parse command line
-        this.serverUrl = new URL(window.location.href);
-        this.trxNumber = this.serverUrl.searchParams.get("trx") || '';
-        this.blockNumber = this.serverUrl.searchParams.get("block") || '';
-        this.contractAddress = this.serverUrl.searchParams.get("contract") || '';
-        this.serverHost = this.serverUrl.host;
-
-        // Defines the valid block range
-        this.eventsBlockTo = this.serverUrl.searchParams.get("stop") || "latest";
-        this.eventsBlockFrom = this.serverUrl.searchParams.get("start") || 0;
-        this.eventsBlockFromInitial = this.eventsBlockFrom;
-
-        // Initialize the provider
-        this.provider = this.serverUrl.searchParams.get("provider") || DEFAULT_PROVIDER;
-        this.entity.init(this.provider);
-
-        // Event table
-        this.getEventsSucceeded = false;
-        this.getEventsProgress = 100;
-        this.elementProgress = $('.progress');
-
-        // Content of details
-        this.detailsHtml = '';
-
-        this.firstAlert = true;
-
-        this.createActiveContract();
-        this.getCurrentBlockNumber();
-    }
-
-    runLoadTable() {
-        setInterval(this.fetchCurrentBlockNumber.bind(this), TIMER_FETCH_BLOCK_NUMBER);
-        setInterval(this.fetchEvents.bind(this), TIMER_FETCH_EVENTS);
-    }
-
-    fetchCurrentBlockNumber() {
-        if (this.entity.isConnectionWorking()) {
-            this.getCurrentBlockNumber();
-        }
-    }
-
-    fetchEvents() {
-        if (this.entity.isConnectionWorking()) {
-            this.getPastEvents((value) => {
-                $('.progress-bar').css('width', value + '%');
-            });
-        }
-    }
-
-    /**
-     * Creates the active contract based on the ABI and contract address
-     */
-    createActiveContract() {
-        try {
-            this.abi = '';
-            let _that = this;
-            _that.AbiBase64Data = this.serverUrl.searchParams.get("abi") || '';
-            if (_that.AbiBase64Data.length > 0) {
-                let buf = new Buffer(_that.AbiBase64Data, 'base64');
-                ZLib.unzip(buf, function (err, buffer) {
-                    if (!err) {
-                        _that.abi = buffer.toString('utf8');
-
-                        let address = _that.contractAddress;
-                        if (address.length > 0 && _that.abi.length > 0) {
-                            let abi = JSON.parse(_that.abi);
-                            _that.activeContract = new _that.entity.web3.eth.Contract(abi, address);
-                        }
-                    }
-                });
-            }
-        } catch (e) {
-            alert(ALERT_UNABLE_TO_LOAD_ABI);
-        }
-    }
-
-    /**
-     * The current value is maybe not the last block number
-     */
-    getCurrentBlockNumber() {
-
-        if (this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
-            this.entity.web3.eth.getBlockNumber().then(data => {
-                this.entity.currentBlock = data;
-            });
-        }
-        return this.entity.currentBlock;
-    }
-
-    /**
-     * Get all past events for the current contract and stores the results in the class Entity
-     */
-    getPastEvents(progressUpdateCallback) {
-
-        // Just in the case there is a valid contract
-        if (typeof this.activeContract === "undefined" || this.eventsBlockFrom > this.entity.currentBlock) {
-            return;
-        }
-
-        let _that = this;
-        this.activeContract.getPastEvents(
-            "allEvents", {
-                fromBlock: this.eventsBlockFrom,
-                toBlock: this.eventsBlockTo
-            }, (errors, events) => {
-
-                if (errors) {
-                    if (_that.firstAlert) {
-                        _that.firstAlert = false;
-                    }
-
-                } else {
-
-                    if (events.length > 0) {
-                        this.elementProgress.fadeIn(500);
-                    }
-
-                    // Process all events
-                    let index = 0;
-                    for (let event in events) {
-                        index++;
-                        _that.getEventsProgress = Math.round(100.0 / events.length * index);
-
-                        // Prepare return values for this event
-                        let returnValues = events[event].returnValues;
-                        let value = "<td>";
-                        for (let key in returnValues) {
-                            if (returnValues.hasOwnProperty(key)) {
-                                if (isNaN(parseInt(key))) {
-                                    value += key.replace("_", "") + '</br>';
-                                }
-                            }
-                        }
-                        value += '</td><td>';
-                        for (let key in returnValues) {
-                            if (returnValues.hasOwnProperty(key)) {
-                                if (isNaN(parseInt(key))) {
-                                    let entry = returnValues[key];
-                                    if (entry.length > 66) {
-                                        value += entry.replace(/(.{61})..+/, "$1...") + '</br>';
-                                    } else {
-                                        value += entry + '<br/>';
-                                    }
-                                }
-                            }
-                        }
-                        value += "</td>";
-
-                        const trxHash = events[event].transactionHash;
-                        const blockNumber = events[event].blockNumber;
-                        const eventName = events[event].event;
-
-                        if (typeof blockNumber !== "undefined") {
-
-                            // Store next block number for new events
-                            _that.eventsBlockFrom = Math.max(events[event].blockNumber + 1, _that.eventsBlockFrom);
-
-                            progressUpdateCallback(_that.getEventsProgress);
-
-                            let _number = _that.entity.events.length + 1;
-                            _that.entity.events.unshift({
-                                "number": _number,
-                                "name": eventName,
-                                "block": blockNumber,
-                                "hash": trxHash,
-                                "value": value,
-                                "time": "",
-                                "image": ""
-                            });
-
-                            _that.getEventsSucceeded = true;
-                        } else {
-                            _that.getEventsSucceeded = false;
-                        }
-                    }
-                }
-            }
-        );
-    }
-}
 
 
 /**
@@ -547,8 +181,8 @@ class BoundaryEventTable extends Boundary {
         super(control);
 
         this.elementProgress = $('.progress');
+
         this.elementPaginationwrapper = $('.wrapper');
-        this.elementProgress.fadeOut(0);
 
         this.elementEventTable = $("#event_table");
         this.elementEventTableBody = $('#event_table_body');
@@ -961,9 +595,9 @@ class BoundaryEventTable extends Boundary {
 class Main {
 
     constructor() {
-        this.control = new Control(new Entity());
-
-
+        this.control = new Control(new Entity(), (value) => {
+            $('.progress-bar').css('width', value + '%');
+        }, window.location.href );
     }
 
     /**
@@ -1003,8 +637,3 @@ class Main {
  *  Start application
  */
 new Main().run();
-
-
-
-
-
