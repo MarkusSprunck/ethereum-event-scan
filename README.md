@@ -27,3 +27,14 @@ https://cloud.docker.com/u/sprunck/repository/docker/sprunck/ethereum-event-scan
 Source code:
 
 https://github.com/MarkusSprunck/ethereum-event-scan
+
+
+## Testing 
+
+Start ganache-cli in first terminal:
+
+`$ ganache-cli -d`
+
+Run test cases in second terminal:
+
+`$ npm run test`

@@ -44,8 +44,4 @@ contract TestAnEventEmitter {
         owner = address(this);
     }
 
-    function test_1_0_1_InitialCounts() public {
-        assertCount();
-    }
-
 }
