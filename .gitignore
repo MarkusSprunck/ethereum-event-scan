@@ -3,4 +3,5 @@ node_modules
 dist/bundle.js
 coverage
 .nyc_output
+build
 
