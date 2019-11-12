@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "test": "truffle test",
-    "coverage": "nyc truffle test"
+    "coverage": "nyc --reporter=lcov truffle test"
   },
   "repository": {
     "type": "git",
@@ -27,9 +27,11 @@
     "jsdom": "^15.2.1",
     "jsdom-global": "^3.0.2",
     "popper.js": "1.15.0",
+    "sinon": "^7.5.0",
     "truffle-assertions": "^0.9.2",
     "twbs-pagination": "1.4.1",
     "web3": "1.2.1",
+    "web3-fake-provider": "^0.1.0",
     "zlib": "1.0.5"
   },
   "devDependencies": {

@@ -1,7 +1,7 @@
 /**
  * Dependencies
  */
-let ZLib = require('zlib');             // Compression of abi file for URL parameter encoding
+let ZLib = require('zlib');
 
 /**
  * Global constants and message texts
@@ -9,7 +9,7 @@ let ZLib = require('zlib');             // Compression of abi file for URL param
 const DEFAULT_PROVIDER = "http://127.0.0.1:8545";
 const TIMER_FETCH_EVENTS = 100;
 const TIMER_FETCH_BLOCK_NUMBER = 100;
-const ALERT_UNABLE_TO_LOAD_ABI = "Unable to load ABI";
+const ALERT_UNABLE_TO_PARSE_ABI = "Unable to parse ABI";
 
 
 /**
@@ -47,7 +47,7 @@ class Control {
         // Content of details
         this.detailsHtml = '';
 
-        this.firstAlert = true;
+        this.lastMessage = '';
 
         this.createActiveContract();
         this.getCurrentBlockNumber();
@@ -77,26 +77,25 @@ class Control {
      * Creates the active contract based on the ABI and contract address
      */
     createActiveContract() {
-        try {
-            this.abi = '';
-            let _that = this;
-            _that.AbiBase64Data = this.serverUrl.searchParams.get("abi") || '';
-            if (_that.AbiBase64Data.length > 0) {
-                let buf = new Buffer(_that.AbiBase64Data, 'base64');
-                ZLib.unzip(buf, function (err, buffer) {
-                    if (!err) {
-                        _that.abi = buffer.toString('utf8');
-
-                        let address = _that.contractAddress;
-                        if (address.length > 0 && _that.abi.length > 0) {
+        this.abi = '';
+        let _that = this;
+        _that.AbiBase64Data = this.serverUrl.searchParams.get("abi") || '';
+        if (_that.AbiBase64Data.length > 0) {
+            let buf = new Buffer(_that.AbiBase64Data, 'base64');
+            ZLib.unzip(buf, function (err, buffer) {
+                if (!err) {
+                    _that.abi = buffer.toString('utf8');
+                    let address = _that.contractAddress;
+                    if (address.length > 0 && _that.abi.length > 0) {
+                        try {
                             let abi = JSON.parse(_that.abi);
                             _that.activeContract = new _that.entity.web3.eth.Contract(abi, address);
+                        } catch (e) {
+                            _that.lastMessage = ALERT_UNABLE_TO_PARSE_ABI;
                         }
                     }
-                });
-            }
-        } catch (e) {
-            alert(ALERT_UNABLE_TO_LOAD_ABI);
+                }
+            });
         }
     }
 
@@ -106,11 +105,9 @@ class Control {
     getCurrentBlockNumber() {
         if (this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
             this.entity.web3.eth.getBlockNumber().then(data => {
-               // console.log('set currentBlock=' + this.entity.currentBlock);
                 this.entity.currentBlock = data;
             });
         }
-        // console.log('currentBlock=' + this.entity.currentBlock);
         return this.entity.currentBlock;
     }
 
@@ -131,12 +128,7 @@ class Control {
                 toBlock: this.eventsBlockTo
             }, (errors, events) => {
 
-                if (errors) {
-                    if (_that.firstAlert) {
-                        _that.firstAlert = false;
-                    }
-
-                } else {
+                if (!errors) {
 
                     // Process all events
                     let index = 0;
@@ -150,21 +142,21 @@ class Control {
                         for (let key in returnValues) {
                             if (returnValues.hasOwnProperty(key)) {
                                 if (isNaN(parseInt(key))) {
-                                    value += key.replace("_", "") + '</br>';
+                                    value += key + '</br>';
                                 }
                             }
                         }
                         value += '</td><td>';
                         for (let key in returnValues) {
                             if (returnValues.hasOwnProperty(key)) {
-                                if (isNaN(parseInt(key))) {
-                                    let entry = returnValues[key];
-                                    if (entry.length > 66) {
+                               if (isNaN(parseInt(key))) {
+                                   let entry = returnValues[key];
+                                   if (entry.length > 66) {
                                         value += entry.replace(/(.{61})..+/, "$1...") + '</br>';
                                     } else {
                                         value += entry + '<br/>';
                                     }
-                                }
+                               }
                             }
                         }
                         value += "</td>";
@@ -191,11 +183,7 @@ class Control {
                                 "image": ""
                             });
 
-                            console.log("        event_number => "+_number );
-
                             _that.getEventsSucceeded = true;
-                        } else {
-                            _that.getEventsSucceeded = false;
                         }
                     }
                 }

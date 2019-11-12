@@ -1,7 +1,7 @@
 /**
  * Dependencies
  */
-let Web3 = require('web3');             // Connect to Ethereum network
+let Web3 = require('web3');
 
 
 /**
@@ -21,7 +21,6 @@ class Entity {
         this.events = [];
         this.currentBlock = 0;
         this.highestBlock = 0;
-        this.syncing = false;
         this.connectionWorking = false;
         this.connectionMessage = MESSAGE_NOT_CONNECTED;
     }
@@ -33,8 +32,8 @@ class Entity {
         this.web3 = web3;
 
         // Update status
-        this.isConnectionWorking();
         this.isSyncing();
+        this.isConnectionWorking();
     }
 
     /**
@@ -53,6 +52,7 @@ class Entity {
         // Check success
         if (this.web3 === null) {
             this.connectionMessage = MESSAGE_NOT_CONNECTED;
+            return
         }
 
         // Update status
@@ -71,17 +71,13 @@ class Entity {
         }
 
         this.web3.eth.isSyncing((error, sync) => {
-            if (!error) {
-                if (sync) {
-                    this.currentBlock = sync.currentBlock;
-                    this.highestBlock = sync.highestBlock;
-                    this.syncing = true;
-                } else {
-                    this.syncing = false;
-                }
+            if (!error && sync) {
+                this.currentBlock = sync.currentBlock;
+                this.highestBlock = sync.highestBlock;
             }
         });
-        return this.syncing;
+
+        return this.highestBlock > this.currentBlock;
     }
 
     /**
@@ -103,6 +99,7 @@ class Entity {
                 this.connectionWorking = false;
                 this.connectionMessage = MESSAGE_NOT_CONNECTED;
             });
+
         return this.connectionWorking;
     }
 
