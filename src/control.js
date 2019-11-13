@@ -7,8 +7,8 @@ let ZLib = require('zlib');
  * Global constants and message texts
  */
 const DEFAULT_PROVIDER = "http://127.0.0.1:8545";
-const TIMER_FETCH_EVENTS = 100;
-const TIMER_FETCH_BLOCK_NUMBER = 100;
+const TIMER_FETCH_EVENTS = 1000;
+const TIMER_FETCH_BLOCK_NUMBER = 1000;
 const ALERT_UNABLE_TO_PARSE_ABI = "Unable to parse ABI";
 
 
