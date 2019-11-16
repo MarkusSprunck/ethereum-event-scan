@@ -228,9 +228,9 @@ class BoundaryEventTable extends Boundary {
             // Check the content of abi file
             try {
                 let web3 = new Web3();
-                let contract = new web3.eth.Contract(JSON.parse(contents));
+                let contract = web3.eth.contract(JSON.parse(contents));
             } catch (e) {
-                alert(ALERT_ABI_IS_NOT_WELL_FORMED);
+                console.log(ALERT_ABI_IS_NOT_WELL_FORMED, e);
                 return
             }
 

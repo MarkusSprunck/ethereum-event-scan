@@ -77,7 +77,7 @@ class Control {
      * Creates the active contract based on the ABI and contract address
      */
     createActiveContract() {
-        this.abi = '';
+        this.abi = '[]';
         let _that = this;
         _that.AbiBase64Data = this.serverUrl.searchParams.get("abi") || '';
         if (_that.AbiBase64Data.length > 0) {
