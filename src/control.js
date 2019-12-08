@@ -26,6 +26,7 @@ class Control {
 
         // Parse command line
         this.serverUrl = new URL(url);
+        this.refresh = (this.serverUrl.searchParams.get("refresh") === 'true' );
         this.trxNumber = this.serverUrl.searchParams.get("trx") || '';
         this.blockNumber = this.serverUrl.searchParams.get("block") || '';
         this.contractAddress = this.serverUrl.searchParams.get("contract") || '';
@@ -54,6 +55,9 @@ class Control {
 
         this.fetchCurrentBlockNumber();
         this.fetchEvents();
+
+        setTimeout(this.getPastEvents.bind(this), 10);
+
     }
 
     runLoadTable() {
@@ -68,7 +72,7 @@ class Control {
     }
 
     fetchEvents() {
-        if (this.entity.isConnectionWorking()) {
+        if (this.entity.isConnectionWorking() && this.refresh) {
             this.getPastEvents();
         }
     }

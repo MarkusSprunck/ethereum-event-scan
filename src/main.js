@@ -9,9 +9,9 @@ require('jquery-ui-dist/jquery-ui');    // UI helper (draggable dialog)
 require("bootstrap");                   // UI framework
 require("twbs-pagination");             // Paginator support
 
-const Utils = require(  "../src/utils.js");
-const Entity = require(  "../src/entity.js");
-const Control = require(  "../src/control.js");
+const Utils = require("../src/utils.js");
+const Entity = require("../src/entity.js");
+const Control = require("../src/control.js");
 
 /**
  * Global constants and message texts
@@ -187,6 +187,7 @@ class BoundaryEventTable extends Boundary {
         this.elementEventTable = $("#event_table");
         this.elementEventTableBody = $('#event_table_body');
 
+        this.elementRefreshInput = document.querySelector('#auto_refresh');
         this.elementProviderInput = document.querySelector('#input_provider_url');
         this.elementContractAddressInput = document.querySelector('#contract_address');
         this.elementAbiInput = document.querySelector('#contract_abi');
@@ -202,12 +203,14 @@ class BoundaryEventTable extends Boundary {
         this.initEventHandlerUpdateContractAddressButton();
         this.initProviderUrl();
         this.initEventHandlerKeyboardInput();
+        this.initElementHandlerRefreshInput();
 
         let fileInput = document.getElementById('file-input');
         fileInput.addEventListener('change', this.loadAbiFile, false);
 
         this.elementStartLabel.value = (this.control.eventsBlockFromInitial);
         this.elementStopLabel.value = (this.control.eventsBlockTo);
+        this.elementRefreshInput.checked = (this.control.refresh);
 
         setInterval(this.updateUI.bind(this), TIMER_UPDATE_UI_TABLE);
 
@@ -251,6 +254,21 @@ class BoundaryEventTable extends Boundary {
         reader.readAsText(file);
     }
 
+    initElementHandlerRefreshInput() {
+        let _that = this;
+        this.elementRefreshInput.addEventListener('click', function(){
+                console.log('elementRefreshInput event=' + _that.elementRefreshInput);
+                const newValue = this.checked;
+                let paramsString = (new URL(document.location)).search;
+                if (paramsString.search('refresh=') > 0) {
+                    paramsString = paramsString.replace('refresh='+ !newValue, 'refresh=' + newValue);
+                } else {
+                    paramsString = paramsString.replace('?', '?refresh=' + newValue + '&');
+                }
+                window.history.pushState('', '', paramsString);
+        });
+    }
+
     initEventHandlerUpdateContractAddressButton() {
         const _that = this;
         this.elementLoadAbiButton.click(function (event) {
@@ -280,7 +298,7 @@ class BoundaryEventTable extends Boundary {
                     "http://api.etherscan.io",
                     "http://api-kovan.etherscan.io",
                     "http://api-ropsten.etherscan.io"]
-                domainURLs.forEach( function(domain) {
+                domainURLs.forEach(function (domain) {
                     var xmlhttp;
                     if (window.XMLHttpRequest) {
                         xmlhttp = new XMLHttpRequest();
@@ -597,7 +615,7 @@ class Main {
     constructor() {
         this.control = new Control(new Entity(), (value) => {
             $('.progress-bar').css('width', value + '%');
-        }, window.location.href );
+        }, window.location.href);
     }
 
     /**
