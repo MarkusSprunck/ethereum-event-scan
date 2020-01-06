@@ -26,7 +26,7 @@ class Control {
 
         // Parse command line
         this.serverUrl = new URL(url);
-        this.refresh = (this.serverUrl.searchParams.get("refresh") === 'true' );
+        this.refresh = (this.serverUrl.searchParams.get("refresh") === 'true');
         this.trxNumber = this.serverUrl.searchParams.get("trx") || '';
         this.blockNumber = this.serverUrl.searchParams.get("block") || '';
         this.contractAddress = this.serverUrl.searchParams.get("contract") || '';
@@ -146,21 +146,21 @@ class Control {
                         for (let key in returnValues) {
                             if (returnValues.hasOwnProperty(key)) {
                                 if (isNaN(parseInt(key))) {
-                                    value += key + '</br>';
+                                    value += key.replace('_','') + '</br>';
                                 }
                             }
                         }
                         value += '</td><td>';
                         for (let key in returnValues) {
                             if (returnValues.hasOwnProperty(key)) {
-                               if (isNaN(parseInt(key))) {
-                                   let entry = returnValues[key];
-                                   if (entry.length > 66) {
-                                        value += entry.replace(/(.{61})..+/, "$1...") + '</br>';
+                                if (isNaN(parseInt(key))) {
+                                    let entry = returnValues[key];
+                                    if (entry.length > 66) {
+                                        value +=  '<a class="test" data-placement="top" href="#" data-toggle="tooltip" title="'+ entry + '">'+ entry.replace(/(.{63})..+/, "$1...")+ '</a>'
                                     } else {
                                         value += entry + '<br/>';
                                     }
-                               }
+                                }
                             }
                         }
                         value += "</td>";

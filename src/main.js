@@ -508,7 +508,6 @@ class BoundaryEventTable extends Boundary {
 
     printRow(_that, row) {
         _that.elementEventTableBody.append('<tr>'
-            + '<td>' + row.number + '</td>'
             + '<td><img alt=\"miner\" src=\"' + row.image + '\"/>&nbsp;&nbsp;' + row.name + "</td>"
             + "<td>" + _that.blockDetailLink(row.block) + "</td>"
             + "<td>" + _that.trxDetailLinkTruncated(row.hash) + "</td>"

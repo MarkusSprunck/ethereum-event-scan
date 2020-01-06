@@ -1,9 +1,37 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>EthEventScan</title>
+    <title>Ethereum Event Scan</title>
     <link href="bootstrap.min.css" rel="stylesheet"/>
     <link href="main.css" rel="stylesheet">
+
+    <style>
+        /* Tooltip */
+        .test + .tooltip > .tooltip-inner {
+            background-color: #73AD21;
+            color: #FFFFFF;
+            border: 1px solid green;
+            padding: 15px;
+            font-size: 20px;
+        }
+        /* Tooltip on top */
+        .test + .tooltip.top > .tooltip-arrow {
+            border-top: 5px solid green;
+        }
+        /* Tooltip on bottom */
+        .test + .tooltip.bottom > .tooltip-arrow {
+            border-bottom: 5px solid blue;
+        }
+        /* Tooltip on left */
+        .test + .tooltip.left > .tooltip-arrow {
+            border-left: 5px solid red;
+        }
+        /* Tooltip on right */
+        .test + .tooltip.right > .tooltip-arrow {
+            border-right: 5px solid black;
+        }
+    </style>
+
 </head>
 <!--
     MIT License
@@ -77,7 +105,7 @@
                     <div class="col-2">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label style="width: 40%;">Current:</label>
+                                <label style="width: 40%;">Current</label>
                                 <input class="form-control form-control-sm " type="text"
                                        readonly id="counter_view"
                                        style="width: 60%;margin: 0.2em;background-color: #272B30; color: #aaa"/>
@@ -88,7 +116,7 @@
                     <div class="col-10">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label id="status_message_text2" style="width: 5.5em;">ABI:</label>
+                                <label id="status_message_text2" style="width: 5.5em;">ABI</label>
                                 <input class="form-control form-control-sm is-invalid"
                                        id="contract_abi" type="text"
                                        value="[]"
@@ -105,7 +133,7 @@
                     <div class="col-2">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label style="width: 40%;">Start:</label>
+                                <label style="width: 40%;">Start</label>
                                 <input class="form-control form-control-sm " type="text"
                                        id="start-block"
                                        style="width: 60%;margin: 0.2em;"/>
@@ -116,7 +144,7 @@
                     <div class="col-10">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label id="status_message_text3" style="width: 5.5em;">Contract:</label>
+                                <label id="status_message_text3" style="width: 5.5em;">Contract</label>
                                 <input class="form-control form-control-sm is-invalid"
                                        id="contract_address" type="text"
                                        value=""
@@ -135,7 +163,7 @@
                     <div class="col-2">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label style="width: 40%;">Stop:</label>
+                                <label style="width: 40%;">Stop</label>
                                 <input class="form-control form-control-sm " type="text"
                                        id="stop-block"
                                        style="width: 60%;margin: 0.2em;"/>
@@ -145,7 +173,7 @@
 
                     <div class="col-10">
                         <div class="header_area" style="display: flex;">
-                            <label id="status_message_text4" style="width: 5.5em;">Provider:</label>
+                            <label id="status_message_text4" style="width: 5.5em;">Provider</label>
                             <input class="form-control form-control-sm is-invalid"
                                    id="input_provider_url" type="text"
                                    value=""
@@ -195,7 +223,6 @@
                     <table id="employee" class="table">
                         <thead>
                         <tr>
-                            <th>No.</th>
                             <th>Method</th>
                             <th>Block</th>
                             <th>Trx</th>

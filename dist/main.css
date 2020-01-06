@@ -24,12 +24,13 @@
 
 body {
     font-size: medium;
+    font-family: courier, monospace;
 }
 
 table {
     width: 100% !important;
     margin-bottom: 0 !important;
-    font-size: medium;
+    font-size: smaller;
 }
 
 tr, td, th, thead {
