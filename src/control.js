@@ -7,8 +7,8 @@ let ZLib = require('zlib');
  * Global constants and message texts
  */
 const DEFAULT_PROVIDER = "http://127.0.0.1:8545";
-const TIMER_FETCH_EVENTS = 1000;
-const TIMER_FETCH_BLOCK_NUMBER = 1000;
+const TIMER_FETCH_EVENTS = 5000;
+const TIMER_FETCH_BLOCK_NUMBER = 5000;
 const ALERT_UNABLE_TO_PARSE_ABI = "Unable to parse ABI";
 
 
@@ -51,7 +51,7 @@ class Control {
         this.lastMessage = '';
 
         this.createActiveContract();
-        this.getCurrentBlockNumber();
+        this.getCurrentBlockNumber(true);
 
         this.fetchCurrentBlockNumber();
         this.fetchEvents();
@@ -66,13 +66,13 @@ class Control {
     }
 
     fetchCurrentBlockNumber() {
-        if (this.entity.isConnectionWorking()) {
-            this.getCurrentBlockNumber();
+        if (this.refresh && this.entity.isConnectionWorking()) {
+            this.getCurrentBlockNumber(this.refresh);
         }
     }
 
     fetchEvents() {
-        if (this.entity.isConnectionWorking() && this.refresh) {
+        if (this.refresh && this.entity.isConnectionWorking()) {
             this.getPastEvents();
         }
     }
@@ -106,8 +106,8 @@ class Control {
     /**
      * The current value is maybe not the last block number
      */
-    getCurrentBlockNumber() {
-        if (this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
+    getCurrentBlockNumber(fetch) {
+        if (fetch && this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
             this.entity.web3.eth.getBlockNumber().then(data => {
                 this.entity.currentBlock = data;
             });
@@ -188,12 +188,14 @@ class Control {
                             });
 
                             _that.getEventsSucceeded = true;
+                            _that.getCurrentBlockNumber(true);
                         }
                     }
                 }
             }
         );
     }
+
 }
 
 

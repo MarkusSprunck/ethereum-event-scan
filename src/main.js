@@ -105,7 +105,7 @@ class BoundaryDetails extends Boundary {
     printBlock(block) {
         // print block details
         let number = block.number;
-        let numberLast = this.control.getCurrentBlockNumber();
+        let numberLast = this.control.getCurrentBlockNumber(true);
         let child = (numberLast > number) ? this.blockDetailLink(number + 1) : 'n.a.';
         let current = this.blockDetailLink(number);
         let parent = (number > 0) ? this.blockDetailLink(number - 1) : "0";
@@ -257,8 +257,8 @@ class BoundaryEventTable extends Boundary {
     initElementHandlerRefreshInput() {
         let _that = this;
         this.elementRefreshInput.addEventListener('click', function(){
-                console.log('elementRefreshInput event=' + _that.elementRefreshInput);
                 const newValue = this.checked;
+                _that.control.refresh = newValue;
                 let paramsString = (new URL(document.location)).search;
                 if (paramsString.search('refresh=') > 0) {
                     paramsString = paramsString.replace('refresh='+ !newValue, 'refresh=' + newValue);
@@ -597,9 +597,9 @@ class BoundaryEventTable extends Boundary {
 
     updateCounterText() {
         if (this.entity.syncing) {
-            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber() + '/' + this.entity.highestBlock);
+            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber(this.control.refresh) + '/' + this.entity.highestBlock);
         } else {
-            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber());
+            this.elementCounterLabel.value = (this.control.getCurrentBlockNumber(this.control.refresh));
         }
     }
 
