@@ -41,7 +41,7 @@ tr, td, th, thead {
 label {
     font-weight: normal;
     padding: 0.3em;
-    margin: 0.2em;
+    margin: 0.3em;
     line-height: 1.5em;
     height: 30px;
     font-size: smaller;
@@ -73,7 +73,7 @@ label {
     padding: 0.25em;
     margin: 0.25em;
     border-radius: 0.3em;
-    background-color: #1b1e20;
+    background-color: #e9ecef;
 }
 
 .progress {
@@ -195,14 +195,13 @@ img {
 }
 
 button#hide_details {
-    background-color: #272b30;
     margin: 0pt !important;
     border: 0pt !important;
     padding-top: 0pt !important;
     padding-bottom: 0pt !important;
     padding-left: 0pt !important;
     padding-right: 2pt !important;
-    text-shadow: 0px 0px 0px rgba(0,0,0,0.3);
+    font-size: small;
 }
 
 button#hide_details.btn.collapsed:before {
@@ -214,7 +213,6 @@ button#hide_details.btn:before {
 }
 
 button#hide_details.btn:hover {
-    background-color: #272b30;
     padding-top: 0pt !important;
     padding-bottom: 0pt !important;
     padding-left: 0pt !important;
