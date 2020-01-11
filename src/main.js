@@ -492,7 +492,7 @@ class BoundaryEventTable extends Boundary {
                         row.time = Utils.convertTimestamp(block.timestamp);
                         row.image = blockies({
                             seed: row.name,
-                            size: 8,
+                            size: 100,
                             scale: 16
                         }).toDataURL();
                         this.printRow(_that, row);
@@ -529,7 +529,7 @@ class BoundaryEventTable extends Boundary {
             $('#pagination').twbsPagination(
                 {
                     totalPages: _totalPages,
-                    visiblePages: 20,
+                    visiblePages: 10,
                     onPageClick: function (event, page) {
                         _that.displayRecordsIndex = Math.max(page - 1, 0) * EVENT_TABLE_RECORDS_PER_PAGE;
                         _that.endRec = (_that.displayRecordsIndex) + EVENT_TABLE_RECORDS_PER_PAGE;
