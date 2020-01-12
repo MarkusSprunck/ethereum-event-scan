@@ -256,16 +256,16 @@ class BoundaryEventTable extends Boundary {
 
     initElementHandlerRefreshInput() {
         let _that = this;
-        this.elementRefreshInput.addEventListener('click', function(){
-                const newValue = this.checked;
-                _that.control.refresh = newValue;
-                let paramsString = (new URL(document.location)).search;
-                if (paramsString.search('refresh=') > 0) {
-                    paramsString = paramsString.replace('refresh='+ !newValue, 'refresh=' + newValue);
-                } else {
-                    paramsString = paramsString.replace('?', '?refresh=' + newValue + '&');
-                }
-                window.history.pushState('', '', paramsString);
+        this.elementRefreshInput.addEventListener('click', function () {
+            const newValue = this.checked;
+            _that.control.refresh = newValue;
+            let paramsString = (new URL(document.location)).search;
+            if (paramsString.search('refresh=') > 0) {
+                paramsString = paramsString.replace('refresh=' + !newValue, 'refresh=' + newValue);
+            } else {
+                paramsString = paramsString.replace('?', '?refresh=' + newValue + '&');
+            }
+            window.history.pushState('', '', paramsString);
         });
     }
 
@@ -481,25 +481,14 @@ class BoundaryEventTable extends Boundary {
 
         const _indexMax = this.displayRecords.length;
         for (let _index = 0; _index < _indexMax; _index++) {
-
-            // Row to be rendered
             let row = _that.displayRecords[_index];
+            row.image = blockies({
+                seed: row.name,
+                size: 100,
+                scale: 16
+            }).toDataURL();
+            this.printRow(_that, row);
 
-            if (row.time.length === 0) {
-                // transactions have not timestamp, so this is the lazy loading of the block
-                _that.entity.web3.eth.getBlock(_that.displayRecords[_index].block, false)
-                    .then(block => {
-                        row.time = Utils.convertTimestamp(block.timestamp);
-                        row.image = blockies({
-                            seed: row.name,
-                            size: 100,
-                            scale: 16
-                        }).toDataURL();
-                        this.printRow(_that, row);
-                    });
-            } else {
-                this.printRow(_that, row);
-            }
         }
 
         this.elementEventTable.addClass('d-block');
@@ -508,10 +497,10 @@ class BoundaryEventTable extends Boundary {
 
     printRow(_that, row) {
         _that.elementEventTableBody.append('<tr>'
+            + "<td>" + row.number + "</td>"
             + '<td><img alt=\"miner\" src=\"' + row.image + '\"/>&nbsp;&nbsp;' + row.name + "</td>"
             + "<td>" + _that.blockDetailLink(row.block) + "</td>"
             + "<td>" + _that.trxDetailLinkTruncated(row.hash) + "</td>"
-            + "<td>" + row.time + "</td>"
             + row.value
             + "</tr>");
     }

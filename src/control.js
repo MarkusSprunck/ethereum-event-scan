@@ -134,11 +134,14 @@ class Control {
 
                 if (!errors) {
 
+                    console.log('Got ' + events.length + ' events');
+
                     // Process all events
                     let index = 0;
                     for (let event in events) {
                         index++;
                         _that.getEventsProgress = Math.round(100.0 / events.length * index);
+
 
                         // Prepare return values for this event
                         let returnValues = events[event].returnValues;
@@ -191,6 +194,8 @@ class Control {
                             _that.getCurrentBlockNumber(true);
                         }
                     }
+
+                    console.log('Processed ' + events.length + ' events');
                 }
             }
         );

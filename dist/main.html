@@ -199,19 +199,15 @@
             <div class="row">
 
                 <div class="col-2 pull-right">
-                    <div class="header_area">
-                        <div class="checkbox">
-                            &nbsp;
-                            <input id="auto_refresh" class="styled" type="checkbox"
-                                   checked>
-                            <label for="auto_refresh">refresh</label>
+                        <div class="checkbox" style="margin-left: 6px">
+                            <label for="auto_refresh">Automatic update</label>
+                            <input id="auto_refresh" class="styled" type="checkbox" checked>
                         </div>
-                    </div>
                 </div>
 
                 <div class="col-10">
                     <div class="d-none wrapper d-flex flex-row-reverse"
-                         style="margin-right: 3px">
+                         style="margin-right: 6px">
                         <div id="paginationholder">
                             <ul id="pagination" class="pagination"></ul>
                         </div>
@@ -224,10 +220,10 @@
                     <table id="employee" class="table">
                         <thead>
                         <tr>
+                            <th>Number</th>
                             <th>Method</th>
                             <th>Block</th>
                             <th>Trx</th>
-                            <th>Time</th>
                             <th>Key</th>
                             <th>Value</th>
                         </tr>
