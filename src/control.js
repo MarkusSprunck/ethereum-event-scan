@@ -159,14 +159,18 @@ class Control {
                                 if (isNaN(parseInt(key))) {
                                     let entry = returnValues[key];
                                     if (entry.length > 66) {
-                                        value +=  '<a class="test" data-placement="top" href="#" data-toggle="tooltip" title="'+ entry + '">'+ entry.replace(/(.{63})..+/, "$1...")+ '</a>'
+                                        value += '<span data-toggle="tooltip" data-placement="right" title="Value" data-content="' + entry + '">' + entry.replace(/(.{63})..+/, "$1...") + '</span>'
                                     } else {
                                         value += entry + '<br/>';
                                     }
                                 }
                             }
                         }
-                        value += "</td>";
+                        value += "</td><script>" +
+                            "  $(function () {" +
+                            "      $('[data-toggle=\"tooltip\"]').popover()" +
+                            "  });" +
+                            "</script>";
 
                         const trxHash = events[event].transactionHash;
                         const blockNumber = events[event].blockNumber;

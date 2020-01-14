@@ -3,36 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>Ethereum Event Scan</title>
-    <link href="bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="main.css" rel="stylesheet">
-
-    <style>
-        /* Tooltip */
-        .test + .tooltip > .tooltip-inner {
-            background-color: #73AD21;
-            color: #FFFFFF;
-            border: 1px solid green;
-            padding: 15px;
-            font-size: 20px;
-        }
-        /* Tooltip on top */
-        .test + .tooltip.top > .tooltip-arrow {
-            border-top: 5px solid green;
-        }
-        /* Tooltip on bottom */
-        .test + .tooltip.bottom > .tooltip-arrow {
-            border-bottom: 5px solid blue;
-        }
-        /* Tooltip on left */
-        .test + .tooltip.left > .tooltip-arrow {
-            border-left: 5px solid red;
-        }
-        /* Tooltip on right */
-        .test + .tooltip.right > .tooltip-arrow {
-            border-right: 5px solid black;
-        }
-    </style>
-
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="bundle.js"></script>
 </head>
 <!--
     MIT License
@@ -59,7 +35,7 @@
 -->
 <body class="">
 
-<div class="container_main mt-3">
+<div class="container mt-3">
 
     <div class="row">
         <div class="col-12">
@@ -200,7 +176,7 @@
 
                 <div class="col-2 pull-right">
                         <div class="checkbox" style="margin-left: 6px">
-                            <label for="auto_refresh">Automatic update</label>
+                            <label for="auto_refresh">Update</label>
                             <input id="auto_refresh" class="styled" type="checkbox" checked>
                         </div>
                 </div>
@@ -220,7 +196,7 @@
                     <table id="employee" class="table">
                         <thead>
                         <tr>
-                            <th>Number</th>
+                            <th>Id</th>
                             <th>Method</th>
                             <th>Block</th>
                             <th>Trx</th>
@@ -235,10 +211,8 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
 </body>
-<script type="text/javascript" src="bundle.js"></script>
+
 </html>

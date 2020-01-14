@@ -518,7 +518,7 @@ class BoundaryEventTable extends Boundary {
             $('#pagination').twbsPagination(
                 {
                     totalPages: _totalPages,
-                    visiblePages: 10,
+                    visiblePages: 15,
                     onPageClick: function (event, page) {
                         _that.displayRecordsIndex = Math.max(page - 1, 0) * EVENT_TABLE_RECORDS_PER_PAGE;
                         _that.endRec = (_that.displayRecordsIndex) + EVENT_TABLE_RECORDS_PER_PAGE;

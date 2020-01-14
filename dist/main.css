@@ -186,10 +186,6 @@ img {
     margin-bottom: 8px !important;
 }
 
-.bmd-modalLink {
-    color: #5bc0de;
-}
-
 .mt-3, .my-3 {
     margin-top: 0.3rem !important;
 }
@@ -217,4 +213,20 @@ button#hide_details.btn:hover {
     padding-bottom: 0pt !important;
     padding-left: 0pt !important;
     padding-right: 2pt !important;
+}
+
+.popover {
+    font-family:  courier, monospace;
+    line-height: 1.5;
+    text-align: left;
+    text-align: start;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    word-spacing: normal;
+    white-space: normal;
+    line-break: auto;
+    font-size: .875rem;
+    word-wrap: break-word;
 }
