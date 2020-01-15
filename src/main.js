@@ -484,7 +484,7 @@ class BoundaryEventTable extends Boundary {
             let row = _that.displayRecords[_index];
             row.image = blockies({
                 seed: row.name,
-                size: 100,
+                size: 8,
                 scale: 16
             }).toDataURL();
             this.printRow(_that, row);
@@ -562,18 +562,6 @@ class BoundaryEventTable extends Boundary {
 
 
     updateProviderInput() {
-        if (this.control.getEventsSucceeded) {
-            $('#contract_abi').addClass('is-valid');
-            $('#contract_address').addClass('is-valid');
-            $('#contract_abi').removeClass('is-invalid');
-            $('#contract_address').removeClass('is-invalid');
-        } else {
-            $('#contract_abi').removeClass('is-valid');
-            $('#contract_address').removeClass('is-valid');
-            $('#contract_abi').addClass('is-invalid');
-            $('#contract_address').addClass('is-invalid');
-        }
-
         if (this.entity.connectionWorking) {
             $('#input_provider_url').removeClass('is-invalid');
             $('#input_provider_url').addClass('is-valid');

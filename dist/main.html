@@ -1,13 +1,14 @@
 <!doctype html>
-<html lang="en"><html lang="en">
+<html lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Ethereum Event Scan</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link href="main.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+    <script type="text/javascript" src="jquery-3.4.1.slim.min.js"></script>
+    <script type="text/javascript" src="popper.min.js"></script>
+    <script type="text/javascript" src="bootstrap.min.js"></script>
     <script type="text/javascript" src="bundle.js"></script>
 </head>
 <!--
@@ -47,18 +48,19 @@
     <!-- Modal dialog details | START-->
     <div class="modal" id="myModal1" role="dialog">
         <div class="modal-dialog modal-dialog-centered"
-             style="width:935px; height:360px;">
+             style="width:935px; height:420px;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Details</h5>
                     <button type="button" class="close" aria-label="Close"
                             data-dismiss="modal">
                         <span aria="true" style="color: lightgray;">×</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <iframe frameBorder="0" sandbox="allow-same-origin allow-scripts"
                             name="myFrame"
-                            style="width:900px;height:360px;"
+                            style="width:900px;height:420px;"
                             src=""></iframe>
                 </div>
                 <div class="modal-footer">
@@ -93,14 +95,15 @@
                     <div class="col-10">
                         <div class="header_area">
                             <div style="display: flex;">
-                                <label id="status_message_text2" style="width: 5.5em;">ABI</label>
+                                <label id="status_message_text2"
+                                       style="width: 5.5em;">ABI</label>
                                 <input class="form-control form-control-sm"
                                        id="contract_abi" type="text"
                                        value="[]"
-                                       style="width: 75%;">
+                                       style="width: 70%;">
                                 <input type="file" id="file-input" class="inputfile"/>
                                 <label class="btn-link" for="file-input"
-                                       style="width: 5em; text-align: center;">Import</label>
+                                       style="width: 4.5em; text-align: center;">Import</label>
                             </div>
                         </div>
                     </div>
@@ -175,10 +178,10 @@
             <div class="row">
 
                 <div class="col-2 pull-right">
-                        <div class="checkbox" style="margin-left: 6px">
-                            <label for="auto_refresh">Update</label>
-                            <input id="auto_refresh" class="styled" type="checkbox" checked>
-                        </div>
+                    <div class="checkbox" style="margin-left: 6px">
+                        <label for="auto_refresh">Update</label>
+                        <input id="auto_refresh" class="styled" type="checkbox" checked>
+                    </div>
                 </div>
 
                 <div class="col-10">
