@@ -36,14 +36,7 @@
 -->
 <body class="">
 
-<div class="container mt-3">
-
-    <div class="row">
-        <div class="col-12">
-            <button id="hide_details" class="btn btn-white" data-toggle="collapse"
-                    data-target="#demo"></button>
-        </div>
-    </div>
+<div class="container-fluid">
 
     <!-- Modal dialog details | START-->
     <div class="modal" id="myModal1" role="dialog">
@@ -76,142 +69,133 @@
 
     <div class="row">
         <div class="col-12">
-            <div id="demo" class="collapse show">
 
-                <!-- header area | START -->
-                <div class="row">
-
-                    <div class="col-2">
-                        <div class="header_area">
-                            <div style="display: flex;">
-                                <label style="width: 40%;">Last</label>
-                                <input class="form-control form-control-sm " type="text"
-                                       readonly id="counter_view"
-                                       style="width: 60%;margin: 0.2em;background-color: white"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-10">
-                        <div class="header_area">
-                            <div style="display: flex;">
-                                <label id="status_message_text2"
-                                       style="width: 5.5em;">ABI</label>
-                                <input class="form-control form-control-sm"
-                                       id="contract_abi" type="text"
-                                       value="[]"
-                                       style="width: 70%;">
-                                <input type="file" id="file-input" class="inputfile"/>
-                                <label class="btn-link" for="file-input"
-                                       style="width: 4.5em; text-align: center;">Import</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-2">
-                        <div class="header_area">
-                            <div style="display: flex;">
-                                <label style="width: 40%;">Start</label>
-                                <input class="form-control form-control-sm " type="text"
-                                       id="start-block"
-                                       style="width: 60%;margin: 0.2em;"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-10">
-                        <div class="header_area">
-                            <div style="display: flex;">
-                                <label id="status_message_text3" style="width: 5.5em;">Contract</label>
-                                <input class="form-control form-control-sm"
-                                       id="contract_address" type="text"
-                                       value=""
-                                       style="width: 75%;">
-                                <button class="btn btn-primary btn-sm" id="loadAbiButton"
-                                        style="width: 5em;">
-                                    Load
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-2">
-                        <div class="header_area">
-                            <div style="display: flex;">
-                                <label style="width: 40%;">Stop</label>
-                                <input class="form-control form-control-sm " type="text"
-                                       id="stop-block"
-                                       style="width: 60%;margin: 0.2em;"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-10">
-                        <div class="header_area" style="display: flex;">
-                            <label id="status_message_text4" style="width: 5.5em;">Provider</label>
-                            <input class="form-control form-control-sm is-invalid"
-                                   id="input_provider_url" type="text"
-                                   value=""
-                                   style="width: 75%;">
-                            <button class="btn btn-primary btn-sm" id="connectButton"
-                                    enabled style="width: 5em;">Load
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-                <!-- header area | END -->
-            </div>
-
-            <div class="progress">
-                <div class="progress-bar bg-info" role="progressbar"
-                     style="width: 0%;" aria-valuenow="0"
-                     aria-valuemin="0"
-                     aria-valuemax="100"></div>
-            </div>
-
+            <!-- header area | START -->
             <div class="row">
-
-                <div class="col-2 pull-right">
-                    <div class="checkbox" style="margin-left: 6px">
-                        <label for="auto_refresh">Update</label>
-                        <input id="auto_refresh" class="styled" type="checkbox" checked>
+                <div class="col-2">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label style="width: 40%;">Last</label>
+                            <input class="form-control form-control-sm " type="text"
+                                   readonly id="counter_view"
+                                   style="width: 60%;margin: 0.2em;background-color: white"/>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-10">
-                    <div class="d-none wrapper d-flex flex-row-reverse"
-                         style="margin-right: 6px">
-                        <div id="paginationholder">
-                            <ul id="pagination" class="pagination"></ul>
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label id="status_message_text2"
+                                   style="width: 5.5em;">ABI</label>
+                            <input class="form-control form-control-sm"
+                                   id="contract_abi" type="text"
+                                   value="[]"
+                                   style="width: 70%;">
+                            <input type="file" id="file-input" class="inputfile"/>
+                            <label class="btn-link" for="file-input"
+                                   style="width: 4.5em; text-align: center;">Import</label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="event_table" class="d-none">
-                <div class="content_area">
-                    <table id="employee" class="table">
-                        <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>Method</th>
-                            <th>Block</th>
-                            <th>Trx</th>
-                            <th>Key</th>
-                            <th>Value</th>
-                        </tr>
-                        </thead>
-                        <tbody id="event_table_body">
-                        </tbody>
-                    </table>
+            <div class="row">
+                <div class="col-2">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label style="width: 40%;">Start</label>
+                            <input class="form-control form-control-sm " type="text"
+                                   id="start-block"
+                                   style="width: 60%;margin: 0.2em;"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label id="status_message_text3" style="width: 5.5em;">Contract</label>
+                            <input class="form-control form-control-sm"
+                                   id="contract_address" type="text"
+                                   value=""
+                                   style="width: 75%;">
+                            <button class="btn btn-primary btn-sm" id="loadAbiButton"
+                                    style="width: 5em;">
+                                Load
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="row">
+
+                <div class="col-2">
+                    <div class="header_area">
+                        <div style="display: flex;">
+                            <label style="width: 40%;">Stop</label>
+                            <input class="form-control form-control-sm " type="text"
+                                   id="stop-block"
+                                   style="width: 60%;margin: 0.2em;"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-10">
+                    <div class="header_area" style="display: flex;">
+                        <label id="status_message_text4"
+                               style="width: 5.5em;">Provider</label>
+                        <input class="form-control form-control-sm is-invalid"
+                               id="input_provider_url" type="text"
+                               value=""
+                               style="width: 75%;">
+                        <button class="btn btn-primary btn-sm" id="connectButton"
+                                enabled style="width: 5em;">Load
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <!-- header area | END -->
+        </div>
+
+        <div class="progress col-12">
+            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="0"
+                 aria-valuemin="0"
+                 aria-valuemax="100"></div>
+        </div>
+
+
+        <div class="col-4">
+            <div class="checkbox">
+                <label for="auto_refresh">Automatic Update</label>
+                <input id="auto_refresh" class="styled" type="checkbox" checked>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="d-none wrapper d-flex flex-row-reverse">
+                <div id="paginationholder">
+                    <ul id="pagination" class="pagination"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="event_table" class="col-12">
+                <table id="employee" class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Method</th>
+                        <th>Block</th>
+                        <th>Trx</th>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody id="event_table_body">
+                    </tbody>
+                </table>
         </div>
     </div>
 </div>
