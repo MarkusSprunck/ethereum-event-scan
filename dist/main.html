@@ -40,21 +40,18 @@
 
     <!-- Modal dialog details | START-->
     <div class="modal" id="myModal1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered"
-             style="width:935px; height:420px;">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Details</h5>
                     <button type="button" class="close" aria-label="Close"
                             data-dismiss="modal">
-                        <span aria="true" style="color: lightgray;">×</span>
+                        <span aria="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <iframe frameBorder="0" sandbox="allow-same-origin allow-scripts"
-                            name="myFrame"
-                            style="width:900px;height:420px;"
-                            src=""></iframe>
+                            name="myFrame" src=""></iframe>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-sm"
@@ -74,27 +71,23 @@
             <div class="row">
                 <div class="col-2">
                     <div class="header_area">
-                        <div style="display: flex;">
-                            <label style="width: 40%;">Last</label>
+                        <div>
+                            <label>Last&nbsp;</label>
                             <input class="form-control form-control-sm " type="text"
-                                   readonly id="counter_view"
-                                   style="width: 60%;margin: 0.2em;background-color: white"/>
+                                   readonly id="counter_view"/>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-10">
                     <div class="header_area">
-                        <div style="display: flex;">
-                            <label id="status_message_text2"
-                                   style="width: 5.5em;">ABI</label>
+                        <div>
+                            <label id="status_message_text2">ABI</label>
                             <input class="form-control form-control-sm"
                                    id="contract_abi" type="text"
-                                   value="[]"
-                                   style="width: 70%;">
+                                   value="[]">
                             <input type="file" id="file-input" class="inputfile"/>
-                            <label class="btn-link" for="file-input"
-                                   style="width: 4.5em; text-align: center;">Import</label>
+                            <label class="btn btn-primary btn-sm" for="file-input">Import</label>
                         </div>
                     </div>
                 </div>
@@ -103,26 +96,23 @@
             <div class="row">
                 <div class="col-2">
                     <div class="header_area">
-                        <div style="display: flex;">
-                            <label style="width: 40%;">Start</label>
+                        <div>
+                            <label>Start</label>
                             <input class="form-control form-control-sm " type="text"
-                                   id="start-block"
-                                   style="width: 60%;margin: 0.2em;"/>
+                                   id="start-block"/>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-10">
                     <div class="header_area">
-                        <div style="display: flex;">
-                            <label id="status_message_text3" style="width: 5.5em;">Contract</label>
+                        <div>
+                            <label id="status_message_text3">Contract</label>
                             <input class="form-control form-control-sm"
                                    id="contract_address" type="text"
-                                   value=""
-                                   style="width: 75%;">
-                            <button class="btn btn-primary btn-sm" id="loadAbiButton"
-                                    style="width: 5em;">
-                                Load
+                                   value="">
+                            <button class="btn btn-primary btn-sm" id="loadAbiButton">
+                                &nbsp;Load&nbsp;
                             </button>
                         </div>
                     </div>
@@ -133,26 +123,25 @@
 
                 <div class="col-2">
                     <div class="header_area">
-                        <div style="display: flex;">
-                            <label style="width: 40%;">Stop</label>
+                        <div>
+                            <label>Stop&nbsp;</label>
                             <input class="form-control form-control-sm " type="text"
-                                   id="stop-block"
-                                   style="width: 60%;margin: 0.2em;"/>
+                                   id="stop-block"/>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-10">
-                    <div class="header_area" style="display: flex;">
-                        <label id="status_message_text4"
-                               style="width: 5.5em;">Provider</label>
+                    <div class="header_area">
+                        <div>
+                        <label id="status_message_text4">Provider</label>
                         <input class="form-control form-control-sm is-invalid"
                                id="input_provider_url" type="text"
-                               value=""
-                               style="width: 75%;">
+                               value="">
                         <button class="btn btn-primary btn-sm" id="connectButton"
-                                enabled style="width: 5em;">Load
+                                enabled>&nbsp;Load&nbsp;
                         </button>
+                        </div>
                     </div>
                 </div>
 
@@ -166,13 +155,13 @@
                  aria-valuemax="100"></div>
         </div>
 
-
         <div class="col-4">
             <div class="checkbox">
                 <label for="auto_refresh">Automatic Update</label>
                 <input id="auto_refresh" class="styled" type="checkbox" checked>
             </div>
         </div>
+
         <div class="col-8">
             <div class="d-none wrapper d-flex flex-row-reverse">
                 <div id="paginationholder">
@@ -181,21 +170,21 @@
             </div>
         </div>
 
-        <div id="event_table" class="col-12">
-                <table id="employee" class="table">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Method</th>
-                        <th>Block</th>
-                        <th>Trx</th>
-                        <th>Key</th>
-                        <th>Value</th>
-                    </tr>
-                    </thead>
-                    <tbody id="event_table_body">
-                    </tbody>
-                </table>
+        <div class="col-12" id="event_table">
+            <table id="employee" class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Method</th>
+                    <th>Block</th>
+                    <th>Trx</th>
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody id="event_table_body">
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

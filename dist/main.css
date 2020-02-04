@@ -186,8 +186,6 @@ input[type="checkbox"] {
 .popover {
     font-family: monospace;
     line-height: 1.5;
-    text-align: left;
-    text-align: start;
     text-shadow: none;
     text-transform: none;
     letter-spacing: normal;
@@ -197,4 +195,268 @@ input[type="checkbox"] {
     line-break: auto;
     font-size: .875rem;
     word-wrap: break-word;
+}
+
+.close > span {
+    color: lightgray;
+}
+
+.modal-body > iframe {
+    width: 900px;
+    height: 420px;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+#counter_view {
+    width: 60%;
+    margin: 0.2em;
+    background-color: white
+}
+
+#status_message_text2 {
+    width: 5.5em;
+}
+
+#contract_abi {
+    width: 70%;
+}
+
+#file-input {
+}
+
+#start-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text3 {
+    width: 5.5em;
+}
+
+#contract_address {
+    width: 75%;
+}
+
+#loadAbiButton {
+    width: 5em;
+}
+
+#stop-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text4 {
+    width: 5.5em;
+}
+
+#input_provider_url {
+    width: 75%;
+}
+
+#connectButton {
+    width: 5em;
+}
+
+.modal-dialog.modal-dialog-centered {
+    width: 935px;
+    height: 420px;
+}
+
+.btn-link {
+    width: 4.5em;
+    text-align: center;
+}
+
+.close > span {
+    color: lightgray;
+}
+
+.modal-body > iframe {
+    width: 900px;
+    height: 420px;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+#counter_view {
+    width: 60%;
+    margin: 0.2em;
+    background-color: white
+}
+
+#status_message_text2 {
+    width: 5.5em;
+}
+
+#contract_abi {
+    width: 70%;
+}
+
+#start-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text3 {
+    width: 5.5em;
+}
+
+#contract_address {
+    width: 75%;
+}
+
+#loadAbiButton {
+    width: 5em;
+}
+
+#stop-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text4 {
+    width: 5.5em;
+}
+
+#input_provider_url {
+    width: 75%;
+}
+
+#connectButton {
+    width: 5em;
+}
+
+.modal-dialog.modal-dialog-centered {
+    width: 935px;
+    height: 420px;
+}
+
+.btn-link {
+    width: 4.5em;
+    text-align: center;
+}
+
+.close > span {
+    color: lightgray;
+}
+
+.modal-body > iframe {
+    width: 900px;
+    height: 420px;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+.header_area > div {
+    display: flex;
+}
+
+#counter_view {
+    width: 60%;
+    margin: 0.2em;
+    background-color: white
+}
+
+#status_message_text2 {
+    width: 5.5em;
+}
+
+#contract_abi {
+    width: 70%;
+}
+
+#start-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text3 {
+    width: 5.5em;
+}
+
+#contract_address {
+    width: 75%;
+}
+
+#loadAbiButton {
+    width: 5em;
+}
+
+#stop-block {
+    width: 60%;
+    margin: 0.2em;
+}
+
+#status_message_text4 {
+    width: 5.5em;
+}
+
+#input_provider_url {
+    width: 75%;
+}
+
+#connectButton {
+    width: 5em;
+}
+
+.modal-dialog.modal-dialog-centered {
+    width: 935px;
+    height: 420px;
+}
+
+.btn-link {
+    width: 4.5em;
+    text-align: center;
 }
