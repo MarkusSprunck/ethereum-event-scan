@@ -130,11 +130,17 @@ button {
 }
 
 table {
-   font-size: small;
+   font-size: medium;
 }
 
 table.row {
     display: none;
+}
+
+.table td
+{
+    padding-top: 0.45rem;
+    padding-bottom: 0.45rem;
 }
 
 tr,
@@ -144,11 +150,12 @@ thead {
     line-height: 1.1em !important;
     text-align: left;
     color: rgb(170, 170, 170);
-}
+ }
+
 
 img {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
 }
 
 label {

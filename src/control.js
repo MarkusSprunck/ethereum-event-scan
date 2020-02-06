@@ -158,11 +158,11 @@ class Control {
                                 if (isNaN(parseInt(key))) {
                                     let entry = returnValues[key];
                                     if (entry.length > 66) {
-                                        value += '<a class="tooltip-link" href="#" data-toggle="tooltip" data-placement="right" title="Value" data-content="' + entry + '">' + entry.replace(/(.{63})..+/, "$1...") + '</a>'
+                                        value += '<a class="tooltip-link" href="#" data-toggle="tooltip" data-placement="right" title="Value" data-content="' + entry + '">' + entry.replace(/(.{63})..+/, "$1...") + '</a><br/>';
                                     } else {
                                         value += entry + '<br/>';
                                     }
-                                }
+                               }
                             }
                         }
                         value += "</td><script>" +
