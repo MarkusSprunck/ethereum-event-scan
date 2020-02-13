@@ -467,3 +467,11 @@ input[type="checkbox"] {
     width: 4.5em;
     text-align: center;
 }
+
+.popover {
+    max-width: 80%;
+}
+
+.is-breakable {
+    word-break: break-word;
+}

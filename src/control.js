@@ -152,24 +152,15 @@ class Control {
                                 }
                             }
                         }
-                        value += '</td><td>';
+                        value += '</td><td class="is-breakable">';
                         for (let key in returnValues) {
                             if (returnValues.hasOwnProperty(key)) {
                                 if (isNaN(parseInt(key))) {
-                                    let entry = returnValues[key];
-                                    if (entry.length > 66) {
-                                        value += '<a class="tooltip-link" href="#" data-toggle="tooltip" data-placement="right" title="Value" data-content="' + entry + '">' + entry.replace(/(.{63})..+/, "$1...") + '</a><br/>';
-                                    } else {
-                                        value += entry + '<br/>';
-                                    }
+                                    value += returnValues[key].split('\n').join('</br>') + '<br/>';
                                }
                             }
                         }
-                        value += "</td><script>" +
-                            "  $(function () {" +
-                            "      $('[data-toggle=\"tooltip\"]').popover()" +
-                            "  });" +
-                            "</script>";
+                        value += "</td>";
 
                         const trxHash = events[event].transactionHash;
                         const blockNumber = events[event].blockNumber;
