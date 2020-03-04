@@ -1,24 +1,10 @@
-FROM debian
+### STAGE 1: Build ###
+FROM node:12.16-alpine AS build
+WORKDIR /usr/src/app
+COPY . .
+RUN npm update --silent
+RUN npm run build
 
-LABEL description="Ethereum-Event-Scan for events from smart contracts"
-LABEL maintainer="sprunck.markus@gmail.com"
-
-RUN apt-get update  -y && \
-    apt-get install -y curl git-core && \
-    apt-get install -y curl git vim make build-essential  && \
-    curl -sL https://deb.nodesource.com/setup_11.x | bash - && \
-    apt-get update  -y && \
-    apt-get install -y nodejs
-
-ADD ./ $HOME/
-
-RUN npm install --production  && \
-    npm install -g browserify && \
-    browserify ./src/main.js -o ./dist/bundle.js
-
-RUN echo '#!/bin/bash\n\nnode ./src/server.js ${PARITY_NODE_IP_PORT} ${LOCAL_IP}\n' > /startscript.sh && \
-    chmod +x /startscript.sh
-
-EXPOSE 55226/tcp
-
-ENTRYPOINT ["/startscript.sh"]
+### STAGE 2: Run ###
+FROM nginx:1.17.1-alpine
+COPY --from=build /usr/src/app/dist/ethereum-event-scan /usr/share/nginx/html

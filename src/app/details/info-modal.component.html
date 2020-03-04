@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>{{data.block.length > 0 ? 'Block' : 'Transaction'}}</h2>
+
+<div mat-dialog-content>
+    <div [innerHTML]="content"></div>
+</div>
+
+<div class="action" mat-dialog-actions>
+    <button (click)="onCloseClick()" class="btn btn-primary">Schließen</button>
+</div>

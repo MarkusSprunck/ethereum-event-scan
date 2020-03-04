@@ -1,0 +1,18 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <app-settings [abi]="control.abi" [connected]="control.entity.connected" [contract]="control.contract" [endBlock]="control.endBlock"
+                          [lastBlock]="control.entity.currentBlock" [provider]="control.provider" [startBlock]="control.startInitial">
+
+            </app-settings>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table-complete></table-complete>
+        </div>
+    </div>
+
+</div>

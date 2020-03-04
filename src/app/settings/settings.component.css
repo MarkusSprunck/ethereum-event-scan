@@ -1,0 +1,12 @@
+.form-control.ng-invalid {
+    border-color: red;
+}
+
+.form-control.ng-valid {
+    border-color: lightgreen;
+}
+
+.form-control:disabled, .form-control[readonly] {
+    border-color: #ccc;
+}
+

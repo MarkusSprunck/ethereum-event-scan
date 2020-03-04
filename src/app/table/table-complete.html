@@ -1,0 +1,81 @@
+<form>
+    <div class="row">
+        <div class="col-12">
+            <div class="header_area">
+                <div>
+                    <label for="status_message_text2">Search</label>
+                    <input [(ngModel)]="service.searchTerm" class="form-control form-control-sm" id="status_message_text2" name="searchTerm" type="text"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="header_area">
+                <div *ngIf="(service.length > 0)">Loaded {{ service.length }} events</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-9">
+            <div class="header_area">
+                <ngb-pagination [(page)]="service.page" [collectionSize]="total$ | async" [maxSize]="10" [pageSize]="service.pageSize"></ngb-pagination>
+            </div>
+        </div>
+
+        <div class="col-3">
+            <div class="header_area">
+                <select [(ngModel)]="service.pageSize" class="custom-select custom-select-sm" name="pageSize">
+                    <option [ngValue]="10">10 events per page</option>
+                    <option [ngValue]="100">100 events per page</option>
+                    <option [ngValue]="1000">1000 events per page</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th (sort)="onSort($event)" scope="col" sortable="name">Name</th>
+                <th (sort)="onSort($event)" scope="col" sortable="block">Block</th>
+                <th (sort)="onSort($event)" scope="col" sortable="trxHash">TrxHash</th>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let event of events$ | async">
+                <th scope="row">{{ event.id }}</th>
+                <td>
+                    <!--
+                    <img [src]="event.image"/>&nbsp;
+                    -->
+                    <ngb-highlight [result]="event.name" [term]="service.searchTerm"></ngb-highlight>
+                </td>
+                <td>
+                    <a (click)="openInfoDialog($event, event.block, '')" href="" rel="nofollow">
+                        <ngb-highlight [result]="event.block" [term]="service.searchTerm"></ngb-highlight>
+                    </a>
+                </td>
+                <td>
+                    <a (click)="openInfoDialog($event, '', event.trxHash)" href="" rel="nofollow">
+                        <ngb-highlight [result]="event.trxHashShort" [term]="service.searchTerm"></ngb-highlight>
+                    </a>
+                </td>
+                <td>
+                    <ngb-highlight [result]="event.key" [term]="service.searchTerm"></ngb-highlight>
+                </td>
+                <td>
+                    <ngb-highlight [result]="event.value" [term]="service.searchTerm"></ngb-highlight>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</form>

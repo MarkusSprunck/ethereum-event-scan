@@ -1,0 +1,19 @@
+h2 {
+    font-family: monospace;
+    font-size: 1.77rem;
+    text-align: left;
+}
+
+mat-dialog-content {
+    padding: 30px;
+}
+
+.action {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.action.mat-dialog-actions {
+    margin-bottom: 0;
+}
