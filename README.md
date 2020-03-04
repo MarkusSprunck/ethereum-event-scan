@@ -6,19 +6,12 @@ The right tool when you develop smart contracts and your source codes is not yet
 ## Start Configuration 
 
 To start directly from DockerHub use:
-```
-$ docker run -dit                               \
-             -p 55226:55226                     \
-             --name ethereum-event-scan         \
-             sprunck/ethereum-event-scan:latest
 
-```
+```$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:latest  ```
 
 Build and start with docker-compose:
 
-```
-$ docker-compose up -d --build
-```
+```$ docker-compose up -d --build   ```
 
 ## Links
 
