@@ -36,9 +36,9 @@ const blockies = require('blockies');
  * Global constants and message texts
  */
 
-const TIMER_FETCH_EVENTS = 4000;
+const TIMER_FETCH_EVENTS = 5000;
 
-const TIMER_FETCH_BLOCK_NUMBER = 3000;
+const TIMER_FETCH_BLOCK_NUMBER = 5000;
 
 
 /**
@@ -60,10 +60,12 @@ export class Reader {
     public startInitial: string = '0';
     public startBlock: string = '0';
     public endBlock: string = 'latest';
-    public refresh: string = '';
     public contract: string = '';
     public abi: string = '';
     public provider: string = '';
+    public refresh : boolean = true;
+
+    private initReady = false;
 
     public abiBase64Data;
 
@@ -82,10 +84,6 @@ export class Reader {
                 this.endBlock = params['end'];
             }
 
-            if (params['refresh']) {
-                this.refresh = params['refresh'];
-            }
-
             if (params['contract']) {
                 this.contract = params['contract'];
             }
@@ -97,6 +95,11 @@ export class Reader {
 
             if (params['provider']) {
                 this.provider = params['provider'];
+            }
+
+            if (params['refresh']) {
+                this.refresh = params['refresh'] === 'true';
+                console.log('params refresh ', this.refresh );
             }
 
             // Initialize the provider
@@ -114,18 +117,22 @@ export class Reader {
     }
 
     runLoadTable() {
-        setTimeout(this.fetchCurrentBlockNumber.bind(this), TIMER_FETCH_BLOCK_NUMBER);
-        setTimeout(this.fetchEvents.bind(this), TIMER_FETCH_EVENTS);
+        setTimeout(this.fetchCurrentBlockNumber.bind(this), 10);
+        setTimeout(this.fetchEvents.bind(this), 20);
+
+        setInterval(this.fetchCurrentBlockNumber.bind(this), TIMER_FETCH_BLOCK_NUMBER);
+        setInterval(this.fetchEvents.bind(this), TIMER_FETCH_EVENTS);
     }
 
     fetchCurrentBlockNumber() {
-        if (this.entity.isConnectionWorking()) {
+        if ((!this.initReady || this.refresh) && this.entity.isConnectionWorking()) {
             this.getCurrentBlockNumber();
         }
     }
 
     fetchEvents() {
-        if (this.entity.isConnectionWorking()) {
+        if ((!this.initReady || this.refresh) && this.entity.isConnectionWorking()) {
+            this.initReady = true;
             this.getPastEvents();
         }
     }

@@ -36,6 +36,7 @@ import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
     {
         selector: 'table-complete',
         templateUrl: './table-complete.html',
+        styleUrls:['./table-complete.css'],
         providers: [EventsService, DecimalPipe]
     })
 export class TableComplete {

@@ -37,13 +37,14 @@ export class SettingsComponent implements OnInit {
 
     public form: FormGroup;
 
-    @Input() public lastBlock: string;
+    @Input() public lastBlock: number;
     @Input() public startBlock: string;
     @Input() public endBlock: string;
     @Input() public abi: string;
     @Input() public contract: string;
     @Input() public provider: string;
     @Input() public connected: boolean;
+    @Input() public refresh: boolean;
 
     constructor(private fb: FormBuilder,
                 private appComponent: AppComponent) {
@@ -57,7 +58,8 @@ export class SettingsComponent implements OnInit {
             abi: ['', [Validators.required], this.isABIOk.bind(this)],
             startBlock: [''],
             lastBlock: [''],
-            endBlock: ['']
+            endBlock: [''],
+            refresh: ['']
         });
 
         this.form.get('provider').valueChanges.subscribe(val => {
@@ -104,8 +106,15 @@ export class SettingsComponent implements OnInit {
             }
         });
 
+        this.form.get('refresh').valueChanges.subscribe(val => {
+            UtilsService.updateURLParameter('refresh', String(this.refresh),  val);
+            this.refresh = Boolean(val);
+            this.appComponent.control.refresh = Boolean(val);
+        });
+
         this.form.controls['contract'].clearValidators();
         this.form.controls['abi'].clearValidators();
+        this.form.controls['provider'].clearValidators();
         this.form.controls['provider'].clearValidators();
     }
 

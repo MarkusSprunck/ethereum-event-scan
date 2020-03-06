@@ -36,6 +36,7 @@ import {Reader} from "./services/reader.service";
 import {InfoModalComponent} from "./details/info-modal.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {MatCheckboxModule} from "@angular/material/checkbox";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         FormsModule,
         ReactiveFormsModule,
         MatDialogModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MatCheckboxModule
     ],
     providers: [Reader, TableComplete, DecimalPipe],
     bootstrap: [AppComponent],

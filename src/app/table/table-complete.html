@@ -58,12 +58,12 @@
                     <ngb-highlight [result]="event.name" [term]="service.searchTerm"></ngb-highlight>
                 </td>
                 <td>
-                    <a (click)="openInfoDialog($event, event.block, '')" href="" rel="nofollow">
+                    <a class="table-link" (click)="openInfoDialog($event, event.block, '')" href="" rel="nofollow">
                         <ngb-highlight [result]="event.block" [term]="service.searchTerm"></ngb-highlight>
                     </a>
                 </td>
                 <td>
-                    <a (click)="openInfoDialog($event, '', event.trxHash)" href="" rel="nofollow">
+                    <a class="table-link" (click)="openInfoDialog($event, '', event.trxHash)" href="" rel="nofollow">
                         <ngb-highlight [result]="event.trxHashShort" [term]="service.searchTerm"></ngb-highlight>
                     </a>
                 </td>

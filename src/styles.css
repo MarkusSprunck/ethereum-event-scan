@@ -25,11 +25,3 @@ img {
 .ngb-highlight {
     color: lightgreen;
 }
-
-td {
-    white-space: pre; /* o pre-wrap o pre-line */
-}
-
-a {
-    text-decoration: underline;
-}

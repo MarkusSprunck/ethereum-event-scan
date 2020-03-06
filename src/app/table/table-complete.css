@@ -1,0 +1,9 @@
+
+td {
+    white-space: pre; /* o pre-wrap o pre-line */
+}
+
+.table-link {
+    text-decoration: underline;
+    color: dodgerblue;
+}
