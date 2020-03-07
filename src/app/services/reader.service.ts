@@ -40,7 +40,6 @@ const TIMER_FETCH_EVENTS = 5000;
 
 const TIMER_FETCH_BLOCK_NUMBER = 5000;
 
-
 /**
  * The class Reader manages the connection and loads events. With two timers
  * the current block number is loaded and all new events. The configuration is completely
@@ -52,6 +51,8 @@ const TIMER_FETCH_BLOCK_NUMBER = 5000;
     providedIn: 'root'
 })
 export class Reader {
+
+    private imageCache = new Map<string, string>();
 
     // Event table
     public eventsImportSuccess = false;
@@ -71,7 +72,7 @@ export class Reader {
 
     private _contractInstance;
 
-    constructor(private route: ActivatedRoute, public entity: ProviderService, public table: TableComplete) {
+    constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
         this.route.queryParams.subscribe(params => {
 
@@ -99,7 +100,6 @@ export class Reader {
 
             if (params['refresh']) {
                 this.refresh = params['refresh'] === 'true';
-                console.log('params refresh ', this.refresh );
             }
 
             // Initialize the provider
@@ -246,6 +246,15 @@ export class Reader {
                             // Store next block number for new events
                             _that.startBlock = '' + Math.max(events[event].blockNumber + 1, +(_that.startBlock));
 
+                            // Is the image already in cache
+                            if ( !this.imageCache.has(eventName) ) {
+                                this.imageCache.set(eventName, blockies({
+                                    seed: eventName,
+                                    size: 8,
+                                    scale: 16
+                                }).toDataURL());
+                            }
+
                             EventData.unshift({
                                 'id': EventData.length + 1,
                                 'name': eventName,
@@ -255,15 +264,10 @@ export class Reader {
                                 'key': keys,
                                 'value': values,
                                 'time': '',
-                                'image': '' /* blockies({
-                                    seed: eventName,
-                                    size: 8,
-                                    scale: 16
-                                }).toDataURL() */
+                                'image': this.imageCache.get(eventName)
                             });
 
                             _that.eventsImportSuccess = true;
-                            _that.getCurrentBlockNumber();
                         }
                     }
                 }

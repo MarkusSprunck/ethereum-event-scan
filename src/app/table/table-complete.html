@@ -41,7 +41,7 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th (sort)="onSort($event)" scope="col" sortable="name">Name</th>
+                <th (sort)="onSort($event)" scope="col" sortable="name">Event</th>
                 <th (sort)="onSort($event)" scope="col" sortable="block">Block</th>
                 <th (sort)="onSort($event)" scope="col" sortable="trxHash">TrxHash</th>
                 <th>Key</th>
@@ -52,18 +52,16 @@
             <tr *ngFor="let event of events$ | async">
                 <th scope="row">{{ event.id }}</th>
                 <td>
-                    <!--
                     <img [src]="event.image"/>&nbsp;
-                    -->
                     <ngb-highlight [result]="event.name" [term]="service.searchTerm"></ngb-highlight>
                 </td>
                 <td>
-                    <a class="table-link" (click)="openInfoDialog($event, event.block, '')" href="" rel="nofollow">
+                    <a class="table-link" (click)="openDetailsDialog($event, event.block, '')" href="" rel="nofollow">
                         <ngb-highlight [result]="event.block" [term]="service.searchTerm"></ngb-highlight>
                     </a>
                 </td>
                 <td>
-                    <a class="table-link" (click)="openInfoDialog($event, '', event.trxHash)" href="" rel="nofollow">
+                    <a class="table-link" (click)="openDetailsDialog($event, '', event.trxHash)" href="" rel="nofollow">
                         <ngb-highlight [result]="event.trxHashShort" [term]="service.searchTerm"></ngb-highlight>
                     </a>
                 </td>

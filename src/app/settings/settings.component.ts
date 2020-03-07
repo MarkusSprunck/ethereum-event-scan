@@ -126,7 +126,7 @@ export class SettingsComponent implements OnInit {
                 } else {
                     resolve({"connected": false});
                 }
-            }, 3000)
+            }, 6000)
         })
     }
 
