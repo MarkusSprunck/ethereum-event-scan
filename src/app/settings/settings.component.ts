@@ -115,7 +115,6 @@ export class SettingsComponent implements OnInit {
         this.form.controls['contract'].clearValidators();
         this.form.controls['abi'].clearValidators();
         this.form.controls['provider'].clearValidators();
-        this.form.controls['provider'].clearValidators();
     }
 
     isProviderConnected() {
@@ -160,9 +159,9 @@ export class SettingsComponent implements OnInit {
     private updateContract(val) {
         UtilsService.updateURLParameter('contract', this.contract, val.trim());
         this.contract = val.trim();
-        this.appComponent.control.setContractAddress(this.contract);
         this.appComponent.control.reset();
         this.form.controls['contract'].clearValidators();
+        this.appComponent.control.setContractAddress(this.contract);
     }
 
 }

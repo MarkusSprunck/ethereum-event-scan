@@ -26,8 +26,8 @@ import {UtilsService} from './utils.service';
 import {Injectable} from "@angular/core";
 import {ProviderService} from "./provider.service";
 import {ActivatedRoute} from "@angular/router";
-import {TableComplete} from "../table/table-complete";
 import {EventData} from "./event-data";
+import {EventsService} from "../table/events-service";
 
 const zlib = require('zlib');
 const blockies = require('blockies');
@@ -70,9 +70,9 @@ export class Reader {
 
     public abiBase64Data;
 
-    private _contractInstance;
+    private _contractInstance = null;
 
-    constructor(private route: ActivatedRoute, public entity: ProviderService) {
+    constructor(private route: ActivatedRoute, public entity: ProviderService, public eventService : EventsService) {
 
         this.route.queryParams.subscribe(params => {
 
@@ -112,8 +112,14 @@ export class Reader {
     }
 
     reset() {
-        EventData.length = 0;
+        while (EventData.length > 0) {
+            let event = EventData.pop();
+        }
         this.startBlock = this.startInitial;
+        this.contract = '';
+        this._contractInstance = null;
+        this.eventService.length = 0;
+        this.eventService.lengthLast = -1;
     }
 
     runLoadTable() {
@@ -154,7 +160,7 @@ export class Reader {
                                 _that.contract
                             );
                         } catch (e) {
-                            console.error("ALERT_UNABLE_TO_PARSE_ABI", e);
+                            console.warn("ALERT_UNABLE_TO_PARSE_ABI", e.message);
                         }
                     }
                 }
@@ -173,7 +179,7 @@ export class Reader {
                     this.contract
                 );
             } catch (e) {
-                console.error("ALERT_UNABLE_TO_CREATE_CONTRACT_INSTANCE", e);
+                console.warn("ALERT_UNABLE_TO_CREATE_CONTRACT_INSTANCE", e.message);
             }
         }
     }
@@ -196,7 +202,7 @@ export class Reader {
     getPastEvents() {
 
         // Just in the case there is a valid contract
-        if (typeof this._contractInstance === 'undefined' || +(this.startBlock) > +(this.entity.currentBlock)) {
+        if (this._contractInstance === null || +(this.startBlock) > +(this.entity.currentBlock)) {
             return;
         }
 

@@ -13,7 +13,9 @@
             <div class="header_area">
                 <div>
                     <label for="provider">Provider <span *ngIf="form.get('provider').status === 'PENDING'" class="hint"> connecting...</span></label>
-                    <input [value]="provider" class="form-control form-control-sm" formControlName="provider" id="provider" placeholder="Enter here a valid web3 provider URL"
+                    <input [value]="provider"
+                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                           class="form-control form-control-sm" formControlName="provider" id="provider" placeholder="Enter here a valid web3 provider URL"
                            type="text">
                 </div>
             </div>
@@ -32,8 +34,10 @@
         <div class="col-10">
             <div class="header_area">
                 <div>
-                    <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint"> checking...</span></label>
-                    <input [value]="contract" class="form-control form-control-sm" formControlName="contract" id="contract"
+                    <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint" > checking...</span></label>
+                    <input [value]="contract"
+                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                           class="form-control form-control-sm" formControlName="contract" id="contract"
                            placeholder="Enter here the contract address as hex number" type="text">
                 </div>
             </div>
@@ -53,7 +57,9 @@
             <div class="header_area">
                 <div>
                     <label for="abi">Contract ABI <span *ngIf="form.get('abi').status === 'PENDING'" class="hint"> checking...</span></label>
-                    <input [value]="abi" class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
+                    <input [value]="abi"
+                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                           class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
                 </div>
             </div>
         </div>

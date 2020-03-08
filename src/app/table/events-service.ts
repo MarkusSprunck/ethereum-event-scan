@@ -81,8 +81,12 @@ export class EventsService {
     };
 
     constructor(private pipe: DecimalPipe) {
+
+        this.length  = 0;
+        this.lengthLast = -1;
+
         setInterval(() => {
-            if (this.lengthLast < this.length || this.length === 0) {
+            if (this.lengthLast <  this.length || this.lengthLast === -1 || this.length === 0) {
                 this.updateSearchPipe();
                 this.lengthLast = this.length;
             }
