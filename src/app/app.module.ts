@@ -37,6 +37,7 @@ import {InfoModalComponent} from "./details/info-modal.component";
 import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
         ReactiveFormsModule,
         MatDialogModule,
         AppRoutingModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatProgressBarModule
     ],
     providers: [Reader, TableComplete, DecimalPipe],
     bootstrap: [AppComponent],

@@ -26,6 +26,8 @@ import {Component, Input, OnInit,} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AppComponent} from "../app.component";
 import {UtilsService} from "../services/utils.service";
+import {ThemePalette} from '@angular/material/core';
+import {ProgressBarMode} from '@angular/material/progress-bar';
 
 
 @Component({
@@ -46,8 +48,11 @@ export class SettingsComponent implements OnInit {
     @Input() public connected: boolean;
     @Input() public refresh: boolean;
 
+    color: ThemePalette = 'accent';
+    mode: ProgressBarMode = 'determinate';
+
     constructor(private fb: FormBuilder,
-                private appComponent: AppComponent) {
+                public appComponent: AppComponent) {
     }
 
     ngOnInit() {
@@ -164,4 +169,15 @@ export class SettingsComponent implements OnInit {
         this.appComponent.control.setContractAddress(this.contract);
     }
 
+    updateTable() {
+        setTimeout(() => {
+            window.document.getElementById('sort-by-Name')
+                .dispatchEvent(new MouseEvent('click'))
+            }, 1000);
+        setTimeout(() => {
+            window.document.getElementById('sort-by-Name')
+                .dispatchEvent(new MouseEvent('click'))
+        }, 1500);
+        return true;
+    }
 }

@@ -36,9 +36,9 @@ const blockies = require('blockies');
  * Global constants and message texts
  */
 
-const TIMER_FETCH_EVENTS = 5000;
+const TIMER_FETCH_EVENTS = 3000;
 
-const TIMER_FETCH_BLOCK_NUMBER = 5000;
+const TIMER_FETCH_BLOCK_NUMBER = 3000;
 
 /**
  * The class Reader manages the connection and loads events. With two timers
@@ -56,7 +56,7 @@ export class Reader {
 
     // Event table
     public eventsImportSuccess = false;
-    public eventsProgress = 100;
+    public eventsProgress = 0;
 
     public startInitial: string = '0';
     public startBlock: string = '0';
@@ -276,6 +276,9 @@ export class Reader {
                             _that.eventsImportSuccess = true;
                         }
                     }
+
+                    setTimeout(() =>{ _that.eventsProgress = 0; }, 1000);
+
                 }
             }
         );

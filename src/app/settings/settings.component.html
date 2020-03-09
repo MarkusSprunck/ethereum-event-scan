@@ -13,10 +13,8 @@
             <div class="header_area">
                 <div>
                     <label for="provider">Provider <span *ngIf="form.get('provider').status === 'PENDING'" class="hint"> connecting...</span></label>
-                    <input [value]="provider"
-                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
-                           class="form-control form-control-sm" formControlName="provider" id="provider" placeholder="Enter here a valid web3 provider URL"
-                           type="text">
+                    <input [value]="provider" oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                           class="form-control form-control-sm" formControlName="provider" id="provider" placeholder="Enter here a valid web3 provider URL" type="text">
                 </div>
             </div>
         </div>
@@ -34,11 +32,9 @@
         <div class="col-10">
             <div class="header_area">
                 <div>
-                    <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint" > checking...</span></label>
-                    <input [value]="contract"
-                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
-                           class="form-control form-control-sm" formControlName="contract" id="contract"
-                           placeholder="Enter here the contract address as hex number" type="text">
+                    <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint"> checking...</span></label>
+                    <input [value]="contract" oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                           class="form-control form-control-sm" formControlName="contract" id="contract" placeholder="Enter here the contract address as hex number" type="text">
                 </div>
             </div>
         </div>
@@ -57,8 +53,7 @@
             <div class="header_area">
                 <div>
                     <label for="abi">Contract ABI <span *ngIf="form.get('abi').status === 'PENDING'" class="hint"> checking...</span></label>
-                    <input [value]="abi"
-                           oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
+                    <input [value]="abi" oninput="setTimeout(document.getElementById('sort-by-Name').dispatchEvent(new MouseEvent('click')), 5000);"
                            class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
                 </div>
             </div>
@@ -66,13 +61,25 @@
     </div>
 
     <div class="row">
-         <div class="col-12">
+        <div class="col-2">
             <div class="header_area">
                 <div>
-                    <mat-checkbox  [(ngModel)]="refresh"  class="example-margin" formControlName="refresh" id="refresh" >
+                    <mat-checkbox [(ngModel)]="refresh" class="example-margin" formControlName="refresh" id="refresh">
                         Refresh
                     </mat-checkbox>
-              </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="header_area">
+                 <div class="header_area">
+                    <mat-progress-bar class="example-margin"
+                                      [value]="appComponent.control.eventsProgress"
+                                      [color]="color"
+                                      [mode]="mode"
+                                      *ngIf="appComponent.control.eventsProgress > 1 && updateTable()"
+                    ></mat-progress-bar>
+                </div>
             </div>
         </div>
     </div>
