@@ -73,6 +73,7 @@ export class SettingsComponent implements OnInit {
             this.appComponent.control.entity.setProvider(this.provider);
             this.appComponent.control.reset();
             this.form.controls['provider'].clearValidators();
+            //  this.updateTable();
         });
 
         this.form.get('contract').valueChanges.subscribe(val => {
@@ -88,6 +89,7 @@ export class SettingsComponent implements OnInit {
         });
 
         this.form.get('startBlock').valueChanges.subscribe(val => {
+            val = (val.length === 0) ? "0" :  val;
             UtilsService.updateURLParameter('start', this.startBlock, val);
             this.startBlock = val;
         });
@@ -112,7 +114,7 @@ export class SettingsComponent implements OnInit {
         });
 
         this.form.get('refresh').valueChanges.subscribe(val => {
-            UtilsService.updateURLParameter('refresh', String(this.refresh),  val);
+            UtilsService.updateURLParameter('refresh', String(this.refresh), val);
             this.refresh = Boolean(val);
             this.appComponent.control.refresh = Boolean(val);
         });
@@ -167,17 +169,21 @@ export class SettingsComponent implements OnInit {
         this.appComponent.control.reset();
         this.form.controls['contract'].clearValidators();
         this.appComponent.control.setContractAddress(this.contract);
+        this.updateTable();
     }
 
     updateTable() {
+        /*
         setTimeout(() => {
             window.document.getElementById('sort-by-Name')
                 .dispatchEvent(new MouseEvent('click'))
-            }, 1000);
+            }, 500);
         setTimeout(() => {
             window.document.getElementById('sort-by-Name')
                 .dispatchEvent(new MouseEvent('click'))
         }, 1500);
+
+         */
         return true;
     }
 }

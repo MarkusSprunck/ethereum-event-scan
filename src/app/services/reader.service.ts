@@ -171,7 +171,6 @@ export class Reader {
 
     setContractAddress(contact: string) {
         this.contract = contact;
-
         if (this.contract.length > 0 && this.abi.length > 0) {
             try {
                 this._contractInstance = new this.entity.web3.eth.Contract(
@@ -220,7 +219,6 @@ export class Reader {
                     for (let event in events) {
                         index++;
                         _that.eventsProgress = Math.round(100.0 / events.length * index);
-
 
                         // Prepare return values for this event
                         let returnValues = events[event].returnValues;
@@ -277,7 +275,7 @@ export class Reader {
                         }
                     }
 
-                    setTimeout(() =>{ _that.eventsProgress = 0; }, 1000);
+                    setTimeout(() => { _that.eventsProgress = 0; }, 1000);
 
                 }
             }

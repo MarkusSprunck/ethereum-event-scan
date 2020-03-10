@@ -56,13 +56,6 @@ export class UtilsService {
     }
 
     /**
-     * Sleep time expects milliseconds
-     */
-    static sleep(time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
-    /**
      *  Replaces all spaces with non breaking spaces in html
      */
     static spaces(value) {

@@ -4,9 +4,9 @@
 body {
     font-size: medium;
     font-family: monospace;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-top: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1rem;
 }
 
 img {

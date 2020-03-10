@@ -1,9 +1,9 @@
 .form-control.ng-invalid {
-    border-color: red;
+    background-color: lightcoral;
 }
 
 .form-control.ng-valid {
-    border-color: lightgreen;
+    border-color: -moz-mac-accentdarkshadow;
 }
 
 .form-control:disabled, .form-control[readonly] {
@@ -12,4 +12,10 @@
 
 .mat-checkbox {
     font-family: monospace;
+}
+
+.progress-bar {
+    margin-top: 0.5rem;
+    border-radius: 0.2em;
+    height: 0.4em;
 }
