@@ -73,7 +73,6 @@ export class SettingsComponent implements OnInit {
             this.appComponent.control.entity.setProvider(this.provider);
             this.appComponent.control.reset();
             this.form.controls['provider'].clearValidators();
-            //  this.updateTable();
         });
 
         this.form.get('contract').valueChanges.subscribe(val => {
@@ -169,21 +168,6 @@ export class SettingsComponent implements OnInit {
         this.appComponent.control.reset();
         this.form.controls['contract'].clearValidators();
         this.appComponent.control.setContractAddress(this.contract);
-        this.updateTable();
     }
 
-    updateTable() {
-        /*
-        setTimeout(() => {
-            window.document.getElementById('sort-by-Name')
-                .dispatchEvent(new MouseEvent('click'))
-            }, 500);
-        setTimeout(() => {
-            window.document.getElementById('sort-by-Name')
-                .dispatchEvent(new MouseEvent('click'))
-        }, 1500);
-
-         */
-        return true;
-    }
 }

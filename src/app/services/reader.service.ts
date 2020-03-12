@@ -116,7 +116,6 @@ export class Reader {
             let event = EventData.pop();
         }
         this.startBlock = this.startInitial;
-        this.contract = '';
         this._contractInstance = null;
         this.eventService.length = 0;
         this.eventService.lengthLast = -1;

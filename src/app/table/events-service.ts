@@ -86,11 +86,11 @@ export class EventsService {
         this.lengthLast = -1;
 
         setInterval(() => {
-            if (this.lengthLast <  this.length || this.lengthLast === -1 || this.length === 0) {
+            if (this.lengthLast <  EventData.length || this.lengthLast === -1 || this.length === 0) {
                 this.updateSearchPipe();
-                this.lengthLast = this.length;
+                this.lengthLast = EventData.length;
             }
-        }, 500);
+        }, 1000);
     }
 
     private _loading$ = new BehaviorSubject<boolean>(true);
