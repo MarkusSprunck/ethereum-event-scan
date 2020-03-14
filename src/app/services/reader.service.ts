@@ -121,6 +121,19 @@ export class Reader {
         this.eventService.lengthLast = -1;
     }
 
+    setStartBlock(startBlock) {
+        this.startBlock = startBlock;
+    }
+
+    setEndBlock(endBlock) {
+        this.endBlock = endBlock;
+    }
+
+    setAbi(abi){
+        this.abi = abi;
+        this.createActiveContract();
+    }
+
     runLoadTable() {
         setTimeout(this.fetchCurrentBlockNumber.bind(this), 10);
         setTimeout(this.fetchEvents.bind(this), 20);

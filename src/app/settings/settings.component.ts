@@ -70,9 +70,9 @@ export class SettingsComponent implements OnInit {
         this.form.get('provider').valueChanges.subscribe(val => {
             UtilsService.updateURLParameter('provider', this.provider, val);
             this.provider = val.trim();
-            this.appComponent.control.entity.setProvider(this.provider);
-            this.appComponent.control.reset();
+            this.clearTable();
             this.form.controls['provider'].clearValidators();
+            this.loadContractData();
         });
 
         this.form.get('contract').valueChanges.subscribe(val => {
@@ -90,12 +90,16 @@ export class SettingsComponent implements OnInit {
         this.form.get('startBlock').valueChanges.subscribe(val => {
             val = (val.length === 0) ? "0" :  val;
             UtilsService.updateURLParameter('start', this.startBlock, val);
+            this.clearTable();
             this.startBlock = val;
+            this.loadContractData();
         });
 
         this.form.get('endBlock').valueChanges.subscribe(val => {
             UtilsService.updateURLParameter('end', this.endBlock, val);
+            this.clearTable();
             this.endBlock = val;
+            this.loadContractData();
         });
 
         this.form.get('abi').valueChanges.subscribe(val => {
@@ -109,6 +113,8 @@ export class SettingsComponent implements OnInit {
             } else {
                 UtilsService.updateURLWithCompressedAbi(this.abi, val);
                 this.abi = val;
+                this.clearTable();
+                this.loadContractData();
             }
         });
 
@@ -121,6 +127,19 @@ export class SettingsComponent implements OnInit {
         this.form.controls['contract'].clearValidators();
         this.form.controls['abi'].clearValidators();
         this.form.controls['provider'].clearValidators();
+    }
+
+    private loadContractData() {
+        this.appComponent.control.setAbi(this.abi);
+        this.appComponent.control.setStartBlock(this.startBlock);
+        this.appComponent.control.setEndBlock(this.endBlock);
+        this.appComponent.control.setContractAddress(this.contract);
+        this.appComponent.control.entity.setProvider(this.provider);
+    }
+
+    private clearTable() {
+        this.appComponent.control.reset();
+        this.createSortEventOnTable();
     }
 
     isProviderConnected() {
@@ -165,9 +184,17 @@ export class SettingsComponent implements OnInit {
     private updateContract(val) {
         UtilsService.updateURLParameter('contract', this.contract, val.trim());
         this.contract = val.trim();
-        this.appComponent.control.reset();
+        this.clearTable();
         this.form.controls['contract'].clearValidators();
-        this.appComponent.control.setContractAddress(this.contract);
+        this.loadContractData();
+    }
+
+    createSortEventOnTable() {
+        setTimeout(() => {
+            window.document.getElementById('sort-by-Name')
+                .dispatchEvent(new MouseEvent('click'))
+        }, 1000);
+        return true;
     }
 
 }
