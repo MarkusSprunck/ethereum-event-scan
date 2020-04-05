@@ -23,7 +23,6 @@
  */
 
 export interface Event {
-    id: number;
     name: string;
     block: string;
     trxHash: string;

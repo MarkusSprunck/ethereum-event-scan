@@ -64,7 +64,7 @@ function matches(event: Event, term: string, pipe: PipeTransform) {
         || event.block.includes(term)
         || event.key.includes(term)
         || event.value.includes(term)
-        || pipe.transform(event.id).includes(term);
+        || pipe.transform(event.trxHash).includes(term);
 }
 
 @Injectable({providedIn: 'root'})

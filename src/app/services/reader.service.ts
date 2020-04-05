@@ -64,15 +64,14 @@ export class Reader {
     public contract: string = '';
     public abi: string = '';
     public provider: string = '';
-    public refresh : boolean = true;
-
+    public refresh: boolean = true;
     private initReady = false;
-
+    private isLoading = false;
     public abiBase64Data;
 
     private _contractInstance = null;
 
-    constructor(private route: ActivatedRoute, public entity: ProviderService, public eventService : EventsService) {
+    constructor(private route: ActivatedRoute, public entity: ProviderService, public eventService: EventsService) {
 
         this.route.queryParams.subscribe(params => {
 
@@ -129,7 +128,7 @@ export class Reader {
         this.endBlock = endBlock;
     }
 
-    setAbi(abi){
+    setAbi(abi) {
         this.abi = abi;
         this.createActiveContract();
     }
@@ -213,85 +212,103 @@ export class Reader {
     getPastEvents() {
 
         // Just in the case there is a valid contract
-        if (this._contractInstance === null || +(this.startBlock) > +(this.entity.currentBlock)) {
+        if (this._contractInstance === null ||
+            +(this.startBlock) > +(this.entity.currentBlock) ||
+            this.isLoading) {
             return;
         }
 
+        this.isLoading = true;
         let _that = this;
+        let start = parseInt(this.startBlock);
+        let end =  (this.endBlock === "latest") ?  (this.entity.currentBlock) :  parseInt(this.endBlock);
+        // Store next block number for new events
+        this.startBlock = '' + end;
+        this.readEventsRange(start, end, _that);
+        this.isLoading = false;
+    };
+
+    private readEventsRange(start: number, end: number, _that: this) {
         this._contractInstance.getPastEvents(
             'allEvents', {
-                fromBlock: this.startBlock,
-                toBlock: this.endBlock
+                fromBlock: start,
+                toBlock: end
             }, (errors, events) => {
-
                 if (!errors) {
+                    if (events.length > 0) {
+                        let index = 0;
+                        for (let event in events) {
+                            console.info("Load [" + start +".." +end +"] -> events.length="  + events.length );
 
-                    // Process all events
-                    let index = 0;
-                    for (let event in events) {
-                        index++;
-                        _that.eventsProgress = Math.round(100.0 / events.length * index);
+                            index++;
+                            _that.eventsProgress = Math.round(100.0 / events.length * index);
 
-                        // Prepare return values for this event
-                        let returnValues = events[event].returnValues;
-                        let keys = '';
-                        for (let key in returnValues) {
-                            if (returnValues.hasOwnProperty(key)) {
-                                if (isNaN(parseInt(key))) {
-                                    keys += key.replace('_', '') + '\n';
+                            // Prepare return values for this event
+                            let returnValues = events[event].returnValues;
+                            let keys = '';
+                            for (let key in returnValues) {
+                                if (returnValues.hasOwnProperty(key)) {
+                                    if (isNaN(parseInt(key))) {
+                                        keys += key.replace('_', '') + '\n';
+                                    }
                                 }
                             }
-                        }
 
 
-                        let values = '';
-                        for (let key in returnValues) {
-                            if (returnValues.hasOwnProperty(key)) {
-                                if (isNaN(parseInt(key))) {
-                                    values += returnValues[key] + '\n';
+                            let values = '';
+                            for (let key in returnValues) {
+                                if (returnValues.hasOwnProperty(key)) {
+                                    if (isNaN(parseInt(key))) {
+                                        values += returnValues[key] + '\n';
+                                    }
                                 }
                             }
-                        }
 
-                        const trxHash = events[event].transactionHash;
-                        const blockNumber = events[event].blockNumber;
-                        const eventName = events[event].event;
+                            const trxHash = events[event].transactionHash;
+                            const blockNumber = events[event].blockNumber;
+                            const eventName = events[event].event;
 
-                        if (typeof blockNumber !== 'undefined') {
+                            if (typeof blockNumber !== 'undefined') {
 
-                            // Store next block number for new events
-                            _that.startBlock = '' + Math.max(events[event].blockNumber + 1, +(_that.startBlock));
 
-                            // Is the image already in cache
-                            if ( !this.imageCache.has(eventName) ) {
-                                this.imageCache.set(eventName, blockies({
-                                    seed: eventName,
-                                    size: 8,
-                                    scale: 16
-                                }).toDataURL());
+                                // Is the image already in cache
+                                if (!this.imageCache.has(eventName)) {
+                                    this.imageCache.set(eventName, blockies({
+                                        seed: eventName,
+                                        size: 8,
+                                        scale: 16
+                                    }).toDataURL());
+                                }
+
+                                EventData.unshift({
+                                    'name': eventName,
+                                    'block': '' + blockNumber,
+                                    'trxHash': trxHash,
+                                    'trxHashShort': UtilsService.truncate(trxHash, 12),
+                                    'key': keys,
+                                    'value': values,
+                                    'time': '',
+                                    'image': this.imageCache.get(eventName)
+                                });
+
+                                _that.eventsImportSuccess = true;
                             }
-
-                            EventData.unshift({
-                                'id': EventData.length + 1,
-                                'name': eventName,
-                                'block': '' + blockNumber,
-                                'trxHash': trxHash,
-                                'trxHashShort': UtilsService.truncate(trxHash, 12),
-                                'key': keys,
-                                'value': values,
-                                'time': '',
-                                'image': this.imageCache.get(eventName)
-                            });
-
-                            _that.eventsImportSuccess = true;
                         }
+
+                        setTimeout(() => {
+                            _that.eventsProgress = 0;
+                        }, 1000);
                     }
 
-                    setTimeout(() => { _that.eventsProgress = 0; }, 1000);
-
+                } else {
+                    if (errors.message === "Returned error: query returned more than 10000 results") {
+                        let middle =  Math.round((start + end) / 2) ;
+                        console.info("Infura 10000 limit [" + start +".." +end +"] ->  [" + start +".." +middle +"] and [" + (middle + 1 ) +".." + end +"]");
+                        this.readEventsRange(start, middle , _that);
+                        this.readEventsRange(middle + 1 , end, _that);
+                    }
                 }
             }
         );
-    };
-
+    }
 }

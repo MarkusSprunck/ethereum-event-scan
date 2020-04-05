@@ -40,7 +40,6 @@
         <table class="table">
             <thead>
             <tr>
-                <th (sort)="onSort($event)" scope="col" sortable="id" id="sort-by-Name">#</th>
                 <th (sort)="onSort($event)" scope="col" sortable="name">Event</th>
                 <th (sort)="onSort($event)" scope="col" sortable="block">Block</th>
                 <th (sort)="onSort($event)" scope="col" sortable="trxHash">TrxHash</th>
@@ -50,7 +49,6 @@
             </thead>
             <tbody>
             <tr *ngFor="let event of events$ | async">
-                <th scope="row">{{ event.id }}</th>
                 <td>
                     <img [src]="event.image"/>&nbsp;
                     <ngb-highlight [result]="event.name" [term]="service.searchTerm"></ngb-highlight>
