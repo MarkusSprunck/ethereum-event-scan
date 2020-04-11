@@ -1,92 +1,100 @@
-<form [formGroup]="form">
-
-    <div class="row">
-        <div class="col-2">
-            <div class="header_area">
-                <div>
-                    <label for="lastBlock">Last Block</label>
-                    <input [value]="lastBlock" class="form-control form-control-sm" formControlName="lastBlock" id="lastBlock" readonly type="text">
-                </div>
-            </div>
-        </div>
-        <div class="col-10">
-            <div class="header_area">
-                <div>
-                    <label for="provider">Provider <span *ngIf="form.get('provider').status === 'PENDING'" class="hint"> connecting...</span></label>
-                    <input [value]="provider" 
-                           class="form-control form-control-sm" formControlName="provider" id="provider" placeholder="Enter here a valid web3 provider URL" type="text">
-                </div>
+<div class="row">
+    <div class="col-12">
+        <div class="header_area">
+            <div>
+                <label>Settings</label>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-2">
-            <div class="header_area">
-                <div>
-                    <label for="startBlock">Start</label>
-                    <input [value]="startBlock" class="form-control form-control-sm" formControlName="startBlock" id="startBlock" placeholder="0" type="text">
+<mat-accordion>
+
+    <mat-expansion-panel [expanded]="panelOpenState">
+
+        <mat-expansion-panel-header collapsedHeight="2rem" expandedHeight="2rem" >
+            <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
+            <mat-panel-description>
+             </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="form">
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="header_area">
+                        <div>
+                            <label for="startBlock">Start</label>
+                            <input [value]="startBlock" class="form-control form-control-sm" formControlName="startBlock" id="startBlock" placeholder="0" type="text">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="header_area">
+                        <div>
+                            <label for="provider">Provider <span *ngIf="form.get('provider').status === 'PENDING'" class="hint"> connecting</span></label>
+                            <input [value]="provider" class="form-control form-control-sm" formControlName="provider" id="provider"
+                                   placeholder="Enter here a valid web3 provider URL" type="text">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-10">
-            <div class="header_area">
-                <div>
-                    <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint"> checking...</span></label>
-                    <input [value]="contract" 
-                           class="form-control form-control-sm" formControlName="contract" id="contract" placeholder="Enter here the contract address as hex number" type="text">
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="header_area">
+                        <div>
+                            <label for="endBlock">End</label>
+                            <input [value]="endBlock" class="form-control form-control-sm" formControlName="endBlock" id="endBlock" placeholder="latest">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="header_area">
+                        <div>
+                            <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint"> checking</span></label>
+                            <input [value]="contract" class="form-control form-control-sm" formControlName="contract" id="contract"
+                                   placeholder="Enter here the contract address as hex number" type="text">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="row">
+                <div class="col-2">
+                    <div class="header_area">
+                        <div>
+                            <label for="abi">Refresh</label><br>
+                            <mat-checkbox [(ngModel)]="refresh" [color]="color" formControlName="refresh" id="refresh">
+                            automatic
+                            </mat-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <div class="header_area">
+                        <div>
+                            <label for="abi">Contract ABI <span *ngIf="form.get('abi').status === 'PENDING'" class="hint"> checking</span></label>
+                            <input [value]="abi" class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </mat-expansion-panel>
+</mat-accordion>
+
+<div class="row" style="min-height: 24px;">
+    <div class="col-12">
+            <mat-progress-bar class="progress-bar"
+                  [value]="appComponent.control.eventsProgress"
+                  [color]="color"
+                  [mode]="mode"
+                  *ngIf="appComponent.control.eventsProgress > 1"></mat-progress-bar>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-2">
-            <div class="header_area">
-                <div>
-                    <label for="endBlock">End</label>
-                    <input [value]="endBlock" class="form-control form-control-sm" formControlName="endBlock" id="endBlock" placeholder="latest">
-                </div>
-            </div>
-        </div>
-        <div class="col-10">
-            <div class="header_area">
-                <div>
-                    <label for="abi">Contract ABI <span *ngIf="form.get('abi').status === 'PENDING'" class="hint"> checking...</span></label>
-                    <input [value]="abi" 
-                           class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-2">
-            <div class="header_area">
-                <div>
-                    <mat-checkbox [(ngModel)]="refresh" formControlName="refresh" id="refresh">
-                        Refresh
-                    </mat-checkbox>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-10">
-            <div class="header_area">
-                    <mat-progress-bar class="progress-bar"
-                                      [value]="appComponent.control.eventsProgress"
-                                      [color]="color"
-                                      [mode]="mode"
-                                      *ngIf="appComponent.control.eventsProgress > 1"
-                    ></mat-progress-bar>
-                </div>
-            </div>
-        </div>
-
-</form>
-
-<!--
-
-                                    -->
 
 

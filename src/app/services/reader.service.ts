@@ -111,8 +111,9 @@ export class Reader {
     }
 
     reset() {
+        this.initReady = false;
         while (EventData.length > 0) {
-            let event = EventData.pop();
+            EventData.pop();
         }
         this.startBlock = this.startInitial;
         this._contractInstance = null;

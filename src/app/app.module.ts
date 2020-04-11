@@ -38,6 +38,9 @@ import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
     declarations: [
@@ -57,7 +60,10 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
         MatDialogModule,
         AppRoutingModule,
         MatCheckboxModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatExpansionModule,
+        MatFormFieldModule,
+        MatSortModule
     ],
     providers: [Reader, TableComplete, DecimalPipe],
     bootstrap: [AppComponent],

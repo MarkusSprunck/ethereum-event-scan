@@ -109,22 +109,22 @@ export class TableComplete {
     public printBlock(block) {
         let number = block.number;
         let numberLast = this.reader.getCurrentBlockNumber();
-        let child = (numberLast > number) ? (number + 1) : 'n.a.';
+        let child = (numberLast > number) ? (number + 1): 'n.a.';
         let current = (number);
         let parent = (number > 0) ? (number - 1) : "0";
         let result = ''
-            + UtilsService.spaces('Number            : ') + current + "<br/>"
-            + UtilsService.spaces('Parent            : ') + parent + '<br/>'
-            + UtilsService.spaces('Child             : ') + child + '<br/>'
-            + UtilsService.spaces('Time              : ') + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
-            + UtilsService.spaces('Current hash      : ') + block.hash + '<br/>'
-            + UtilsService.spaces('Sha3Uncles        : ') + block.sha3Uncles + '<br/>'
-            + UtilsService.spaces('StateRoot         : ') + block.stateRoot + '<br/>'
-            + UtilsService.spaces('Miner             : ') + block.miner + '<br/>'
-            + UtilsService.spaces('ExtraData         : ') + block.extraData + '<br/>'
-            + UtilsService.spaces('Size              : ') + block.size + '<br/>'
-            + UtilsService.spaces('GasUsed           : ') + block.gasUsed + '<br/>'
-            + UtilsService.spaces('TransactionsCount : ') + block.transactions.length + '<br/>';
+            +'Number : ' + current + "<br/>"
+            +'Parent : ' + parent + '<br/>'
+            +'Child : ' + child + '<br/>'
+            +'Time : ' + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
+            +'Current hash : ' + block.hash + '<br/>'
+            +'Sha3Uncles : ' + block.sha3Uncles + '<br/>'
+            +'StateRoot : ' + block.stateRoot + '<br/>'
+            +'Miner : ' + block.miner + '<br/>'
+            +'ExtraData : ' + block.extraData + '<br/>'
+            +'Size : ' + block.size + '<br/>'
+            +'GasUsed : ' + block.gasUsed + '<br/>'
+            +'TransactionsCount : ' + block.transactions.length + '<br/>';
 
         // print all transactions of block
         if (block.transactions.length > 0) {
@@ -132,10 +132,10 @@ export class TableComplete {
             let _that = this;
             block.transactions.forEach(function (trxHash) {
                 if (0 === index) {
-                    result += UtilsService.spaces('Transactions      : ');
+                    result +='Transactions : ';
                     result += trxHash + '<br/>';
                 } else {
-                    result += UtilsService.spaces('                    ');
+                    result +='                    ';
                     result += trxHash + '<br/>';
                 }
                 index++;
@@ -158,19 +158,19 @@ export class TableComplete {
         // Print transaction details
         let contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
         return ''
-            + UtilsService.spaces('Hash              : ') + (tx.hash) + '<br/>'
-            + UtilsService.spaces('Index             : ') + tx.transactionIndex + '<br/>'
-            + UtilsService.spaces('Block             : ') + (tx.blockNumber) + '<br/>'
-            + UtilsService.spaces('From              : ') + tx.from + '<br/>'
-            + UtilsService.spaces('To                : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            + UtilsService.spaces('Value             : ') + tx.value + '<br/>'
-            + UtilsService.spaces('Nonce             : ') + tx.nonce + '<br/>'
-            + UtilsService.spaces('ContractAddress   : ') + contractAddress + '<br/>'
-            + UtilsService.spaces('GasUsed           : ') + receipt.gasUsed + '<br/>'
-            + UtilsService.spaces('GasPrice          : ') + tx.gasPrice + '<br/>'
-            + UtilsService.spaces('CumulativeGasUsed : ') + receipt.cumulativeGasUsed + '<br/>'
-            + UtilsService.spaces('InputLength       : ') + tx.input.length + '<br/>'
-            + UtilsService.spaces('Input             : ') + '<br/><p>' + input + "</p>";
+            +'Hash : ' + (tx.hash) + '<br/>'
+            +'Index : ' + tx.transactionIndex + '<br/>'
+            +'Block : ' + (tx.blockNumber) + '<br/>'
+            +'From : ' + tx.from + '<br/>'
+            +'To : ' + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
+            +'Value : ' + tx.value + '<br/>'
+            +'Nonce : ' + tx.nonce + '<br/>'
+            +'ContractAddress : ' + contractAddress + '<br/>'
+            +'GasUsed : ' + receipt.gasUsed + '<br/>'
+            +'GasPrice : ' + tx.gasPrice + '<br/>'
+            +'CumulativeGasUsed : ' + receipt.cumulativeGasUsed + '<br/>'
+            +'InputLength : ' + tx.input.length + '<br/>'
+            +'Input : ' + '<br/><p>' + input + "</p>";
     }
 
 

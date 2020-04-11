@@ -48,8 +48,13 @@ export class SettingsComponent implements OnInit {
     @Input() public connected: boolean;
     @Input() public refresh: boolean;
 
-    color: ThemePalette = 'accent';
+    color: ThemePalette = 'primary';
     mode: ProgressBarMode = 'determinate';
+    panelOpenState = true;
+
+    panelMessage() {
+        return  this.panelOpenState ? '' : ('Last Block ' +  this.lastBlock + ' at ' + this.provider + ' [' + this.contract + ']');
+    }
 
     constructor(private fb: FormBuilder,
                 public appComponent: AppComponent) {
@@ -147,6 +152,7 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
+                    this.panelOpenState  = false
                 } else {
                     resolve({"connected": false});
                 }
@@ -186,12 +192,15 @@ export class SettingsComponent implements OnInit {
         this.contract = val.trim();
         this.clearTable();
         this.form.controls['contract'].clearValidators();
+        this.form.controls['provider'].clearValidators();
         this.loadContractData();
     }
 
     createSortEventOnTable() {
         setTimeout(() => {
-            window.document.getElementById('sort-by-Name')
+            window.document.getElementById('sort-by-block')
+                .dispatchEvent(new MouseEvent('click'))
+            window.document.getElementById('sort-by-block')
                 .dispatchEvent(new MouseEvent('click'))
         }, 1000);
         return true;

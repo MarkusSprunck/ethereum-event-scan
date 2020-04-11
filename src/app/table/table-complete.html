@@ -3,7 +3,7 @@
         <div class="col-12">
             <div class="header_area">
                 <div>
-                    <label for="status_message_text2">Search</label>
+                    <label for="status_message_text2">Filter</label>
                     <input [(ngModel)]="service.searchTerm" class="form-control form-control-sm" id="status_message_text2" name="searchTerm" type="text"/>
                 </div>
             </div>
@@ -40,9 +40,9 @@
         <table class="table">
             <thead>
             <tr>
-                <th (sort)="onSort($event)" scope="col" sortable="name">Event</th>
-                <th (sort)="onSort($event)" scope="col" sortable="block">Block</th>
-                <th (sort)="onSort($event)" scope="col" sortable="trxHash">TrxHash</th>
+                <th (sort)="onSort($event)" scope="col" sortable="name" id="sort-by-Name">Event<i class="fa fa-fw fa-sort"></i></th>
+                <th (sort)="onSort($event)" scope="col" sortable="block"  id="sort-by-block">Block<i class="fa fa-fw fa-sort"></i></th>
+                <th (sort)="onSort($event)" scope="col" sortable="trxHash">TrxHash<i class="fa fa-fw fa-sort"></i></th>
                 <th>Key</th>
                 <th>Value</th>
             </tr>

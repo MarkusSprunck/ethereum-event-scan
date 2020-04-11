@@ -55,13 +55,6 @@ export class UtilsService {
         return str.substr(0, left) + '…' + str.substring(right);
     }
 
-    /**
-     *  Replaces all spaces with non breaking spaces in html
-     */
-    static spaces(value) {
-        return value.replace(/\s/g, '&nbsp;')
-    }
-
     static updateURLWithCompressedAbi(oldValue: string, newValue: string) {
         let _that = this;
         zlib.deflate(oldValue, function (err, oldBuffer) {
