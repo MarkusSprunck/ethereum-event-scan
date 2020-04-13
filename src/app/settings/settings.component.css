@@ -3,11 +3,3 @@
     border-radius: 0.2em;
     height: 0.4em;
 }
-
-.mat-expansion-panel-header.mat-expanded,
-.mat-expansion-panel-header.mat-expanded:hover,
-.mat-expansion-panel-header.mat-expanded:focus {
-    background-color: lightgray;
-}
-
-

@@ -1,8 +1,13 @@
 
+.table-link {
+    color: green;
+}
+
 td {
     white-space: pre;
 }
 
-.table-link {
-    color: dodgerblue;
+img {
+    width: 20px;
+    height: 20px;
 }

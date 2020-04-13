@@ -45,6 +45,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {JsonFormatterDirective} from "./services/json-formatter.directive";
+import {OverlayContainer} from "@angular/cdk/overlay";
 
 @NgModule({
     declarations: [

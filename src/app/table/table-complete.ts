@@ -23,7 +23,7 @@
  */
 
 import {DecimalPipe} from '@angular/common';
-import {Component, QueryList, ViewChildren} from '@angular/core';
+import {Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
 import {Observable} from 'rxjs';
 
 import {Event} from '../services/event';
@@ -33,6 +33,7 @@ import {InfoModalComponent} from "../details/info-modal.component";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {Reader} from "../services/reader.service";
 import {UtilsService} from "../services/utils.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component(
     {
@@ -41,7 +42,11 @@ import {UtilsService} from "../services/utils.service";
         styleUrls: ['./table-complete.css'],
         providers: [EventsService, DecimalPipe]
     })
-export class TableComplete {
+export class TableComplete implements OnInit {
+
+    public formResult: FormGroup;
+
+    @Input() public searchTerm: string = '';
 
     events$: Observable<Event[]>;
 
@@ -50,11 +55,18 @@ export class TableComplete {
     @ViewChildren(SortableHeader) headers: QueryList<SortableHeader>;
 
     constructor(
+        private fb: FormBuilder,
         private reader: Reader,
         public service: EventsService,
         public dialog: MatDialog) {
         this.events$ = service.events$;
         this.total$ = service.total$;
+    }
+
+    ngOnInit() {
+        this.formResult = this.fb.group({
+            searchTerm: [''],
+        });
     }
 
     onSort({column, direction}: SortEvent) {
@@ -174,6 +186,12 @@ export class TableComplete {
     }
 
 
+    updateSearchTerm() {
+        let val = this.formResult.get("searchTerm").value;
+        console.log('searchTerm =>',this.service.searchTerm, ' -> ', val);
+        this.service.searchTerm = val;
+        this.searchTerm = val;
+    }
 }
 
 
