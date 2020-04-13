@@ -41,6 +41,10 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSortModule} from "@angular/material/sort";
+import {MatIconModule} from "@angular/material/icon";
+import {MatInputModule} from "@angular/material/input";
+import {MatButtonModule} from "@angular/material/button";
+import {JsonFormatterDirective} from "./services/json-formatter.directive";
 
 @NgModule({
     declarations: [
@@ -48,7 +52,8 @@ import {MatSortModule} from "@angular/material/sort";
         SortableHeader,
         TableComplete,
         SettingsComponent,
-        InfoModalComponent
+        InfoModalComponent,
+        JsonFormatterDirective
     ],
     imports: [
         NgbModule,
@@ -63,7 +68,11 @@ import {MatSortModule} from "@angular/material/sort";
         MatProgressBarModule,
         MatExpansionModule,
         MatFormFieldModule,
-        MatSortModule
+        MatSortModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatButtonModule
     ],
     providers: [Reader, TableComplete, DecimalPipe],
     bootstrap: [AppComponent],

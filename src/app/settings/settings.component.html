@@ -1,98 +1,67 @@
-<div class="row">
-    <div class="col-12">
-        <div class="header_area">
-            <div>
-                <label>Settings</label>
-            </div>
-        </div>
-    </div>
-</div>
+<form [formGroup]="form">
 
-<mat-accordion>
+    <mat-accordion>
 
-    <mat-expansion-panel [expanded]="panelOpenState">
+        <mat-expansion-panel [expanded]="panelOpenState">
 
-        <mat-expansion-panel-header collapsedHeight="2rem" expandedHeight="2rem" >
-            <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
-            <mat-panel-description>
-             </mat-panel-description>
-        </mat-expansion-panel-header>
+            <mat-expansion-panel-header collapsedHeight="2rem" expandedHeight="2rem">
+                <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
 
-        <form [formGroup]="form">
+            <p></p>
 
-            <div class="row">
-                <div class="col-2">
-                    <div class="header_area">
-                        <div>
-                            <label for="startBlock">Start</label>
-                            <input [value]="startBlock" class="form-control form-control-sm" formControlName="startBlock" id="startBlock" placeholder="0" type="text">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-10">
-                    <div class="header_area">
-                        <div>
-                            <label for="provider">Provider <span *ngIf="form.get('provider').status === 'PENDING'" class="hint"> connecting</span></label>
-                            <input [value]="provider" class="form-control form-control-sm" formControlName="provider" id="provider"
-                                   placeholder="Enter here a valid web3 provider URL" type="text">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <mat-form-field style="width: 100%;">
+                <input (change)="updateStartValue()" formControlName="startBlock" id="startBlock" matInput placeholder="Start" type="text" [value]="startBlock">
+                <button mat-button *ngIf="startBlock" matSuffix mat-icon-button aria-label="Clear" (click)="startBlock='0'">
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
 
-            <div class="row">
-                <div class="col-2">
-                    <div class="header_area">
-                        <div>
-                            <label for="endBlock">End</label>
-                            <input [value]="endBlock" class="form-control form-control-sm" formControlName="endBlock" id="endBlock" placeholder="latest">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-10">
-                    <div class="header_area">
-                        <div>
-                            <label for="contract">Contract Address <span *ngIf="form.get('contract').status === 'PENDING'" class="hint"> checking</span></label>
-                            <input [value]="contract" class="form-control form-control-sm" formControlName="contract" id="contract"
-                                   placeholder="Enter here the contract address as hex number" type="text">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <mat-form-field style="width: 100%;">
+                <input (change)="updateEndValue()" formControlName="endBlock" id="endBlock" matInput placeholder="End" type="text" [value]="endBlock">
+                <button mat-button *ngIf="endBlock" matSuffix mat-icon-button aria-label="Clear" (click)="endBlock='latest'">
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
 
-            <div class="row">
-                <div class="col-2">
-                    <div class="header_area">
-                        <div>
-                            <label for="abi">Refresh</label><br>
-                            <mat-checkbox [(ngModel)]="refresh" [color]="color" formControlName="refresh" id="refresh">
-                            automatic
-                            </mat-checkbox>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-10">
-                    <div class="header_area">
-                        <div>
-                            <label for="abi">Contract ABI <span *ngIf="form.get('abi').status === 'PENDING'" class="hint"> checking</span></label>
-                            <input [value]="abi" class="form-control form-control-sm" formControlName="abi" id="abi" placeholder="Enter here the abi array" type="text">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <mat-form-field style="width: 100%;">
+                <input (change)="updateProviderValue()" formControlName="provider" id="provider" matInput placeholder="Provider" type="text" [value]="provider">
+                <button mat-button *ngIf="provider" matSuffix mat-icon-button aria-label="Clear" (click)="provider='http://127.0.0.1:8545'">
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
 
-        </form>
+            <mat-form-field style="width: 100%;">
+                <input (change)="updateContractValue()" formControlName="contract" id="contract" matInput placeholder="Contract" type="text" [value]="contract">
+                <button mat-button *ngIf="contract" matSuffix mat-icon-button aria-label="Clear" (click)="contract=''">
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
 
-    </mat-expansion-panel>
-</mat-accordion>
+
+            <mat-form-field style="width: 100%;">
+                <textarea jsonFormatter (change)="updateABIValue()" formControlName="abi" id="abi" matInput placeholder="Abi" type="text" [value]="abi" cdkTextareaAutosize
+                          cdkAutosizeMinRows="1" [cdkAutosizeMaxRows]="noOfRowsAbi" (blur)="onBlurAbi()" (focus)="onFocusAbi()"></textarea>
+                <button mat-button *ngIf="abi" matSuffix mat-icon-button aria-label="Clear" (click)="abi=''">
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+    <p></p>
+
+    <mat-checkbox (change)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh">Refresh</mat-checkbox>
+
+</form>
 
 <div class="row" style="min-height: 24px;">
     <div class="col-12">
-            <mat-progress-bar class="progress-bar"
-                  [value]="appComponent.control.eventsProgress"
-                  [color]="color"
-                  [mode]="mode"
-                  *ngIf="appComponent.control.eventsProgress > 1"></mat-progress-bar>
+        <mat-progress-bar class="progress-bar" [value]="appComponent.control.eventsProgress" [color]="'primary'" [mode]="mode"
+                          *ngIf="appComponent.control.eventsProgress > 1"></mat-progress-bar>
     </div>
 </div>
 

@@ -2,7 +2,6 @@
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 body {
-    font-size: medium;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 1rem;
@@ -21,6 +20,6 @@ img {
     color: dodgerblue;
 }
 
-.ngb-highlight {
-    color: lightgreen;
+.mat-form-field {
+    line-height: 1.5rem;
 }

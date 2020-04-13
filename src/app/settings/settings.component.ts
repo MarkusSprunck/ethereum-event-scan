@@ -26,9 +26,7 @@ import {Component, Input, OnInit,} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AppComponent} from "../app.component";
 import {UtilsService} from "../services/utils.service";
-import {ThemePalette} from '@angular/material/core';
 import {ProgressBarMode} from '@angular/material/progress-bar';
-
 
 @Component({
     selector: 'app-settings',
@@ -48,12 +46,12 @@ export class SettingsComponent implements OnInit {
     @Input() public connected: boolean;
     @Input() public refresh: boolean;
 
-    color: ThemePalette = 'primary';
     mode: ProgressBarMode = 'determinate';
     panelOpenState = true;
+    noOfRowsAbi:number =  1;
 
     panelMessage() {
-        return  this.panelOpenState ? '' : ('Last Block ' +  this.lastBlock + ' at ' + this.provider + ' [' + this.contract + ']');
+        return this.panelOpenState ? '' : ('Block ' + this.lastBlock + ' mined');
     }
 
     constructor(private fb: FormBuilder,
@@ -70,63 +68,6 @@ export class SettingsComponent implements OnInit {
             lastBlock: [''],
             endBlock: [''],
             refresh: ['']
-        });
-
-        this.form.get('provider').valueChanges.subscribe(val => {
-            UtilsService.updateURLParameter('provider', this.provider, val);
-            this.provider = val.trim();
-            this.clearTable();
-            this.form.controls['provider'].clearValidators();
-            this.loadContractData();
-        });
-
-        this.form.get('contract').valueChanges.subscribe(val => {
-            if (this.provider.length > 0 && val.trim() > 0 && this.abi.length === 0) {
-                UtilsService.fetchABIFromVerifiedContract(val.trim(), (value) => {
-                        this.form.controls['abi'].setValue(value);
-                        this.updateContract(val);
-                    }
-                )
-            } else {
-                this.updateContract(val);
-            }
-        });
-
-        this.form.get('startBlock').valueChanges.subscribe(val => {
-            val = (val.length === 0) ? "0" :  val;
-            UtilsService.updateURLParameter('start', this.startBlock, val);
-            this.clearTable();
-            this.startBlock = val;
-            this.loadContractData();
-        });
-
-        this.form.get('endBlock').valueChanges.subscribe(val => {
-            UtilsService.updateURLParameter('end', this.endBlock, val);
-            this.clearTable();
-            this.endBlock = val;
-            this.loadContractData();
-        });
-
-        this.form.get('abi').valueChanges.subscribe(val => {
-            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.trim().length === 0) {
-                UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value) => {
-                        UtilsService.updateURLWithCompressedAbi(this.abi, value);
-                        this.form.controls['abi'].setValue(value);
-                        this.abi = value;
-                    }
-                )
-            } else {
-                UtilsService.updateURLWithCompressedAbi(this.abi, val);
-                this.abi = val;
-                this.clearTable();
-                this.loadContractData();
-            }
-        });
-
-        this.form.get('refresh').valueChanges.subscribe(val => {
-            UtilsService.updateURLParameter('refresh', String(this.refresh), val);
-            this.refresh = Boolean(val);
-            this.appComponent.control.refresh = Boolean(val);
         });
 
         this.form.controls['contract'].clearValidators();
@@ -152,7 +93,7 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
-                    this.panelOpenState  = false
+                    this.panelOpenState = false
                 } else {
                     resolve({"connected": false});
                 }
@@ -199,11 +140,88 @@ export class SettingsComponent implements OnInit {
     createSortEventOnTable() {
         setTimeout(() => {
             window.document.getElementById('sort-by-block')
-                .dispatchEvent(new MouseEvent('click'))
+                .dispatchEvent(new MouseEvent('click'));
             window.document.getElementById('sort-by-block')
-                .dispatchEvent(new MouseEvent('click'))
+                .dispatchEvent(new MouseEvent('click'));
         }, 1000);
         return true;
     }
 
+    updateStartValue() {
+        let val = this.form.get("startBlock").value;
+        val = (val.length === 0) ? "0" : val;
+        console.log('updateStartValue =>', this.startBlock, ' -> ', val);
+        UtilsService.updateURLParameter('start', this.startBlock, val);
+        this.clearTable();
+        this.loadContractData();
+        this.startBlock = val;
+    }
+
+    updateProviderValue() {
+        let val = this.form.get("provider").value;
+        console.log('updateProviderValue =>',this.provider, ' -> ', val);
+        UtilsService.updateURLParameter('provider', this.provider, val);
+        this.provider = val.trim();
+        this.clearTable();
+        this.form.controls['provider'].clearValidators();
+        this.loadContractData();
+    }
+
+    updateEndValue() {
+        let val = this.form.get("endBlock").value;
+        console.log('updateEndValue =>',this.endBlock, ' -> ', val);
+        UtilsService.updateURLParameter('end', this.endBlock, val);
+        this.clearTable();
+        this.endBlock = val;
+        this.loadContractData();
+
+    }
+
+    updateContractValue() {
+        let val = this.form.get("contract").value;
+        console.log('updateContractValue =>',this.contract, ' -> ', val);
+        if (this.provider.length > 0 && val.trim() > 0 && this.abi.length === 0) {
+            UtilsService.fetchABIFromVerifiedContract(val.trim(), (value) => {
+                    this.form.controls['abi'].setValue(value);
+                    this.updateContract(val);
+                }
+            )
+        } else {
+            this.updateContract(val);
+        }
+    }
+
+    updateABIValue() {
+        let val = this.form.get("abi").value;
+        console.log('updateABIValue =>',this.abi, ' -> ', val);
+        if (this.provider.length > 0 && this.contract.trim().length > 0 && val.trim().length === 0) {
+            UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value) => {
+                    UtilsService.updateURLWithCompressedAbi(this.abi, value);
+                    this.form.controls['abi'].setValue(value);
+                    this.abi = value;
+                }
+            )
+        } else {
+            UtilsService.updateURLWithCompressedAbi(this.abi, val);
+            this.abi = val;
+            this.clearTable();
+            this.loadContractData();
+        }
+    }
+
+    updateRefreshValue() {
+        let val = !this.refresh;
+        console.log('updateRefreshValue =>', this.refresh, ' -> ', val);
+        UtilsService.updateURLParameter('refresh', String(this.refresh), String(val));
+        this.refresh = Boolean(val);
+        this.appComponent.control.refresh = Boolean(val);
+    }
+
+    onBlurAbi() {
+        this.noOfRowsAbi = 1;
+    }
+
+    onFocusAbi() {
+        this.noOfRowsAbi = 15;
+    }
 }
