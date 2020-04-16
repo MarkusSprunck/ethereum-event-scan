@@ -45,7 +45,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {JsonFormatterDirective} from "./services/json-formatter.directive";
-import {OverlayContainer} from "@angular/cdk/overlay";
+import {MatOptionModule} from "@angular/material/core";
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import {OverlayContainer} from "@angular/cdk/overlay";
         JsonFormatterDirective
     ],
     imports: [
+        MatSelectModule,
         NgbModule,
         BrowserModule,
         BrowserAnimationsModule,
@@ -73,7 +75,8 @@ import {OverlayContainer} from "@angular/cdk/overlay";
         MatIconModule,
         MatCheckboxModule,
         MatInputModule,
-        MatButtonModule
+        MatButtonModule,
+        MatOptionModule
     ],
     providers: [Reader, TableComplete, DecimalPipe],
     bootstrap: [AppComponent],

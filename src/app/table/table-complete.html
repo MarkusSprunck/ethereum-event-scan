@@ -20,13 +20,14 @@
         </div>
 
         <div class="col-3">
-            <div class="header_area">
-                <select [(ngModel)]="service.pageSize" class="custom-select custom-select-sm" name="pageSize">
-                    <option [ngValue]="10">10 events per page</option>
-                    <option [ngValue]="100">100 events per page</option>
-                    <option [ngValue]="1000">1000 events per page</option>
-                </select>
-            </div>
+            <mat-form-field>
+                <mat-select [(value)]="service.pageSize" placeholder="Events per page">
+                    <mat-option value="10">10</mat-option>
+                    <mat-option value="100">100</mat-option>
+                    <mat-option value="1000">1000</mat-option>
+                    <mat-option value="10000">10000</mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
     </div>
 

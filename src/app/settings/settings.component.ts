@@ -48,10 +48,16 @@ export class SettingsComponent implements OnInit {
 
     mode: ProgressBarMode = 'determinate';
     panelOpenState = true;
-    noOfRowsAbi:number =  1;
+    noOfRowsAbi: number = 1;
 
     panelMessage() {
-        return this.panelOpenState ? '' : ('Block ' + this.lastBlock + ' mined');
+        if (!this.refresh) {
+            return 'Automatic refresh stopped';
+        } else if (this.lastBlock == 0) {
+            return 'Automatic refresh running'
+        } else {
+            return ('Block ' + this.lastBlock + ' mined');
+        }
     }
 
     constructor(private fb: FormBuilder,
@@ -93,7 +99,6 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
-                    this.panelOpenState = false
                 } else {
                     resolve({"connected": false});
                 }
@@ -159,7 +164,7 @@ export class SettingsComponent implements OnInit {
 
     updateProviderValue() {
         let val = this.form.get("provider").value;
-        console.log('updateProviderValue =>',this.provider, ' -> ', val);
+        console.log('updateProviderValue =>', this.provider, ' -> ', val);
         UtilsService.updateURLParameter('provider', this.provider, val);
         this.provider = val.trim();
         this.clearTable();
@@ -169,7 +174,7 @@ export class SettingsComponent implements OnInit {
 
     updateEndValue() {
         let val = this.form.get("endBlock").value;
-        console.log('updateEndValue =>',this.endBlock, ' -> ', val);
+        console.log('updateEndValue =>', this.endBlock, ' -> ', val);
         UtilsService.updateURLParameter('end', this.endBlock, val);
         this.clearTable();
         this.endBlock = val;
@@ -179,7 +184,7 @@ export class SettingsComponent implements OnInit {
 
     updateContractValue() {
         let val = this.form.get("contract").value;
-        console.log('updateContractValue =>',this.contract, ' -> ', val);
+        console.log('updateContractValue =>', this.contract, ' -> ', val);
         if (this.provider.length > 0 && val.trim() > 0 && this.abi.length === 0) {
             UtilsService.fetchABIFromVerifiedContract(val.trim(), (value) => {
                     this.form.controls['abi'].setValue(value);
@@ -193,7 +198,7 @@ export class SettingsComponent implements OnInit {
 
     updateABIValue() {
         let val = this.form.get("abi").value;
-        console.log('updateABIValue =>',this.abi, ' -> ', val);
+        console.log('updateABIValue =>', this.abi, ' -> ', val);
         if (this.provider.length > 0 && this.contract.trim().length > 0 && val.trim().length === 0) {
             UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value) => {
                     UtilsService.updateURLWithCompressedAbi(this.abi, value);
@@ -213,8 +218,6 @@ export class SettingsComponent implements OnInit {
         let val = !this.refresh;
         console.log('updateRefreshValue =>', this.refresh, ' -> ', val);
         UtilsService.updateURLParameter('refresh', String(this.refresh), String(val));
-        this.refresh = Boolean(val);
-        this.appComponent.control.refresh = Boolean(val);
     }
 
     onBlurAbi() {

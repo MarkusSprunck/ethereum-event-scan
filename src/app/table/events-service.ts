@@ -74,7 +74,7 @@ export class EventsService {
     private _search$ = new Subject<void>();
     private _state: State = {
         page: 1,
-        pageSize: 10,
+        pageSize: 100,
         searchTerm: '',
         sortColumn: '',
         sortDirection: ''
@@ -119,7 +119,7 @@ export class EventsService {
         this._set({page});
     }
 
-    get pageSize() {
+    get pageSize() :number {
         return this._state.pageSize;
     }
 

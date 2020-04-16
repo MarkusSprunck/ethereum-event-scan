@@ -65,10 +65,9 @@ export class Reader {
     public abi: string = '';
     public provider: string = '';
     public refresh: boolean = true;
-    private initReady = false;
-    private isLoading = false;
     public abiBase64Data;
 
+    private isLoading = false;
     private _contractInstance = null;
 
     constructor(private route: ActivatedRoute, public entity: ProviderService, public eventService: EventsService) {
@@ -111,7 +110,6 @@ export class Reader {
     }
 
     reset() {
-        this.initReady = false;
         while (EventData.length > 0) {
             EventData.pop();
         }
@@ -143,14 +141,13 @@ export class Reader {
     }
 
     fetchCurrentBlockNumber() {
-        if ((!this.initReady || this.refresh) && this.entity.isConnectionWorking()) {
+        if (this.refresh && this.entity.isConnectionWorking()) {
             this.getCurrentBlockNumber();
         }
     }
 
     fetchEvents() {
-        if ((!this.initReady || this.refresh) && this.entity.isConnectionWorking()) {
-            this.initReady = true;
+        if (this.refresh && this.entity.isConnectionWorking()) {
             this.getPastEvents();
         }
     }
