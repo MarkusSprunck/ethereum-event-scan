@@ -1,0 +1,32 @@
+.table-link {
+    color: green;
+}
+
+mat-cell {
+    white-space: pre;
+}
+
+img {
+    width: 20px;
+    height: 20px;
+}
+
+.mat-column-name {
+    flex: 0 0 15%;
+}
+
+.mat-column-block {
+    flex: 0 0 10%;
+}
+
+.mat-column-trxHash {
+    flex: 0 0 15%;
+}
+
+.mat-column-key {
+    flex: 0 0 10%;
+}
+
+.mat-column-value {
+    flex: 0 0 50%;
+}

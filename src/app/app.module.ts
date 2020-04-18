@@ -27,58 +27,75 @@ import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
 import {AppComponent} from './app.component';
-import {TableComplete} from './table/table-complete';
-import {SortableHeader} from './table/sortable-header';
 import {AppRoutingModule} from './app-routing.module';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {SettingsComponent} from 'src/app/settings/settings.component';
 import {Reader} from "./services/reader.service";
 import {InfoModalComponent} from "./details/info-modal.component";
-import {MatDialogModule} from "@angular/material/dialog";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {MatCheckboxModule} from "@angular/material/checkbox";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
-import {MatExpansionModule} from "@angular/material/expansion";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSortModule} from "@angular/material/sort";
-import {MatIconModule} from "@angular/material/icon";
-import {MatInputModule} from "@angular/material/input";
-import {MatButtonModule} from "@angular/material/button";
 import {JsonFormatterDirective} from "./services/json-formatter.directive";
-import {MatOptionModule} from "@angular/material/core";
-import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatIconModule} from "@angular/material/icon";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatInputModule} from "@angular/material/input";
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatButtonModule} from "@angular/material/button";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatTableModule} from "@angular/material/table";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSortModule} from "@angular/material/sort";
+import {MatSelectModule} from "@angular/material/select";
+import {MatNativeDateModule, MatOptionModule} from "@angular/material/core";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatDialogModule} from "@angular/material/dialog";
+import {EventsListComponent} from "./events-list/events-list.component";
 
 @NgModule({
     declarations: [
         AppComponent,
-        SortableHeader,
-        TableComplete,
         SettingsComponent,
         InfoModalComponent,
-        JsonFormatterDirective
+        JsonFormatterDirective,
+        EventsListComponent,
+        EventsListComponent
     ],
     imports: [
-        MatSelectModule,
-        NgbModule,
         BrowserModule,
         BrowserAnimationsModule,
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        MatDialogModule,
         AppRoutingModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatToolbarModule,
+        MatGridListModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatIconModule,
+        MatPaginatorModule,
+        MatSortModule,
         MatCheckboxModule,
         MatProgressBarModule,
         MatExpansionModule,
         MatFormFieldModule,
-        MatSortModule,
-        MatIconModule,
         MatCheckboxModule,
-        MatInputModule,
-        MatButtonModule,
-        MatOptionModule
+        MatOptionModule,
+        MatDialogModule,
     ],
-    providers: [Reader, TableComplete, DecimalPipe],
+    providers: [Reader, DecimalPipe],
     bootstrap: [AppComponent],
     entryComponents: [
         InfoModalComponent

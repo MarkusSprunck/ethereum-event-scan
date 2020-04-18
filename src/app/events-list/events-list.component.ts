@@ -1,86 +1,58 @@
-/**
- * MIT License
- *
- * Copyright (c) 2019-2020 Markus Sprunck (sprunck.markus@gmail.com)
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-import {DecimalPipe} from '@angular/common';
-import {Component, Input, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {Observable} from 'rxjs';
-
-import {Event} from '../services/event';
-import {EventsService} from './events-service';
-import {SortableHeader, SortEvent} from './sortable-header';
-import {InfoModalComponent} from "../details/info-modal.component";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatTableDataSource} from "@angular/material/table";
+import {MatSort} from "@angular/material/sort";
+import {MatPaginator} from "@angular/material/paginator";
+import {EventData} from "../services/event-data";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {Reader} from "../services/reader.service";
+import {InfoModalComponent} from "../details/info-modal.component";
 import {UtilsService} from "../services/utils.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {Reader} from "../services/reader.service";
 
-@Component(
-    {
-        selector: 'table-complete',
-        templateUrl: './table-complete.html',
-        styleUrls: ['./table-complete.css'],
-        providers: [EventsService, DecimalPipe]
-    })
-export class TableComplete implements OnInit {
-
-    public formResult: FormGroup;
-
-    @Input() public searchTerm: string = '';
-
-    events$: Observable<Event[]>;
-
-    total$: Observable<number>;
-
-    @ViewChildren(SortableHeader) headers: QueryList<SortableHeader>;
+@Component({
+    selector: 'app-events-list',
+    templateUrl: './events-list.component.html',
+    styleUrls: ['./events-list.component.css']
+})
+export class EventsListComponent implements OnInit {
 
     constructor(
-        private fb: FormBuilder,
         private reader: Reader,
-        public service: EventsService,
         public dialog: MatDialog) {
-        this.events$ = service.events$;
-        this.total$ = service.total$;
     }
+
+    listData: MatTableDataSource<any>;
+
+    displayedColumns: string[] = ['name', 'block', 'trxHash', 'key', 'value'];
+
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    searchKey: string;
 
     ngOnInit() {
-        this.formResult = this.fb.group({
-            searchTerm: [''],
-        });
+        this.updateData();
     }
 
-    onSort({column, direction}: SortEvent) {
-
-        // resetting other headers
-        this.headers.forEach(header => {
-            if (header.sortable !== column) {
-                header.direction = '';
-            }
-        });
-
-        this.service.sortColumn = column;
-        this.service.sortDirection = direction;
+    private updateData() {
+        this.listData = new MatTableDataSource(EventData);
+        this.listData.sort = this.sort;
+        this.listData.paginator = this.paginator;
+        this.listData.filterPredicate = (data, filter) => {
+            return this.displayedColumns.some(ele => {
+                return data[ele].toLowerCase().indexOf(filter) != -1;
+            });
+        };
     }
+
+    onSearchClear() {
+        this.searchKey = "";
+        this.applyFilter();
+    }
+
+    applyFilter() {
+        this.updateData();
+        this.listData.filter = this.searchKey.trim().toLowerCase();
+    }
+
 
     openDetailsDialog(event: any, blockNumber: string, trxNumber: string): void {
         event.preventDefault();
@@ -186,12 +158,4 @@ export class TableComplete implements OnInit {
     }
 
 
-    updateSearchTerm() {
-        let val = this.formResult.get("searchTerm").value;
-        console.log('searchTerm =>',this.service.searchTerm, ' -> ', val);
-        this.service.searchTerm = val;
-        this.searchTerm = val;
-    }
 }
-
-

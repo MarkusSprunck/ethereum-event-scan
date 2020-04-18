@@ -27,7 +27,6 @@ import {Injectable} from "@angular/core";
 import {ProviderService} from "./provider.service";
 import {ActivatedRoute} from "@angular/router";
 import {EventData} from "./event-data";
-import {EventsService} from "../table/events-service";
 
 const zlib = require('zlib');
 const blockies = require('blockies');
@@ -70,7 +69,7 @@ export class Reader {
     private isLoading = false;
     private _contractInstance = null;
 
-    constructor(private route: ActivatedRoute, public entity: ProviderService, public eventService: EventsService) {
+    constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
         this.route.queryParams.subscribe(params => {
 
@@ -115,8 +114,6 @@ export class Reader {
         }
         this.startBlock = this.startInitial;
         this._contractInstance = null;
-        this.eventService.length = 0;
-        this.eventService.lengthLast = -1;
     }
 
     setStartBlock(startBlock) {
@@ -220,6 +217,7 @@ export class Reader {
         let _that = this;
         let start = parseInt(this.startBlock);
         let end =  (this.endBlock === "latest") ?  (this.entity.currentBlock) :  parseInt(this.endBlock);
+
         // Store next block number for new events
         this.startBlock = '' + end;
         this.readEventsRange(start, end, _that);
