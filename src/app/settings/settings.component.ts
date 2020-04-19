@@ -26,7 +26,6 @@ import {Component, Input, OnInit,} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {AppComponent} from "../app.component";
 import {UtilsService} from "../services/utils.service";
-import {ProgressBarMode} from '@angular/material/progress-bar';
 
 @Component({
     selector: 'app-settings',
@@ -46,7 +45,6 @@ export class SettingsComponent implements OnInit {
     @Input() public connected: boolean;
     @Input() public refresh: boolean;
 
-    mode: ProgressBarMode = 'determinate';
     panelOpenState = true;
     noOfRowsAbi: number = 1;
 
@@ -91,7 +89,6 @@ export class SettingsComponent implements OnInit {
 
     private clearTable() {
         this.appComponent.control.reset();
-        this.createSortEventOnTable();
     }
 
     isProviderConnected() {
@@ -99,6 +96,7 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
+                    this.panelOpenState = false;
                 } else {
                     resolve({"connected": false});
                 }
@@ -140,16 +138,6 @@ export class SettingsComponent implements OnInit {
         this.form.controls['contract'].clearValidators();
         this.form.controls['provider'].clearValidators();
         this.loadContractData();
-    }
-
-    createSortEventOnTable() {
-        setTimeout(() => {
-            window.document.getElementById('sort-by-block')
-                .dispatchEvent(new MouseEvent('click'));
-            window.document.getElementById('sort-by-block')
-                .dispatchEvent(new MouseEvent('click'));
-        }, 1000);
-        return true;
     }
 
     updateStartValue() {

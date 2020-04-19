@@ -55,7 +55,6 @@ export class Reader {
 
     // Event table
     public eventsImportSuccess = false;
-    public eventsProgress = 0;
 
     public startInitial: string = '0';
     public startBlock: string = '0';
@@ -242,7 +241,6 @@ export class Reader {
                             console.info("Load [" + start +".." +end +"] -> events.length="  + events.length );
 
                             index++;
-                            _that.eventsProgress = Math.round(100.0 / events.length * index);
 
                             // Prepare return values for this event
                             let returnValues = events[event].returnValues;
@@ -295,10 +293,6 @@ export class Reader {
                                 _that.eventsImportSuccess = true;
                             }
                         }
-
-                        setTimeout(() => {
-                            _that.eventsProgress = 0;
-                        }, 1000);
 
                         _that.callbackUpdateUI();
                     }

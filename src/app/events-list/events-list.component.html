@@ -1,13 +1,14 @@
-<div class="search-div">
-    <mat-form-field style="width: 100%;" color='primary'>
-        <input  matInput [(ngModel)]="searchKey" placeholder="Filter" autocomplete="off" (keyup)="applyFilter()">
-        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
-            <mat-icon>x</mat-icon>
-        </button>
-    </mat-form-field>
-</div>
+<div class="mat-elevation-z8 mat-expansion-panel" style="background-color: white">
 
-<div class="mat-elevation-z8">
+    <div class="search-div">
+        <mat-form-field color='primary' style="width: 50%;">
+            <input matInput [(ngModel)]="searchKey" placeholder="Filter" autocomplete="off" (keyup)="applyFilter()">
+            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
+                <mat-icon>x</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
     <mat-table [dataSource]="listData" matSort>
 
         <ng-container matColumnDef="name">
@@ -22,7 +23,8 @@
 
         <ng-container matColumnDef="trxHash">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
-            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, '', element.trxHash)" href="" rel="nofollow">{{element.trxHashShort}}</a></mat-cell>
+            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, '', element.trxHash)" href="" rel="nofollow">{{element.trxHashShort}}</a>
+            </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="key">
@@ -41,6 +43,8 @@
 
     </mat-table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100, 500, 1000]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 50, 100, 500]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+
 
 </div>

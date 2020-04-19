@@ -30,3 +30,8 @@ img {
 .mat-column-value {
     flex: 0 0 50%;
 }
+
+mat-form-field {
+    margin-top: 1.0rem;
+    margin-left: 1.5rem;
+}

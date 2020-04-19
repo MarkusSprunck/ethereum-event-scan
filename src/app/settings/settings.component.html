@@ -9,8 +9,6 @@
                 <mat-panel-description></mat-panel-description>
             </mat-expansion-panel-header>
 
-            <p></p>
-
             <mat-form-field style="width: 100%;">
                 <input (change)="updateStartValue()" formControlName="startBlock" id="startBlock" matInput placeholder="Start" type="text" [value]="startBlock">
                 <button mat-button *ngIf="startBlock" matSuffix mat-icon-button aria-label="Clear" (click)="startBlock='0'">
@@ -48,22 +46,15 @@
                 </button>
             </mat-form-field>
 
+            <div style="width: 100%;">
+                <mat-checkbox  layout-align="end" (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh">Update</mat-checkbox>
+            </div>
+
         </mat-expansion-panel>
 
     </mat-accordion>
 
-    <p></p>
-
-    <mat-checkbox (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh">Update</mat-checkbox>
-
 </form>
-
-<div class="row" style="min-height: 24px;">
-    <div class="col-12">
-        <mat-progress-bar class="progress-bar" [value]="appComponent.control.eventsProgress" [color]="'primary'" [mode]="mode"
-                          *ngIf="appComponent.control.eventsProgress > 1"></mat-progress-bar>
-    </div>
-</div>
 
 
 

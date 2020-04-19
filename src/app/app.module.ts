@@ -44,7 +44,6 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatButtonModule} from "@angular/material/button";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatTableModule} from "@angular/material/table";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatSelectModule} from "@angular/material/select";
@@ -88,7 +87,6 @@ import {EventsListComponent} from "./events-list/events-list.component";
         MatPaginatorModule,
         MatSortModule,
         MatCheckboxModule,
-        MatProgressBarModule,
         MatExpansionModule,
         MatFormFieldModule,
         MatCheckboxModule,

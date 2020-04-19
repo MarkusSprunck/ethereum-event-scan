@@ -1,22 +1,14 @@
-
-
 <div class="container-fluid">
 
     <div class="row">
         <div class="col-12">
-            <app-settings [abi]="control.abi"
-                          [connected]="control.entity.connected"
-                          [contract]="control.contract"
-                          [endBlock]="control.endBlock"
-                          [lastBlock]="control.entity.currentBlock"
-                          [provider]="control.provider"
-                          [refresh]="control.refresh"
-                          [startBlock]="control.startInitial">
+            <app-settings [abi]="control.abi" [connected]="control.entity.connected" [contract]="control.contract" [endBlock]="control.endBlock"
+                          [lastBlock]="control.entity.currentBlock" [provider]="control.provider" [refresh]="control.refresh" [startBlock]="control.startInitial">
 
             </app-settings>
         </div>
     </div>
-
+    <p></p>
     <div class="row">
         <div class="col-12">
             <app-events-list></app-events-list>
