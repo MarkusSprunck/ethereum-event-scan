@@ -68,6 +68,7 @@ export class Reader {
 
     private isLoading = false;
     private _contractInstance = null;
+    public callbackUpdateUI: {(): void;};
 
     constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
@@ -106,6 +107,10 @@ export class Reader {
             this.fetchEvents();
         });
 
+    }
+
+    setUpdateCallback( callback ) {
+        this.callbackUpdateUI = callback;
     }
 
     reset() {
@@ -294,6 +299,8 @@ export class Reader {
                         setTimeout(() => {
                             _that.eventsProgress = 0;
                         }, 1000);
+
+                        _that.callbackUpdateUI();
                     }
 
                 } else {

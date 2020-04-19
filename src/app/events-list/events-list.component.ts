@@ -29,18 +29,16 @@ export class EventsListComponent implements OnInit {
     searchKey: string;
 
     ngOnInit() {
-        this.updateData();
-    }
-
-    private updateData() {
-        this.listData = new MatTableDataSource(EventData);
-        this.listData.sort = this.sort;
-        this.listData.paginator = this.paginator;
-        this.listData.filterPredicate = (data, filter) => {
-            return this.displayedColumns.some(ele => {
-                return data[ele].toLowerCase().indexOf(filter) != -1;
-            });
-        };
+        this.reader.setUpdateCallback(() => {
+            this.listData = new MatTableDataSource(EventData);
+            this.listData.sort = this.sort;
+            this.listData.paginator = this.paginator;
+            this.listData.filterPredicate = (data, filter) => {
+                return this.displayedColumns.some(ele => {
+                    return data[ele].toLowerCase().indexOf(filter) != -1;
+                });
+            };
+        });
     }
 
     onSearchClear() {
@@ -49,7 +47,6 @@ export class EventsListComponent implements OnInit {
     }
 
     applyFilter() {
-        this.updateData();
         this.listData.filter = this.searchKey.trim().toLowerCase();
     }
 
@@ -90,7 +87,7 @@ export class EventsListComponent implements OnInit {
         }
     }
 
-    public printBlock(block) {
+    private printBlock(block) {
         let number = block.number;
         let numberLast = this.reader.getCurrentBlockNumber();
         let child = (numberLast > number) ? (number + 1): 'n.a.';
@@ -130,7 +127,7 @@ export class EventsListComponent implements OnInit {
     }
 
 
-    printTrx(tx, receipt) {
+    private printTrx(tx, receipt) {
 
         // Format input (in the case it is too long for one line)
         let input = "&zwj;" + tx.input;
