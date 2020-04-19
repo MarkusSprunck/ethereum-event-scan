@@ -116,4 +116,12 @@ export class UtilsService {
         })
     }
 
+    /**
+     *  Replaces all spaces with non breaking spaces in html
+     */
+    static spaces(value) {
+        return value.replace(/\s/g, '&nbsp;')
+    }
+
+
 }

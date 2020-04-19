@@ -52,34 +52,37 @@ export class EventsListComponent implements OnInit {
 
 
     openDetailsDialog(event: any, blockNumber: string, trxNumber: string): void {
-        event.preventDefault();
+
+        if (event != null) {
+            event.preventDefault();
+        }
 
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = false;
         dialogConfig.autoFocus = true;
         dialogConfig.width = "50rem";
 
-        if (blockNumber.length > 0) {
+        if (blockNumber != null && blockNumber.length > 0) {
             const _that = this;
             this.reader.entity.web3.eth.getBlock(blockNumber,
                 function (error, block) {
                     dialogConfig.data = {
                         "block": blockNumber,
                         "transaction": trxNumber,
-                        "content": _that.printBlock(block)
+                        "content": EventsListComponent.printBlock(block, _that.reader.getCurrentBlockNumber())
                     };
                     _that.dialog.open(InfoModalComponent, dialogConfig);
                 });
         }
 
-        if (trxNumber.length > 0) {
+        if (trxNumber != null && trxNumber.length > 0) {
             const _that = this;
             this.reader.entity.web3.eth.getTransaction(trxNumber).then(tx => {
                 this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then(receipt => {
                     dialogConfig.data = {
                         "block": blockNumber,
                         "transaction": trxNumber,
-                        "content": _that.printTrx(tx, receipt)
+                        "content": EventsListComponent.printTrx(tx, receipt)
                     };
                     _that.dialog.open(InfoModalComponent, dialogConfig);
                 });
@@ -87,25 +90,24 @@ export class EventsListComponent implements OnInit {
         }
     }
 
-    private printBlock(block) {
+    private static printBlock(block, numberLast) {
         let number = block.number;
-        let numberLast = this.reader.getCurrentBlockNumber();
         let child = (numberLast > number) ? (number + 1): 'n.a.';
         let current = (number);
         let parent = (number > 0) ? (number - 1) : "0";
         let result = ''
-            +'Number : ' + current + "<br/>"
-            +'Parent : ' + parent + '<br/>'
-            +'Child : ' + child + '<br/>'
-            +'Time : ' + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
-            +'Current hash : ' + block.hash + '<br/>'
-            +'Sha3Uncles : ' + block.sha3Uncles + '<br/>'
-            +'StateRoot : ' + block.stateRoot + '<br/>'
-            +'Miner : ' + block.miner + '<br/>'
-            +'ExtraData : ' + block.extraData + '<br/>'
-            +'Size : ' + block.size + '<br/>'
-            +'GasUsed : ' + block.gasUsed + '<br/>'
-            +'TransactionsCount : ' + block.transactions.length + '<br/>';
+            + UtilsService.spaces('Number       : ') + current + "<br/>"
+            + UtilsService.spaces('Parent       : ') + parent + '<br/>'
+            + UtilsService.spaces('Child        : ') + child + '<br/>'
+            + UtilsService.spaces('Time         : ') + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
+            + UtilsService.spaces('Current hash : ') + block.hash + '<br/>'
+            + UtilsService.spaces('Sha3Uncles   : ') + block.sha3Uncles + '<br/>'
+            + UtilsService.spaces('StateRoot    : ') + block.stateRoot + '<br/>'
+            + UtilsService.spaces('Miner        : ') + block.miner + '<br/>'
+            + UtilsService.spaces('ExtraData    : ') + block.extraData + '<br/>'
+            + UtilsService.spaces('Size         : ') + block.size + '<br/>'
+            + UtilsService.spaces('GasUsed      : ') + block.gasUsed + '<br/>'
+            + UtilsService.spaces('TrxCount     : ') + block.transactions.length + '<br/>';
 
         // print all transactions of block
         if (block.transactions.length > 0) {
@@ -127,7 +129,7 @@ export class EventsListComponent implements OnInit {
     }
 
 
-    private printTrx(tx, receipt) {
+    private static printTrx(tx, receipt) {
 
         // Format input (in the case it is too long for one line)
         let input = "&zwj;" + tx.input;
@@ -139,19 +141,19 @@ export class EventsListComponent implements OnInit {
         // Print transaction details
         let contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
         return ''
-            +'Hash : ' + (tx.hash) + '<br/>'
-            +'Index : ' + tx.transactionIndex + '<br/>'
-            +'Block : ' + (tx.blockNumber) + '<br/>'
-            +'From : ' + tx.from + '<br/>'
-            +'To : ' + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            +'Value : ' + tx.value + '<br/>'
-            +'Nonce : ' + tx.nonce + '<br/>'
-            +'ContractAddress : ' + contractAddress + '<br/>'
-            +'GasUsed : ' + receipt.gasUsed + '<br/>'
-            +'GasPrice : ' + tx.gasPrice + '<br/>'
-            +'CumulativeGasUsed : ' + receipt.cumulativeGasUsed + '<br/>'
-            +'InputLength : ' + tx.input.length + '<br/>'
-            +'Input : ' + '<br/><p>' + input + "</p>";
+            +UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
+            +UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
+            +UtilsService.spaces('Block         : ') + (tx.blockNumber) + '<br/>'
+            +UtilsService.spaces('From          : ') + tx.from + '<br/>'
+            +UtilsService.spaces('To            : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
+            +UtilsService.spaces('Value         : ') + tx.value + '<br/>'
+            +UtilsService.spaces('Nonce         : ') + tx.nonce + '<br/>'
+            +UtilsService.spaces('Contract      : ') + contractAddress + '<br/>'
+            +UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
+            +UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
+            +UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
+            +UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/>'
+            +UtilsService.spaces('Input         : ') + '<br/><p>' + input + "</p>";
     }
 
 
