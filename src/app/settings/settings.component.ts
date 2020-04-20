@@ -50,11 +50,11 @@ export class SettingsComponent implements OnInit {
 
     panelMessage() {
         if (!this.refresh) {
-            return 'Automatic refresh stopped';
+            return 'Settings - Automatic refresh stopped';
         } else if (this.lastBlock == 0) {
-            return 'Automatic refresh running'
+            return 'Settings - Automatic refresh running'
         } else {
-            return ('Block ' + this.lastBlock + ' mined');
+            return ('Number of ' + this.lastBlock + ' bocks mined');
         }
     }
 

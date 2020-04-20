@@ -1,0 +1,9 @@
+.mat-toolbar-row, .mat-toolbar-single-row {
+    height: 54px;
+}
+
+div {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.5rem;
+}

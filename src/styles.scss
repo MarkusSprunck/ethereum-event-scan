@@ -24,20 +24,12 @@ $cdark-theme: mat-light-theme($dark-primary, $dark-accent, $dark-warn);
 
 
 body {
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-top: 1rem;
-  background-color: gray;
-}
-
-.header_area {
-  padding-top: 1.0rem;
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  margin: 0;
 }
 
 .hint {
   color: dodgerblue;
-}
-
-.mat-form-field {
-  line-height: 1.5rem;
 }

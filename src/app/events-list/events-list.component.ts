@@ -27,9 +27,11 @@ export class EventsListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
     @ViewChild(MatPaginator) paginator: MatPaginator;
     searchKey: string;
+    panelOpenState: boolean = false;
 
     ngOnInit() {
         this.reader.setUpdateCallback(() => {
+            this.panelOpenState = true;
             this.listData = new MatTableDataSource(EventData);
             this.listData.sort = this.sort;
             this.listData.paginator = this.paginator;
@@ -157,4 +159,7 @@ export class EventsListComponent implements OnInit {
     }
 
 
+    panelMessage() {
+        return EventData.length > 0  ? 'Number of ' + EventData.length + ' events loaded' : 'Results - No events loaded';
+    }
 }

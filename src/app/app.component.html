@@ -1,18 +1,21 @@
-<div class="container-fluid">
+<mat-toolbar color="primary" class="header" >
+    <span>Ethereum Event Scan</span>
+</mat-toolbar>
 
-    <div class="row">
-        <div class="col-12">
-            <app-settings [abi]="control.abi" [connected]="control.entity.connected" [contract]="control.contract" [endBlock]="control.endBlock"
-                          [lastBlock]="control.entity.currentBlock" [provider]="control.provider" [refresh]="control.refresh" [startBlock]="control.startInitial">
+<!-- Main content -->
+<div class="row">
+    <div class="col-12">
+        <app-settings [abi]="control.abi" [connected]="control.entity.connected" [contract]="control.contract" [endBlock]="control.endBlock"
+                      [lastBlock]="control.entity.currentBlock" [provider]="control.provider" [refresh]="control.refresh" [startBlock]="control.startInitial">
 
-            </app-settings>
-        </div>
+        </app-settings>
     </div>
-    <p></p>
-    <div class="row">
-        <div class="col-12">
-            <app-events-list></app-events-list>
-        </div>
-    </div>
-
 </div>
+
+<div class="row">
+    <div class="col-12">
+        <app-events-list></app-events-list>
+    </div>
+</div>
+
+
