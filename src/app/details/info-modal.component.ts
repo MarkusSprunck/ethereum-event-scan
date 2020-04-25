@@ -14,10 +14,8 @@ export interface DialogData {
 })
 export class InfoModalComponent {
 
-    constructor(
-        public dialogRef: MatDialogRef<InfoModalComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: DialogData
-    ) {
+    constructor(public dialogRef: MatDialogRef<InfoModalComponent>,
+                @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     }
 
     onCloseClick(): void {

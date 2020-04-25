@@ -123,5 +123,4 @@ export class UtilsService {
         return value.replace(/\s/g, '&nbsp;')
     }
 
-
 }
