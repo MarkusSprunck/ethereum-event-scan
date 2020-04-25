@@ -1,5 +1,5 @@
 .table-link {
-    color: green;
+    color: darkblue;
 }
 
 mat-cell {
@@ -18,25 +18,25 @@ img {
 }
 
 .mat-column-block {
-    flex: 0 0 8%;
-    font-family: monospace;
-    font-size: smaller;
-}
-
-.mat-column-trxHash {
-    flex: 0 0 20%;
-    font-family: monospace;
-    font-size: smaller;
-}
-
-.mat-column-key {
     flex: 0 0 10%;
     font-family: monospace;
     font-size: smaller;
 }
 
+.mat-column-trxHash {
+    flex: 0 0 22%;
+    font-family: monospace;
+    font-size: smaller;
+}
+
+.mat-column-key {
+    flex: 0 0 7%;
+    font-family: monospace;
+    font-size: smaller;
+}
+
 .mat-column-value {
-    flex: 0 0 50%;
+    flex: 0 0 45%;
     font-family: monospace;
     font-size: smaller;
 }
@@ -49,4 +49,9 @@ mat-form-field {
 mat-row, mat-header-row, mat-footer-row {
     align-items: center;
     align-items: flex-start;
+}
+
+mat-form-field {
+    margin-top: 0;
+    margin-left: 0;
 }

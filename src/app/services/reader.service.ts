@@ -65,6 +65,8 @@ export class Reader {
     public refresh: boolean = true;
     public abiBase64Data;
 
+    public runningJobs  = 0;
+
     private isLoading = false;
     private _contractInstance = null;
     public callbackUpdateUI: { (): void; };
@@ -227,11 +229,14 @@ export class Reader {
     };
 
     private readEventsRange(start: number, end: number, _that: this) {
+
+        this.runningJobs += 1;
         this._contractInstance.getPastEvents(
             'allEvents', {
                 fromBlock: start,
                 toBlock: end
             }, (errors, events) => {
+
                 if (!errors) {
                     if (events.length > 0) {
                         let index = 0;
@@ -293,9 +298,12 @@ export class Reader {
                             }
                         }
                         _that.callbackUpdateUI();
-                    }
 
+                    }
+                    this.runningJobs -= 1;
                 } else {
+                    this.runningJobs -= 1;
+
                     if (errors.message === "Returned error: query returned more than 10000 results") {
                         let middle = Math.round((start + end) / 2);
                         console.info("Infura 10000 limit [" + start + ".." + end + "] ->  [" + start + ".." + middle + "] and [" + (middle + 1) + ".." + end + "]");

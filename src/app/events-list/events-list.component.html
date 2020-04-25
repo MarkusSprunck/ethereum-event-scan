@@ -9,7 +9,7 @@
 
 
     <div class="search-div">
-        <mat-form-field color='primary' style="width: 50%;">
+        <mat-form-field color='primary' style="width: 100%;">
             <input matInput [(ngModel)]="searchKey" placeholder="Filter" autocomplete="off" (keyup)="applyFilter()">
             <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
                 <mat-icon>x</mat-icon>

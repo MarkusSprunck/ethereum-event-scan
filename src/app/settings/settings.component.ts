@@ -54,7 +54,7 @@ export class SettingsComponent implements OnInit {
         } else if (this.lastBlock == 0) {
             return 'Settings - Automatic refresh running'
         } else {
-            return ('Number of ' + this.lastBlock + ' bocks mined');
+            return ('' + this.lastBlock + ' bock mined');
         }
     }
 

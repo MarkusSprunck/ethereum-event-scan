@@ -40,7 +40,7 @@
 
             <mat-form-field style="width: 100%;">
                 <textarea jsonFormatter (change)="updateABIValue()" formControlName="abi" id="abi" matInput placeholder="Abi" type="text" [value]="abi" cdkTextareaAutosize
-                          cdkAutosizeMinRows="1" [cdkAutosizeMaxRows]="noOfRowsAbi" (blur)="onBlurAbi()" (focus)="onFocusAbi()"></textarea>
+                          cdkAutosizeMinRows="1" [cdkAutosizeMaxRows]="noOfRowsAbi" (blur)="onBlurAbi()" spellcheck="false" (focus)="onFocusAbi()"></textarea>
                 <button mat-button *ngIf="abi" matSuffix mat-icon-button aria-label="Clear" (click)="abi=''">
                     <mat-icon>x</mat-icon>
                 </button>

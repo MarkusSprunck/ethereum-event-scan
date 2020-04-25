@@ -166,6 +166,14 @@ export class EventsListComponent implements OnInit {
 
 
     panelMessage() {
-        return EventData.size > 0 ? 'Number of ' + EventData.size + ' events loaded' : 'Results - No events loaded';
+        let jobs = '';
+        if (this.reader.runningJobs > 1) {
+            jobs = ' [' + this.reader.runningJobs + ' jobs still running]'
+        }
+        let message = 'Results - No events loaded'
+        if (EventData.size > 0) {
+            message = '' + EventData.size + ' events loaded' + jobs
+        }
+        return message;
     }
 }
