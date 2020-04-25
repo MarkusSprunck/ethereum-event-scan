@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
-import {MatSort} from "@angular/material/sort";
-import {MatPaginator} from "@angular/material/paginator";
-import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
-import {InfoModalComponent} from "../details/info-modal.component";
-import {UtilsService} from "../services/utils.service";
-import {Reader} from "../services/reader.service";
-import {EventData} from "../services/event";
+import {MatTableDataSource} from '@angular/material/table';
+import {MatSort} from '@angular/material/sort';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {InfoModalComponent} from '../details/info-modal.component';
+import {UtilsService} from '../services/utils.service';
+import {Reader} from '../services/reader.service';
+import {EventData} from '../services/event';
 
 @Component({
     selector: 'app-events-list',
@@ -15,96 +15,25 @@ import {EventData} from "../services/event";
 })
 export class EventsListComponent implements OnInit {
 
+    listData: MatTableDataSource<any>;
+    displayedColumns: string[] = ['name', 'block', 'trxHash', 'key', 'value'];
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    searchKey: string;
+    panelOpenState = false;
+
     constructor(
         private reader: Reader,
         public dialog: MatDialog) {
     }
 
-    listData: MatTableDataSource<any>;
-
-    displayedColumns: string[] = ['name', 'block', 'trxHash', 'key', 'value'];
-
-    @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
-    searchKey: string;
-    panelOpenState: boolean = false;
-
-    ngOnInit() {
-        this.reader.setUpdateCallback(() => {
-
-            const sortedEvents = Array.from(EventData.values())
-                .sort(function (first, second) {
-                    return Number(second.block) - Number(first.block);
-                });
-
-            this.panelOpenState = true;
-            this.listData = new MatTableDataSource(sortedEvents);
-            this.listData.sort = this.sort;
-            this.listData.paginator = this.paginator;
-            this.listData.filterPredicate = (data, filter) => {
-                return this.displayedColumns.some(ele => {
-                    return data[ele].toLowerCase().indexOf(filter) != -1;
-                });
-            };
-        });
-    }
-
-    onSearchClear() {
-        this.searchKey = "";
-        this.applyFilter();
-    }
-
-    applyFilter() {
-        this.listData.filter = this.searchKey.trim().toLowerCase();
-    }
-
-
-    openDetailsDialog(event: any, blockNumber: string, trxNumber: string): void {
-
-        if (event != null) {
-            event.preventDefault();
-        }
-
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false;
-        dialogConfig.autoFocus = true;
-        dialogConfig.width = "50rem";
-
-        if (blockNumber != null && blockNumber.length > 0) {
-            const _that = this;
-            this.reader.entity.web3.eth.getBlock(blockNumber,
-                function (error, block) {
-                    dialogConfig.data = {
-                        "block": blockNumber,
-                        "transaction": trxNumber,
-                        "content": EventsListComponent.printBlock(block, _that.reader.getCurrentBlockNumber())
-                    };
-                    _that.dialog.open(InfoModalComponent, dialogConfig);
-                });
-        }
-
-        if (trxNumber != null && trxNumber.length > 0) {
-            const _that = this;
-            this.reader.entity.web3.eth.getTransaction(trxNumber).then(tx => {
-                this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then(receipt => {
-                    dialogConfig.data = {
-                        "block": blockNumber,
-                        "transaction": trxNumber,
-                        "content": EventsListComponent.printTrx(tx, receipt)
-                    };
-                    _that.dialog.open(InfoModalComponent, dialogConfig);
-                });
-            });
-        }
-    }
-
     private static printBlock(block, numberLast) {
-        let number = block.number;
-        let child = (numberLast > number) ? (number + 1) : 'n.a.';
-        let current = (number);
-        let parent = (number > 0) ? (number - 1) : "0";
+        const blockNumber = block.number;
+        const child = (numberLast > blockNumber) ? (blockNumber + 1) : 'n.a.';
+        const current = (blockNumber);
+        const parent = (blockNumber > 0) ? (blockNumber - 1) : '0';
         let result = ''
-            + UtilsService.spaces('Number       : ') + current + "<br/>"
+            + UtilsService.spaces('Number       : ') + current + '<br/>'
             + UtilsService.spaces('Parent       : ') + parent + '<br/>'
             + UtilsService.spaces('Child        : ') + child + '<br/>'
             + UtilsService.spaces('Time         : ') + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
@@ -120,8 +49,7 @@ export class EventsListComponent implements OnInit {
         // print all transactions of block
         if (block.transactions.length > 0) {
             let index = 0;
-            let _that = this;
-            block.transactions.forEach(function (trxHash) {
+            block.transactions.forEach((trxHash) => {
                 if (0 === index) {
                     result += 'Transactions : ';
                     result += trxHash + '<br/>';
@@ -130,24 +58,23 @@ export class EventsListComponent implements OnInit {
                     result += trxHash + '<br/>';
                 }
                 index++;
-            })
+            });
         }
 
         return result;
     }
 
-
     private static printTrx(tx, receipt) {
 
         // Format input (in the case it is too long for one line)
-        let input = "&zwj;" + tx.input;
-        let width = 100;
+        let input = '&zwj;' + tx.input;
+        const width = 100;
         for (let x = 1; (width * x) <= input.length; x++) {
-            input = input.slice(0, width * x) + '<br/>' + input.slice(width * x)
+            input = input.slice(0, width * x) + '<br/>' + input.slice(width * x);
         }
 
         // Print transaction details
-        let contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
+        const contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
         return ''
             + UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
             + UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
@@ -161,19 +88,89 @@ export class EventsListComponent implements OnInit {
             + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
             + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
             + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/>'
-            + UtilsService.spaces('Input         : ') + '<br/><p>' + input + "</p>";
+            + UtilsService.spaces('Input         : ') + '<br/><p>' + input + '</p>';
     }
 
+
+    ngOnInit() {
+        this.reader.setUpdateCallback(() => {
+
+            const sortedEvents = Array.from(EventData.values())
+                .sort((first, second) => {
+                    return Number(second.block) - Number(first.block);
+                });
+
+            this.panelOpenState = true;
+            this.listData = new MatTableDataSource(sortedEvents);
+            this.listData.sort = this.sort;
+            this.listData.paginator = this.paginator;
+            this.listData.filterPredicate = (data, filter) => {
+                return this.displayedColumns.some(ele => {
+                    return data[ele].toLowerCase().indexOf(filter) !== -1;
+                });
+            };
+        });
+    }
+
+    onSearchClear() {
+        this.searchKey = '';
+        this.applyFilter();
+    }
+
+    applyFilter() {
+        this.listData.filter = this.searchKey.trim().toLowerCase();
+    }
+
+    openDetailsDialog(event: any, blockNumber: string, trxNumber: string): void {
+
+        if (event != null) {
+            event.preventDefault();
+        }
+
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false;
+        dialogConfig.autoFocus = true;
+        dialogConfig.width = '50rem';
+
+        if (blockNumber != null && blockNumber.length > 0) {
+            const that = this;
+            this.reader.entity.web3.eth.getBlock(blockNumber,
+                (error, block) => {
+                    dialogConfig.data = {
+                        block: blockNumber,
+                        transaction: trxNumber,
+                        content: EventsListComponent.printBlock(block, that.reader.getCurrentBlockNumber())
+                    };
+                    that.dialog.open(InfoModalComponent, dialogConfig);
+                });
+        }
+
+        if (trxNumber != null && trxNumber.length > 0) {
+            const that = this;
+            this.reader.entity.web3.eth.getTransaction(trxNumber).then(tx => {
+                this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then(receipt => {
+                    dialogConfig.data = {
+                        block: blockNumber,
+                        transaction: trxNumber,
+                        content: EventsListComponent.printTrx(tx, receipt)
+                    };
+                    that.dialog.open(InfoModalComponent, dialogConfig);
+                });
+            });
+        }
+    }
 
     panelMessage() {
         let jobs = '';
         if (this.reader.runningJobs > 1) {
-            jobs = ' [' + this.reader.runningJobs + ' jobs still running]'
+            jobs = ' [' + this.reader.runningJobs + ' jobs still running]';
         }
-        let message = 'Results - No events loaded'
+        let message = 'Results - No events loaded';
         if (EventData.size > 0) {
-            message = '' + EventData.size + ' events loaded' + jobs
+            message = '' + EventData.size + ' events loaded' + jobs;
         }
         return message;
     }
+
+
 }

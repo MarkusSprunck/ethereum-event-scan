@@ -1,17 +1,43 @@
 # Ethereum-Event-Scan
 
 Ethereum-Event-Scan is a lightweight Ethereum event explorer for smart contracts. 
-The right tool when you develop smart contracts and your source codes is not yet submitted to etherscan.io
+The right tool when you develop smart contracts and your source codes is not yet 
+submitted to etherscan.io or work with a private blockchain.
 
-## Start Configuration 
+## Start 
 
-To start directly from DockerHub use:
+Start directly with docker-cli:
 
-```$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:latest  ```
+```
+$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:latest  
+```
 
-Build and start with docker-compose:
+or 
 
-```$ docker-compose up -d --build   ```
+use docker-compose.yml:
+
+```
+version: '3.7'
+
+services:
+
+  ethereum-event-scan:
+    image: sprunck/ethereum-event-scan:latest
+    container_name: ethereum-event-scan
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '55226:80'
+```
+
+## Build
+
+You may download the sources and build with docker-compose:
+
+```
+$ docker-compose up -d --build   
+```
 
 ## Links
 

@@ -10,44 +10,45 @@
             </mat-expansion-panel-header>
 
             <mat-form-field style="width: 100%;">
-                <input (change)="updateStartValue()" formControlName="startBlock" id="startBlock" matInput placeholder="Start" type="text" [value]="startBlock">
-                <button mat-button *ngIf="startBlock" matSuffix mat-icon-button aria-label="Clear" (click)="startBlock='0'">
+                <input (change)="updateStartValue()" [value]="startBlock" formControlName="startBlock" id="startBlock" matInput placeholder="Start" type="text">
+                <button (click)="startBlock='0'" *ngIf="startBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <input (change)="updateEndValue()" formControlName="endBlock" id="endBlock" matInput placeholder="End" type="text" [value]="endBlock">
-                <button mat-button *ngIf="endBlock" matSuffix mat-icon-button aria-label="Clear" (click)="endBlock='latest'">
+                <input (change)="updateEndValue()" [value]="endBlock" formControlName="endBlock" id="endBlock" matInput placeholder="End" type="text">
+                <button (click)="endBlock='latest'" *ngIf="endBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <input (change)="updateProviderValue()" formControlName="provider" id="provider" matInput placeholder="Provider" type="text" [value]="provider">
-                <button mat-button *ngIf="provider" matSuffix mat-icon-button aria-label="Clear" (click)="provider='http://127.0.0.1:8545'">
+                <input (change)="updateProviderValue()" [value]="provider" formControlName="provider" id="provider" matInput placeholder="Provider" type="text">
+                <button (click)="provider='http://127.0.0.1:8545'" *ngIf="provider" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <input (change)="updateContractValue()" formControlName="contract" id="contract" matInput placeholder="Contract" type="text" [value]="contract">
-                <button mat-button *ngIf="contract" matSuffix mat-icon-button aria-label="Clear" (click)="contract=''">
+                <input (change)="updateContractValue()" [value]="contract" formControlName="contract" id="contract" matInput placeholder="Contract" type="text">
+                <button (click)="contract=''" *ngIf="contract" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
 
             <mat-form-field style="width: 100%;">
-                <textarea jsonFormatter (change)="updateABIValue()" formControlName="abi" id="abi" matInput placeholder="Abi" type="text" [value]="abi" cdkTextareaAutosize
-                          cdkAutosizeMinRows="1" [cdkAutosizeMaxRows]="noOfRowsAbi" (blur)="onBlurAbi()" spellcheck="false" (focus)="onFocusAbi()"></textarea>
-                <button mat-button *ngIf="abi" matSuffix mat-icon-button aria-label="Clear" (click)="abi=''">
+                <textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize formControlName="abi"
+                          id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
+                <button (click)="abi=''" *ngIf="abi" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <div style="width: 100%;">
-                <mat-checkbox  layout-align="end" (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh">Update</mat-checkbox>
+                <mat-checkbox (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh" layout-align="end">Update
+                </mat-checkbox>
             </div>
 
         </mat-expansion-panel>

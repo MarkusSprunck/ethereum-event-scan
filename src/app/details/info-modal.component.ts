@@ -1,5 +1,5 @@
-import {Component, Inject} from "@angular/core";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
 export interface DialogData {
     block: string;
@@ -8,9 +8,9 @@ export interface DialogData {
 }
 
 @Component({
-    selector: "app-info-modal",
-    templateUrl: "./info-modal.component.html",
-    styleUrls: ["./info-modal.component.css"]
+    selector: 'app-info-modal',
+    templateUrl: './info-modal.component.html',
+    styleUrls: ['./info-modal.component.css']
 })
 export class InfoModalComponent {
 

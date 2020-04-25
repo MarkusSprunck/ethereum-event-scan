@@ -1,10 +1,9 @@
 <h2 mat-dialog-title>
-    {{data.block.length > 0 ? 'Block': 'Transaction'}}
+    {{data.block.length > 0 ? 'Block' : 'Transaction'}}
 </h2>
 
-<div mat-dialog-content [innerHTML]="data.content">
-</div>
+<div [innerHTML]="data.content" mat-dialog-content></div>
 
 <div mat-dialog-actions>
-    <button mat-button color="primary" (click)="onCloseClick()">Schließen</button>
+    <button (click)="onCloseClick()" color="primary" mat-button>Schließen</button>
 </div>

@@ -8,59 +8,61 @@
         </mat-expansion-panel-header>
 
 
-    <div class="search-div">
-        <mat-form-field color='primary' style="width: 100%;">
-            <input matInput [(ngModel)]="searchKey" placeholder="Filter" autocomplete="off" (keyup)="applyFilter()">
-            <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
-                <mat-icon>x</mat-icon>
-            </button>
-        </mat-form-field>
-    </div>
+        <div class="search-div">
+            <mat-form-field color='primary' style="width: 100%;">
+                <input (keyup)="applyFilter()" [(ngModel)]="searchKey" autocomplete="off" matInput placeholder="Filter">
+                <button (click)="onSearchClear()" *ngIf="searchKey" aria-label="Clear" mat-button mat-icon-button matSuffix>
+                    <mat-icon>x</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
 
-    <mat-table [dataSource]="listData" matSort>
+        <mat-table [dataSource]="listData" matSort>
 
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let element"><img [src]="element.image" alt=""/>&nbsp;
-                <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
-            </mat-cell>
-        </ng-container>
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+                <mat-cell *matCellDef="let element"><img [src]="element.image" alt=""/>&nbsp;
+                    <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
+                </mat-cell>
+            </ng-container>
 
-        <ng-container matColumnDef="block">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Block</mat-header-cell>
-            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, element.block, '')" href="" rel="nofollow">
-                <div innerHTML="{{ element.block | highlight : searchKey}}"></div></a>
-            </mat-cell>
-        </ng-container>
+            <ng-container matColumnDef="block">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Block</mat-header-cell>
+                <mat-cell *matCellDef="let element"><a (click)="openDetailsDialog($event, element.block, '')" class="table-link" href="" rel="nofollow">
+                    <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
+                </a>
+                </mat-cell>
+            </ng-container>
 
-        <ng-container class="align-top" matColumnDef="trxHash">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
-            <mat-cell class="align-top" *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, '', element.trxHash)" href="" rel="nofollow">
-                <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div></a>
-            </mat-cell>
-        </ng-container>
+            <ng-container class="align-top" matColumnDef="trxHash">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
+                <mat-cell *matCellDef="let element" class="align-top"><a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
+                    <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                </a>
+                </mat-cell>
+            </ng-container>
 
-        <ng-container matColumnDef="key">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>key</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
-            </mat-cell>
-        </ng-container>
+            <ng-container matColumnDef="key">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>key</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
+                </mat-cell>
+            </ng-container>
 
-        <ng-container matColumnDef="value">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
-            </mat-cell>
-        </ng-container>
+            <ng-container matColumnDef="value">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
+                </mat-cell>
+            </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
 
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
-    </mat-table>
+        </mat-table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 50, 100, 500]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[5, 10, 50, 100, 500]" [pageSize]="5" showFirstLastButtons></mat-paginator>
 
     </mat-expansion-panel>
 
