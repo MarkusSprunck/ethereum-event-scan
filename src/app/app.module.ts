@@ -51,6 +51,7 @@ import {MatNativeDateModule, MatOptionModule} from "@angular/material/core";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatDialogModule} from "@angular/material/dialog";
 import {EventsListComponent} from "./events-list/events-list.component";
+import {HighlightSearch} from "./services/highlight-search.pipe";
 
 @NgModule({
     declarations: [
@@ -59,7 +60,8 @@ import {EventsListComponent} from "./events-list/events-list.component";
         InfoModalComponent,
         JsonFormatterDirective,
         EventsListComponent,
-        EventsListComponent
+        EventsListComponent,
+        HighlightSearch
     ],
     imports: [
         BrowserModule,

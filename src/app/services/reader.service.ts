@@ -282,7 +282,7 @@ export class Reader {
                                         '' + eventName,
                                         '' + blockNumber,
                                         '' + trxHash,
-                                        '' + UtilsService.truncate(trxHash, 12),
+                                        '' + UtilsService.break(trxHash, 33),
                                         '' + keys,
                                         '' + values,
                                         '',
@@ -292,7 +292,6 @@ export class Reader {
                                 _that.eventsImportSuccess = true;
                             }
                         }
-
                         _that.callbackUpdateUI();
                     }
 

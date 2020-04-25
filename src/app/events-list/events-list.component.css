@@ -13,25 +13,40 @@ img {
 
 .mat-column-name {
     flex: 0 0 15%;
+    font-family: monospace;
+    font-size: smaller;
 }
 
 .mat-column-block {
-    flex: 0 0 10%;
+    flex: 0 0 8%;
+    font-family: monospace;
+    font-size: smaller;
 }
 
 .mat-column-trxHash {
-    flex: 0 0 15%;
+    flex: 0 0 20%;
+    font-family: monospace;
+    font-size: smaller;
 }
 
 .mat-column-key {
     flex: 0 0 10%;
+    font-family: monospace;
+    font-size: smaller;
 }
 
 .mat-column-value {
     flex: 0 0 50%;
+    font-family: monospace;
+    font-size: smaller;
 }
 
 mat-form-field {
     margin-top: 1.0rem;
     margin-left: 1.5rem;
+}
+
+mat-row, mat-header-row, mat-footer-row {
+    align-items: center;
+    align-items: flex-start;
 }

@@ -21,28 +21,37 @@
 
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-            <mat-cell *matCellDef="let element"><img [src]="element.image" alt=""/>&nbsp;{{element.name}}</mat-cell>
+            <mat-cell *matCellDef="let element"><img [src]="element.image" alt=""/>&nbsp;
+                <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
+            </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="block">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Block</mat-header-cell>
-            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, element.block, '')" href="" rel="nofollow">{{element.block}}</a></mat-cell>
+            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, element.block, '')" href="" rel="nofollow">
+                <div innerHTML="{{ element.block | highlight : searchKey}}"></div></a>
+            </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="trxHash">
+        <ng-container class="align-top" matColumnDef="trxHash">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
-            <mat-cell *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, '', element.trxHash)" href="" rel="nofollow">{{element.trxHashShort}}</a>
+            <mat-cell class="align-top" *matCellDef="let element"><a class="table-link" (click)="openDetailsDialog($event, '', element.trxHash)" href="" rel="nofollow">
+                <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div></a>
             </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="key">
             <mat-header-cell *matHeaderCellDef mat-sort-header>key</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.key}}</mat-cell>
+            <mat-cell *matCellDef="let element">
+                <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
+            </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="value">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.value}}</mat-cell>
+            <mat-cell *matCellDef="let element">
+                <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
+            </mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

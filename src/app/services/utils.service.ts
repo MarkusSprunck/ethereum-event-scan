@@ -55,6 +55,16 @@ export class UtilsService {
         return str.substr(0, left) + '…' + str.substring(right);
     }
 
+    /**
+     * Truncate middle part of string in the case it exceeds the maximum length
+     */
+    static break(str, maxLength) {
+        if (str.length < maxLength * 2 ) {
+            return str;
+        }
+        return str.substr(0, maxLength) + '\n' + str.substring(maxLength );
+    }
+
     static updateURLWithCompressedAbi(oldValue: string, newValue: string) {
         let _that = this;
         zlib.deflate(oldValue, function (err, oldBuffer) {
