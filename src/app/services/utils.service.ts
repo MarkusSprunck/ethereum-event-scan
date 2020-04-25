@@ -107,18 +107,18 @@ export class UtilsService {
         domainURLs.forEach((domain) => {
 
             setTimeout(() => {
-                let xmlhttp = new XMLHttpRequest();
-                xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = () => {
-                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                        if (xmlhttp.responseText.startsWith('[{')) {
-                            callback(xmlhttp.responseText);
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = () => {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        if (xmlHttp.responseText.startsWith('[{')) {
+                            callback(xmlHttp.responseText);
                         }
                     }
                 };
                 const url = domain + '/api?module=contract&action=getabi&format=raw&address=' + contract;
-                xmlhttp.open('GET', url, true);
-                xmlhttp.send();
+                xmlHttp.open('GET', url, true);
+                xmlHttp.send();
 
             }, counter * 1000 + 50);
 

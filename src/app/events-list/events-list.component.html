@@ -1,3 +1,4 @@
+<!--suppress TypeScriptUnresolvedVariable -->
 <mat-accordion>
 
     <mat-expansion-panel [expanded]="panelOpenState">
@@ -10,7 +11,9 @@
 
         <div class="search-div">
             <mat-form-field color='primary' style="width: 100%;">
-                <input (keyup)="applyFilter()" [(ngModel)]="searchKey" autocomplete="off" matInput placeholder="Filter">
+                <label>
+                    <input (keyup)="applyFilter()" [(ngModel)]="searchKey" autocomplete="off" matInput placeholder="Filter">
+                </label>
                 <button (click)="onSearchClear()" *ngIf="searchKey" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>

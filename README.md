@@ -1,8 +1,9 @@
 # Ethereum-Event-Scan
 
 Ethereum-Event-Scan is a lightweight Ethereum event explorer for smart contracts. 
-The right tool when you develop smart contracts and your source codes is not yet 
-submitted to etherscan.io or work with a private blockchain.
+The right tool when you develop smart contracts (and your source codes has not been
+submitted to EtherScan). Also in the case you work with a private blockchain you 
+may use Ethereum-Event-Scan.
 
 ## Start 
 

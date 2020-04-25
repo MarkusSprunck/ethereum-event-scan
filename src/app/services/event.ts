@@ -24,6 +24,7 @@
 
 export class EthEvent {
 
+    // noinspection JSUnusedGlobalSymbols
     constructor(
         public name: string,
         public block: string,
