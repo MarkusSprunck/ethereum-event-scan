@@ -22,13 +22,19 @@
  * SOFTWARE.
  */
 
-export interface Event {
-    name: string;
-    block: string;
-    trxHash: string;
-    trxHashShort: string;
-    key: string;
-    value: string;
-    time: string;
-    image: string;
+export class EthEvent {
+
+    constructor(
+        public name: string,
+        public block: string,
+        public trxHash: string,
+        public trxHashShort: string,
+        public key: string,
+        public value: string,
+        public time: string,
+        public image: string) {
+    }
+
 }
+
+export const EventData: Map<String, EthEvent> =  new Map<String, EthEvent>();

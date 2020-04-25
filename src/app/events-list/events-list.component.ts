@@ -2,11 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
-import {EventData} from "../services/event-data";
 import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {InfoModalComponent} from "../details/info-modal.component";
 import {UtilsService} from "../services/utils.service";
 import {Reader} from "../services/reader.service";
+import {EventData} from "../services/event";
 
 @Component({
     selector: 'app-events-list',
@@ -31,8 +31,14 @@ export class EventsListComponent implements OnInit {
 
     ngOnInit() {
         this.reader.setUpdateCallback(() => {
+
+            const sortedEvents = Array.from(EventData.values())
+                .sort(function (first, second) {
+                    return Number(second.block) - Number(first.block);
+                });
+
             this.panelOpenState = true;
-            this.listData = new MatTableDataSource(EventData);
+            this.listData = new MatTableDataSource(sortedEvents);
             this.listData.sort = this.sort;
             this.listData.paginator = this.paginator;
             this.listData.filterPredicate = (data, filter) => {
@@ -94,7 +100,7 @@ export class EventsListComponent implements OnInit {
 
     private static printBlock(block, numberLast) {
         let number = block.number;
-        let child = (numberLast > number) ? (number + 1): 'n.a.';
+        let child = (numberLast > number) ? (number + 1) : 'n.a.';
         let current = (number);
         let parent = (number > 0) ? (number - 1) : "0";
         let result = ''
@@ -117,10 +123,10 @@ export class EventsListComponent implements OnInit {
             let _that = this;
             block.transactions.forEach(function (trxHash) {
                 if (0 === index) {
-                    result +='Transactions : ';
+                    result += 'Transactions : ';
                     result += trxHash + '<br/>';
                 } else {
-                    result +='                    ';
+                    result += '                    ';
                     result += trxHash + '<br/>';
                 }
                 index++;
@@ -143,23 +149,23 @@ export class EventsListComponent implements OnInit {
         // Print transaction details
         let contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
         return ''
-            +UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
-            +UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
-            +UtilsService.spaces('Block         : ') + (tx.blockNumber) + '<br/>'
-            +UtilsService.spaces('From          : ') + tx.from + '<br/>'
-            +UtilsService.spaces('To            : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            +UtilsService.spaces('Value         : ') + tx.value + '<br/>'
-            +UtilsService.spaces('Nonce         : ') + tx.nonce + '<br/>'
-            +UtilsService.spaces('Contract      : ') + contractAddress + '<br/>'
-            +UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
-            +UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
-            +UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
-            +UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/>'
-            +UtilsService.spaces('Input         : ') + '<br/><p>' + input + "</p>";
+            + UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
+            + UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
+            + UtilsService.spaces('Block         : ') + (tx.blockNumber) + '<br/>'
+            + UtilsService.spaces('From          : ') + tx.from + '<br/>'
+            + UtilsService.spaces('To            : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
+            + UtilsService.spaces('Value         : ') + tx.value + '<br/>'
+            + UtilsService.spaces('Nonce         : ') + tx.nonce + '<br/>'
+            + UtilsService.spaces('Contract      : ') + contractAddress + '<br/>'
+            + UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
+            + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
+            + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
+            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/>'
+            + UtilsService.spaces('Input         : ') + '<br/><p>' + input + "</p>";
     }
 
 
     panelMessage() {
-        return EventData.length > 0  ? 'Number of ' + EventData.length + ' events loaded' : 'Results - No events loaded';
+        return EventData.size > 0 ? 'Number of ' + EventData.size + ' events loaded' : 'Results - No events loaded';
     }
 }

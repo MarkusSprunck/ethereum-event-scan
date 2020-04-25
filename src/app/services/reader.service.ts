@@ -26,7 +26,7 @@ import {UtilsService} from './utils.service';
 import {Injectable} from "@angular/core";
 import {ProviderService} from "./provider.service";
 import {ActivatedRoute} from "@angular/router";
-import {EventData} from "./event-data";
+import {EthEvent, EventData} from "./event";
 
 const zlib = require('zlib');
 const blockies = require('blockies');
@@ -67,7 +67,7 @@ export class Reader {
 
     private isLoading = false;
     private _contractInstance = null;
-    public callbackUpdateUI: {(): void;};
+    public callbackUpdateUI: { (): void; };
 
     constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
@@ -108,14 +108,12 @@ export class Reader {
 
     }
 
-    setUpdateCallback( callback ) {
+    setUpdateCallback(callback) {
         this.callbackUpdateUI = callback;
     }
 
     reset() {
-        while (EventData.length > 0) {
-            EventData.pop();
-        }
+        EventData.clear();
         this.startBlock = this.startInitial;
         this._contractInstance = null;
     }
@@ -220,7 +218,7 @@ export class Reader {
         this.isLoading = true;
         let _that = this;
         let start = parseInt(this.startBlock);
-        let end =  (this.endBlock === "latest") ?  (this.entity.currentBlock) :  parseInt(this.endBlock);
+        let end = (this.endBlock === "latest") ? (this.entity.currentBlock) : parseInt(this.endBlock);
 
         // Store next block number for new events
         this.startBlock = '' + end;
@@ -238,7 +236,7 @@ export class Reader {
                     if (events.length > 0) {
                         let index = 0;
                         for (let event in events) {
-                            console.info("Load [" + start +".." +end +"] -> events.length="  + events.length );
+                            console.info("Load [" + start + ".." + end + "] -> events.length=" + events.length);
 
                             index++;
 
@@ -279,16 +277,17 @@ export class Reader {
                                     }).toDataURL());
                                 }
 
-                                EventData.unshift({
-                                    'name': eventName,
-                                    'block': '' + blockNumber,
-                                    'trxHash': trxHash,
-                                    'trxHashShort': UtilsService.truncate(trxHash, 12),
-                                    'key': keys,
-                                    'value': values,
-                                    'time': '',
-                                    'image': this.imageCache.get(eventName)
-                                });
+                                EventData.set(blockNumber + "_" + events[event].id,
+                                    new EthEvent(
+                                        '' + eventName,
+                                        '' + blockNumber,
+                                        '' + trxHash,
+                                        '' + UtilsService.truncate(trxHash, 12),
+                                        '' + keys,
+                                        '' + values,
+                                        '',
+                                        '' + this.imageCache.get(eventName))
+                                );
 
                                 _that.eventsImportSuccess = true;
                             }
@@ -299,10 +298,10 @@ export class Reader {
 
                 } else {
                     if (errors.message === "Returned error: query returned more than 10000 results") {
-                        let middle =  Math.round((start + end) / 2) ;
-                        console.info("Infura 10000 limit [" + start +".." +end +"] ->  [" + start +".." +middle +"] and [" + (middle + 1 ) +".." + end +"]");
-                        this.readEventsRange(start, middle , _that);
-                        this.readEventsRange(middle + 1 , end, _that);
+                        let middle = Math.round((start + end) / 2);
+                        console.info("Infura 10000 limit [" + start + ".." + end + "] ->  [" + start + ".." + middle + "] and [" + (middle + 1) + ".." + end + "]");
+                        this.readEventsRange(start, middle, _that);
+                        this.readEventsRange(middle + 1, end, _that);
                     }
                 }
             }
