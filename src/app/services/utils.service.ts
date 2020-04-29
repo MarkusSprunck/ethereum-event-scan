@@ -83,11 +83,11 @@ export class UtilsService {
     static updateURLParameter(key: string, oldValue: string, newValue: string) {
         let url = (new URL(window.location.href)).search;
         if (url === '') {
-            url = '?' + key + '=' + newValue;
+            url = '?' + key + '=' + encodeURIComponent(newValue);
         } else if (url.search(key + '=') > 0) {
-            url = url.replace(key + '=' + oldValue, key + '=' + newValue);
+            url = url.replace(key + '=' + encodeURIComponent(oldValue), key + '=' + encodeURIComponent(newValue));
         } else {
-            url = url.replace('?', '?' + key + '=' + newValue + '&');
+            url = url.replace('?', '?' + key + '=' + encodeURIComponent(newValue) + '&');
         }
         window.history.pushState('', '', url);
     }

@@ -15,30 +15,35 @@ img {
     flex: 0 0 15%;
     font-family: monospace;
     font-size: smaller;
+    line-height: 1.4;
 }
 
 .mat-column-block {
     flex: 0 0 10%;
     font-family: monospace;
     font-size: smaller;
+    line-height: 1.4;
 }
 
 .mat-column-trxHash {
     flex: 0 0 22%;
     font-family: monospace;
     font-size: smaller;
+    line-height: 1.4;
 }
 
 .mat-column-key {
     flex: 0 0 7%;
     font-family: monospace;
     font-size: smaller;
+    line-height: 1.4;
 }
 
 .mat-column-value {
     flex: 0 0 45%;
     font-family: monospace;
     font-size: smaller;
+    line-height: 1.4;
 }
 
 mat-form-field {
@@ -49,6 +54,12 @@ mat-form-field {
 mat-row, mat-header-row, mat-footer-row {
     align-items: center;
     align-items: flex-start;
+}
+
+mat-cell, mat-header-cell, mat-footer-cell {
+    min-height: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 mat-form-field {

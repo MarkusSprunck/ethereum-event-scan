@@ -51,11 +51,9 @@ export class EventsListComponent implements OnInit {
             let index = 0;
             block.transactions.forEach((trxHash) => {
                 if (0 === index) {
-                    result += 'Transactions : ';
-                    result += trxHash + '<br/>';
+                    result += 'Transactions : ' + trxHash + '<br/>';
                 } else {
-                    result += '                    ';
-                    result += trxHash + '<br/>';
+                    result += UtilsService.spaces('               ') + trxHash + '<br/>';
                 }
                 index++;
             });
@@ -67,10 +65,10 @@ export class EventsListComponent implements OnInit {
     private static printTrx(tx, receipt) {
 
         // Format input (in the case it is too long for one line)
-        let input = '&zwj;' + tx.input;
-        const width = 100;
+        let input = ' ' + tx.input;
+        const width = 3;
         for (let x = 1; (width * x) <= input.length; x++) {
-            input = input.slice(0, width * x) + '<br/>' + input.slice(width * x);
+            input = input.slice(0, width * x) + ' ' + input.slice(width * x);
         }
 
         // Print transaction details
@@ -87,8 +85,7 @@ export class EventsListComponent implements OnInit {
             + UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
             + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
             + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
-            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/>'
-            + UtilsService.spaces('Input         : ') + '<br/><p>' + input + '</p>';
+            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' +  input;
     }
 
 

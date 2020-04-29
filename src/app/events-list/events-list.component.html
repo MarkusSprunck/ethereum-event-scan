@@ -39,7 +39,7 @@
 
             <ng-container class="align-top" matColumnDef="trxHash">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
-                <mat-cell *matCellDef="let element" class="align-top"><a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
+                <mat-cell *matCellDef="let element" ><a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
                     <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
                 </a>
                 </mat-cell>

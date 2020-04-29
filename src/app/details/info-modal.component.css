@@ -5,4 +5,5 @@ mat-dialog-content {
 div {
     font-family: monospace;
     font-size: 0.8rem;
+    line-height: 1.4;
 }
