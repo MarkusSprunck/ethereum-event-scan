@@ -55,11 +55,11 @@ export class SettingsComponent implements OnInit {
 
     panelMessage() {
         if (!this.refresh) {
-            return 'Settings - Automatic refresh stopped';
+            return 'Automatic refresh stopped';
         } else if (this.lastBlock === 0) {
-            return 'Settings - Automatic refresh running';
+            return 'Automatic refresh running';
         } else {
-            return ('' + this.lastBlock + ' bock mined');
+            return ('Last Block ' + this.lastBlock + '');
         }
     }
 
@@ -85,8 +85,7 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
-                    this.panelOpenState = false;
-                } else {
+                 } else {
                     resolve({connected: false});
                 }
             }, 6000);
@@ -125,8 +124,6 @@ export class SettingsComponent implements OnInit {
         val = (val.length === 0) ? '0' : val;
         console.log('updateStartValue =>', this.startBlock, ' -> ', val);
         UtilsService.updateURLParameter('start', this.startBlock, val);
-        this.clearTable();
-        this.loadContractData();
         this.startBlock = val;
     }
 
@@ -135,7 +132,6 @@ export class SettingsComponent implements OnInit {
         console.log('updateProviderValue =>', this.provider, ' -> ', val);
         UtilsService.updateURLParameter('provider', this.provider, val);
         this.provider = val.trim();
-        this.clearTable();
         this.form.controls.provider.clearValidators();
         this.loadContractData();
     }
@@ -144,7 +140,6 @@ export class SettingsComponent implements OnInit {
         const val = this.form.get('endBlock').value;
         console.log('updateEndValue =>', this.endBlock, ' -> ', val);
         UtilsService.updateURLParameter('end', this.endBlock, val);
-        this.clearTable();
         this.endBlock = val;
         this.loadContractData();
 
@@ -177,7 +172,6 @@ export class SettingsComponent implements OnInit {
         } else {
             UtilsService.updateURLWithCompressedAbi(this.abi, val);
             this.abi = val;
-            this.clearTable();
             this.loadContractData();
         }
     }
@@ -215,5 +209,9 @@ export class SettingsComponent implements OnInit {
         this.form.controls.contract.clearValidators();
         this.form.controls.provider.clearValidators();
         this.loadContractData();
+    }
+
+    reloadPage() {
+        location.reload();
     }
 }
