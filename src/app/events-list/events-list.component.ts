@@ -104,7 +104,7 @@ export class EventsListComponent implements OnInit {
 
             this.panelOpenState = true;
 
-            this.listData = new MatTableDataSource([...sortedEvents, ...sortedEvents]);
+            this.listData = new MatTableDataSource([...sortedEvents]);
             // this.listData = new MatTableDataSource(sortedEvents);
 
             this.listData.sort = this.sort;
