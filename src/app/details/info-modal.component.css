@@ -1,9 +1,9 @@
 mat-dialog-content {
-    padding: 30px;
+    padding: 10px;
 }
 
 div {
     font-family: monospace;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     line-height: 1.4;
 }

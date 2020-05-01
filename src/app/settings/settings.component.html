@@ -10,28 +10,32 @@
             </mat-expansion-panel-header>
 
             <mat-form-field style="width: 100%;">
-                <label for="startBlock"></label><input (keyup.enter)="reloadPage()" (change)="updateStartValue()" [value]="startBlock" formControlName="startBlock" id="startBlock" matInput placeholder="Start" type="text">
+                <label for="startBlock"></label><input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock" formControlName="startBlock" id="startBlock"
+                                                       matInput placeholder="Start" type="text">
                 <button (mousedown)="startBlock='0'" *ngIf="startBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <label for="endBlock"></label><input (keyup.enter)="reloadPage()"  (change)="updateEndValue()" [value]="endBlock" formControlName="endBlock" id="endBlock" matInput placeholder="End" type="text">
+                <label for="endBlock"></label><input (change)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock" formControlName="endBlock" id="endBlock" matInput
+                                                     placeholder="End" type="text">
                 <button (mousedown)="endBlock='latest'" *ngIf="endBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <label for="provider"></label><input (keyup.enter)="reloadPage()" (change)="updateProviderValue()" [value]="provider" formControlName="provider" id="provider" matInput placeholder="Provider" type="text">
+                <label for="provider"></label><input (change)="updateProviderValue()" (keyup.enter)="reloadPage()" [value]="provider" formControlName="provider" id="provider"
+                                                     matInput placeholder="Provider" type="text">
                 <button (mousedown)="provider='http://127.0.0.1:8545'" *ngIf="provider" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
-                <label for="contract"></label><input (keyup.enter)="reloadPage()" (change)="updateContractValue()" [value]="contract" formControlName="contract" id="contract" matInput placeholder="Contract" type="text">
+                <label for="contract"></label><input (change)="updateContractValue()" (keyup.enter)="reloadPage()" [value]="contract" formControlName="contract" id="contract"
+                                                     matInput placeholder="Contract" type="text">
                 <button (mousedown)="contract=''" *ngIf="contract" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>
@@ -39,8 +43,9 @@
 
 
             <mat-form-field style="width: 100%;">
-                <label for="abi"></label><textarea (keyup.enter)="reloadPage()" (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize formControlName="abi"
-                                                   id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
+                <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" (keyup.enter)="reloadPage()"
+                                                   [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
+                                                   formControlName="abi" id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
                 <button (mousedown)="abi=''" *ngIf="abi" aria-label="Clear" mat-button mat-icon-button matSuffix>
                     <mat-icon>x</mat-icon>
                 </button>

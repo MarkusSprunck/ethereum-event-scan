@@ -52,6 +52,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatDialogModule} from '@angular/material/dialog';
 import {EventsListComponent} from './events-list/events-list.component';
 import {HighlightSearch} from './services/highlight-search.pipe';
+import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-responsive.module";
 
 @NgModule({
     declarations: [
@@ -94,6 +95,7 @@ import {HighlightSearch} from './services/highlight-search.pipe';
         MatCheckboxModule,
         MatOptionModule,
         MatDialogModule,
+        MatTableResponsiveModule,
     ],
     providers: [Reader, DecimalPipe],
     bootstrap: [AppComponent],

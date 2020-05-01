@@ -85,7 +85,7 @@ export class SettingsComponent implements OnInit {
             setTimeout(() => {
                 if (this.connected) {
                     resolve(null);
-                 } else {
+                } else {
                     resolve({connected: false});
                 }
             }, 6000);
@@ -190,6 +190,10 @@ export class SettingsComponent implements OnInit {
         this.noOfRowsAbi = 15;
     }
 
+    reloadPage() {
+        location.reload();
+    }
+
     private loadContractData() {
         this.appComponent.control.setAbi(this.abi);
         this.appComponent.control.setStartBlock(this.startBlock);
@@ -209,9 +213,5 @@ export class SettingsComponent implements OnInit {
         this.form.controls.contract.clearValidators();
         this.form.controls.provider.clearValidators();
         this.loadContractData();
-    }
-
-    reloadPage() {
-        location.reload();
     }
 }

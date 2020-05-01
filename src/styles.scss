@@ -23,6 +23,8 @@ $cdark-theme: mat-light-theme($dark-primary, $dark-accent, $dark-warn);
 @include angular-material-theme($cdark-theme);
 
 
+@import './app/mat-table-responsive/mat-table-responsive.directive';
+
 body {
   padding-left: 0;
   padding-right: 0;

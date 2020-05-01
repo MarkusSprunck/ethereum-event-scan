@@ -242,17 +242,13 @@ export class Reader {
 
                                 // Prepare return values for this event
                                 const returnValues = events[event].returnValues;
-                                let keys = '';
+                                let values = '';
                                 for (const key in returnValues) {
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
-                                            keys += key.replace('_', '') + '\n';
+                                            values += '<b>' + key + ':</b>\n';
                                         }
                                     }
-                                }
-
-                                let values = '';
-                                for (const key in returnValues) {
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
                                             values += returnValues[key] + '\n';
@@ -282,7 +278,7 @@ export class Reader {
                                             '' + blockNumber,
                                             '' + trxHash,
                                             '' + UtilsService.break(trxHash, 33),
-                                            '' + keys,
+                                            '',
                                             '' + values,
                                             '',
                                             '' + this.imageCache.get(eventName))

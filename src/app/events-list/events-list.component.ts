@@ -16,10 +16,15 @@ import {EventData} from '../services/event';
 export class EventsListComponent implements OnInit {
 
     listData: MatTableDataSource<any>;
-    displayedColumns: string[] = ['name', 'block', 'trxHash', 'key', 'value'];
+
+    displayedColumns: string[] = ['image', 'name', 'block', 'trxHash', 'value'];
+
     @ViewChild(MatSort) sort: MatSort;
+
     @ViewChild(MatPaginator) paginator: MatPaginator;
+
     searchKey: string;
+
     panelOpenState = false;
 
     constructor(
@@ -85,7 +90,7 @@ export class EventsListComponent implements OnInit {
             + UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
             + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
             + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
-            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' +  input;
+            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' + input;
     }
 
 
@@ -98,7 +103,10 @@ export class EventsListComponent implements OnInit {
                 });
 
             this.panelOpenState = true;
-            this.listData = new MatTableDataSource(sortedEvents);
+
+            this.listData = new MatTableDataSource([...sortedEvents, ...sortedEvents]);
+            // this.listData = new MatTableDataSource(sortedEvents);
+
             this.listData.sort = this.sort;
             this.listData.paginator = this.paginator;
             this.listData.filterPredicate = (data, filter) => {
@@ -128,6 +136,7 @@ export class EventsListComponent implements OnInit {
         dialogConfig.disableClose = false;
         dialogConfig.autoFocus = true;
         dialogConfig.width = '50rem';
+        dialogConfig.maxWidth = '100vw';
 
         if (blockNumber != null && blockNumber.length > 0) {
             const that = this;

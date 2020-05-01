@@ -20,50 +20,60 @@
             </mat-form-field>
         </div>
 
-        <mat-table [dataSource]="listData" matSort>
+        <table [dataSource]="listData" mat-table matSort matTableResponsive>
+
+
+            <ng-container matColumnDef="image">
+                <th *matHeaderCellDef mat-header-cell></th>
+                <td *matCellDef="let element" mat-cell>
+                    <div><img [src]="element.image" alt=""/></div>
+                </td>
+            </ng-container>
+
 
             <ng-container matColumnDef="name">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-                <mat-cell *matCellDef="let element"><img [src]="element.image" alt=""/>&nbsp;
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+                <td *matCellDef="let element" mat-cell>
                     <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
-                </mat-cell>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="block">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Block</mat-header-cell>
-                <mat-cell *matCellDef="let element"><a (click)="openDetailsDialog($event, element.block, '')" class="table-link" href="" rel="nofollow">
-                    <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
-                </a>
-                </mat-cell>
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>Block</th>
+                <td *matCellDef="let element" mat-cell>
+                    <a (click)="openDetailsDialog($event, element.block, '')" class="table-link" href="" rel="nofollow">
+                        <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
+                    </a>
+                </td>
             </ng-container>
 
-            <ng-container class="align-top" matColumnDef="trxHash">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Trx</mat-header-cell>
-                <mat-cell *matCellDef="let element" ><a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
-                    <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
-                </a>
-                </mat-cell>
+            <ng-container matColumnDef="trxHash">
+                <th *matHeaderCellDef mat-header-cell mat-sort-header>Trx</th>
+                <td *matCellDef="let element" mat-cell>
+                    <a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
+                        <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                    </a>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="key">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>key</mat-header-cell>
-                <mat-cell *matCellDef="let element">
+                <th *matHeaderCellDef mat-header-cell>Key</th>
+                <td *matCellDef="let element" mat-cell>
                     <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
-                </mat-cell>
+                </td>
             </ng-container>
 
             <ng-container matColumnDef="value">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>Value</mat-header-cell>
-                <mat-cell *matCellDef="let element">
+                <th *matHeaderCellDef mat-header-cell>Value</th>
+                <td *matCellDef="let element" mat-cell>
                     <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
-                </mat-cell>
+                </td>
             </ng-container>
 
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <tr *matHeaderRowDef="displayedColumns;" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
 
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-
-        </mat-table>
+        </table>
 
         <mat-paginator [pageSizeOptions]="[5, 10, 50, 100, 500]" [pageSize]="5" showFirstLastButtons></mat-paginator>
 
