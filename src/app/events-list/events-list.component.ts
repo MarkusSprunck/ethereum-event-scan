@@ -1,12 +1,15 @@
-import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {InfoModalComponent} from '../details/info-modal.component';
-import {UtilsService} from '../services/utils.service';
 import {Reader} from '../services/reader.service';
 import {EventData} from '../services/event';
+import {UtilsService} from "../services/utils.service";
+import {FormBuilder, FormGroup} from "@angular/forms";
+import {ActivatedRoute} from "@angular/router";
+import {ProviderService} from "../services/provider.service";
 
 @Component({
     selector: 'app-events-list',
@@ -14,6 +17,8 @@ import {EventData} from '../services/event';
     styleUrls: ['./events-list.component.css']
 })
 export class EventsListComponent implements OnInit {
+
+    public formSearch: FormGroup;
 
     listData: MatTableDataSource<any>;
 
@@ -23,82 +28,30 @@ export class EventsListComponent implements OnInit {
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    searchKey: string;
+    @Input() searchKey: string;
 
     panelOpenState = false;
 
-    screenHeight = 1024;
-
     screenWidth = 1024;
 
-    constructor(
-        private reader: Reader,
-        public dialog: MatDialog) {
+    constructor(private fb: FormBuilder,
+                private reader: Reader,
+                public dialog: MatDialog,
+                private route: ActivatedRoute) {
+
+        this.route.queryParams.subscribe(params => {
+            if (params.searchKey) {
+                this.searchKey = params.searchKey;
+            }
+        });
     }
-
-    private static printBlock(block, numberLast) {
-        const blockNumber = block.number;
-        const child = (numberLast > blockNumber) ? (blockNumber + 1) : 'n.a.';
-        const current = (blockNumber);
-        const parent = (blockNumber > 0) ? (blockNumber - 1) : '0';
-        let result = ''
-            + UtilsService.spaces('Number       : ') + current + '<br/>'
-            + UtilsService.spaces('Parent       : ') + parent + '<br/>'
-            + UtilsService.spaces('Child        : ') + child + '<br/>'
-            + UtilsService.spaces('Time         : ') + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
-            + UtilsService.spaces('Current hash : ') + block.hash + '<br/>'
-            + UtilsService.spaces('Sha3Uncles   : ') + block.sha3Uncles + '<br/>'
-            + UtilsService.spaces('StateRoot    : ') + block.stateRoot + '<br/>'
-            + UtilsService.spaces('Miner        : ') + block.miner + '<br/>'
-            + UtilsService.spaces('ExtraData    : ') + block.extraData + '<br/>'
-            + UtilsService.spaces('Size         : ') + block.size + '<br/>'
-            + UtilsService.spaces('GasUsed      : ') + block.gasUsed + '<br/>'
-            + UtilsService.spaces('TrxCount     : ') + block.transactions.length + '<br/>';
-
-        // print all transactions of block
-        if (block.transactions.length > 0) {
-            let index = 0;
-            block.transactions.forEach((trxHash) => {
-                if (0 === index) {
-                    result += 'Transactions : ' + trxHash + '<br/>';
-                } else {
-                    result += UtilsService.spaces('               ') + trxHash + '<br/>';
-                }
-                index++;
-            });
-        }
-
-        return result;
-    }
-
-    private static printTrx(tx, receipt) {
-
-        // Format input (in the case it is too long for one line)
-        let input = ' ' + tx.input;
-        const width = 3;
-        for (let x = 1; (width * x) <= input.length; x++) {
-            input = input.slice(0, width * x) + ' ' + input.slice(width * x);
-        }
-
-        // Print transaction details
-        const contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
-        return ''
-            + UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
-            + UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
-            + UtilsService.spaces('Block         : ') + (tx.blockNumber) + '<br/>'
-            + UtilsService.spaces('From          : ') + tx.from + '<br/>'
-            + UtilsService.spaces('To            : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            + UtilsService.spaces('Value         : ') + tx.value + '<br/>'
-            + UtilsService.spaces('Nonce         : ') + tx.nonce + '<br/>'
-            + UtilsService.spaces('Contract      : ') + contractAddress + '<br/>'
-            + UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
-            + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
-            + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
-            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' + input;
-    }
-
 
     ngOnInit() {
+
+        this.formSearch = this.fb.group({
+            searchKey: [''],
+        });
+
         this.reader.setUpdateCallback(() => {
 
             const sortedEvents = Array.from(EventData.values())
@@ -109,20 +62,23 @@ export class EventsListComponent implements OnInit {
             this.panelOpenState = true;
 
             this.listData = new MatTableDataSource([...sortedEvents]);
-            // this.listData = new MatTableDataSource(sortedEvents);
-
             this.listData.sort = this.sort;
             this.listData.paginator = this.paginator;
+            this.listData.filter = this.searchKey;
             this.listData.filterPredicate = (data, filter) => {
                 return this.displayedColumns.some(ele => {
                     return data[ele].toLowerCase().indexOf(filter) !== -1;
                 });
             };
         });
+
     }
 
-    onSearchClear() {
-        this.searchKey = '';
+    updateSearchValue() {
+        const val = this.formSearch.get('searchKey').value;
+        console.log('searchKey =>', this.searchKey, ' -> ', val);
+        UtilsService.updateURLParameter('searchKey', this.searchKey, val);
+        this.searchKey = val;
         this.applyFilter();
     }
 
@@ -149,7 +105,7 @@ export class EventsListComponent implements OnInit {
                     dialogConfig.data = {
                         block: blockNumber,
                         transaction: trxNumber,
-                        content: EventsListComponent.printBlock(block, that.reader.getCurrentBlockNumber())
+                        content: InfoModalComponent.printBlock(block, that.reader.getCurrentBlockNumber())
                     };
                     that.dialog.open(InfoModalComponent, dialogConfig);
                 });
@@ -162,7 +118,7 @@ export class EventsListComponent implements OnInit {
                     dialogConfig.data = {
                         block: blockNumber,
                         transaction: trxNumber,
-                        content: EventsListComponent.printTrx(tx, receipt)
+                        content: InfoModalComponent.printTrx(tx, receipt)
                     };
                     that.dialog.open(InfoModalComponent, dialogConfig);
                 });
@@ -183,9 +139,8 @@ export class EventsListComponent implements OnInit {
     }
 
 
-    @HostListener('window:resize', ['$event'])
-    onResize(event?) {
-        this.screenHeight = window.innerHeight;
+    @HostListener('window:resize')
+    onResize() {
         this.screenWidth = window.innerWidth;
     }
 
