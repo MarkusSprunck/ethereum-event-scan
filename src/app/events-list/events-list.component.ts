@@ -32,7 +32,7 @@ export class EventsListComponent implements OnInit {
 
     panelOpenState = false;
 
-    screenWidth = 1024;
+    screenWidth = window.innerWidth;
 
     constructor(private fb: FormBuilder,
                 private reader: Reader,

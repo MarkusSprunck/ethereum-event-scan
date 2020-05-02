@@ -26,54 +26,49 @@ img {
 
     td.mat-column-image {
         width: 7%;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
-        font-size: small;
         padding-right: 6px;
         padding-left: 6px;
     }
 
     td.mat-column-name {
         width: 15%;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
-        font-size: small;
     }
 
     td.mat-column-block {
         width: 8%;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
-        font-size: small;
         padding-right: 6px;
         padding-left: 6px;
     }
 
     td.mat-column-trxHash {
         width: 26%;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
-        font-size: small;
         padding-right: 6px;
         padding-left: 6px;
     }
 
     td.mat-column-value {
         width: 45%;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
         white-space: pre;
-        font-size: small;
         padding-right: 6px;
         padding-left: 6px;
     }
@@ -95,29 +90,56 @@ img {
     }
 }
 
+@media (min-width: 769px) {
+
+    td.mat-column-image {
+        font-size: x-small;
+    }
+
+    td.mat-column-name {
+        font-size: x-small;
+    }
+
+    td.mat-column-block {
+        font-size: x-small;
+    }
+
+    td.mat-column-trxHash {
+        font-size: x-small;
+    }
+
+    td.mat-column-value {
+        font-size: x-small;
+    }
+
+}
 
 @media (min-width: 1025px) {
 
     td.mat-column-image {
-        font-size: medium;
+        font-size: small;
     }
 
     td.mat-column-name {
-        font-size: medium;
+        font-size: small;
     }
 
     td.mat-column-block {
-        font-size: medium;
+        font-size: small;
     }
 
     td.mat-column-trxHash {
-        font-size: medium;
+        font-size: small;
     }
 
     td.mat-column-value {
-        font-size: medium;
+        font-size: small;
     }
 
+}
+
+.mat-paginator, .mat-paginator-page-size .mat-select-trigger {
+    font-size: small;
 }
 
 .table-link {

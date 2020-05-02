@@ -246,7 +246,7 @@ export class Reader {
                                 for (const key in returnValues) {
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
-                                            values += '<b>' + key + ':</b>\n';
+                                            values += '<b>' + key.replace('_', '') + ':</b>\n';
                                         }
                                     }
                                     if (returnValues.hasOwnProperty(key)) {

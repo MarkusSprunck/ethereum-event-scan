@@ -37,9 +37,9 @@
         text-align: left;
         align-content: end;
         word-break: break-word;
-        font-size: medium;
         white-space: pre;
-        font-family: monospace;
+        font-family:  Consolas, Menlo, Monaco, monospace;
+        font-size: x-small;
 
         & > * {
           grid-column: 2;
