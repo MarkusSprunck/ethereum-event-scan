@@ -1,5 +1,16 @@
-.mat-toolbar-row, .mat-toolbar-single-row {
-    height: 54px;
+.mat-toolbar-row {
+    height: 58px;
+}
+
+.title {
+    margin-left: 0;
+}
+
+.title-sub {
+    margin-left: auto;
+    margin-right: 0;
+    font-weight: lighter;
+    font-size: medium;
 }
 
 div {
@@ -7,3 +18,4 @@ div {
     padding-right: 0.5rem;
     padding-top: 0.5rem;
 }
+

@@ -51,7 +51,8 @@
                 <th *matHeaderCellDef mat-header-cell mat-sort-header>Trx</th>
                 <td *matCellDef="let element" mat-cell>
                     <a (click)="openDetailsDialog($event, '', element.trxHash)" class="table-link" href="" rel="nofollow">
-                        <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                        <div *ngIf="screenWidth >= 769" innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                        <div *ngIf="screenWidth < 769" innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
                     </a>
                 </td>
             </ng-container>

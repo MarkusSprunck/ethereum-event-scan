@@ -12,33 +12,21 @@
             <mat-form-field style="width: 100%;">
                 <label for="startBlock"></label><input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock" formControlName="startBlock" id="startBlock"
                                                        matInput placeholder="Start" type="text">
-                <button (mousedown)="startBlock='0'" *ngIf="startBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
                 <label for="endBlock"></label><input (change)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock" formControlName="endBlock" id="endBlock" matInput
                                                      placeholder="End" type="text">
-                <button (mousedown)="endBlock='latest'" *ngIf="endBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
                 <label for="provider"></label><input (change)="updateProviderValue()" (keyup.enter)="reloadPage()" [value]="provider" formControlName="provider" id="provider"
                                                      matInput placeholder="Provider" type="text">
-                <button (mousedown)="provider='http://127.0.0.1:8545'" *ngIf="provider" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
             </mat-form-field>
 
             <mat-form-field style="width: 100%;">
                 <label for="contract"></label><input (change)="updateContractValue()" (keyup.enter)="reloadPage()" [value]="contract" formControlName="contract" id="contract"
                                                      matInput placeholder="Contract" type="text">
-                <button (mousedown)="contract=''" *ngIf="contract" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
             </mat-form-field>
 
 
@@ -46,13 +34,10 @@
                 <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" (keyup.enter)="reloadPage()"
                                                    [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
                                                    formControlName="abi" id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
-                <button (mousedown)="abi=''" *ngIf="abi" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
-            </mat-form-field>
+                </mat-form-field>
 
             <div style="width: 100%;">
-                <mat-checkbox (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh" layout-align="end">Update
+                <mat-checkbox (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh" layout-align="end">Automatic update
                 </mat-checkbox>
             </div>
 

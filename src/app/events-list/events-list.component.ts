@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
@@ -26,6 +26,10 @@ export class EventsListComponent implements OnInit {
     searchKey: string;
 
     panelOpenState = false;
+
+    screenHeight = 1024;
+
+    screenWidth = 1024;
 
     constructor(
         private reader: Reader,
@@ -178,5 +182,11 @@ export class EventsListComponent implements OnInit {
         return message;
     }
 
+
+    @HostListener('window:resize', ['$event'])
+    onResize(event?) {
+        this.screenHeight = window.innerHeight;
+        this.screenWidth = window.innerWidth;
+    }
 
 }
