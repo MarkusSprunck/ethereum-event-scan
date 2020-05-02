@@ -28,7 +28,7 @@ export class EventsListComponent implements OnInit {
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    @Input() searchKey: string;
+    @Input() searchKey: string = '';
 
     panelOpenState = false;
 
@@ -42,6 +42,8 @@ export class EventsListComponent implements OnInit {
         this.route.queryParams.subscribe(params => {
             if (params.searchKey) {
                 this.searchKey = params.searchKey;
+            } else {
+                this.searchKey = '';
             }
         });
     }
