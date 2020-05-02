@@ -3,7 +3,8 @@ mat-dialog-content {
 }
 
 div {
-    font-family:  Consolas, Menlo, Monaco, monospace;
+    font-family: Consolas, Menlo, Monaco, monospace;
     font-weight: lighter;
+    font-size: x-small;
     line-height: 1.4;
 }

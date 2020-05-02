@@ -19,11 +19,7 @@ export class InfoModalComponent {
                 @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     }
 
-    onCloseClick(): void {
-        this.dialogRef.close();
-    }
-
-    public static printBlock(block, numberLast) {
+    public static printBlock(block: any, numberLast: any) {
         const blockNumber = block.number;
         const child = (numberLast > blockNumber) ? (blockNumber + 1) : 'n.a.';
         const current = (blockNumber);
@@ -45,7 +41,7 @@ export class InfoModalComponent {
         // print all transactions of block
         if (block.transactions.length > 0) {
             let index = 0;
-            block.transactions.forEach((trxHash) => {
+            block.transactions.forEach((trxHash: any) => {
                 if (0 === index) {
                     result += 'Transactions : ' + trxHash + '<br/>';
                 } else {
@@ -58,7 +54,7 @@ export class InfoModalComponent {
         return result;
     }
 
-    public static printTrx(tx, receipt) {
+    public static printTrx(tx: any, receipt: any) {
 
         // Format input (in the case it is too long for one line)
         let input = ' ' + tx.input;
@@ -82,6 +78,10 @@ export class InfoModalComponent {
             + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
             + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
             + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' + input;
+    }
+
+    onCloseClick(): void {
+        this.dialogRef.close();
     }
 
 }

@@ -9,7 +9,6 @@ import {EventData} from '../services/event';
 import {UtilsService} from "../services/utils.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute} from "@angular/router";
-import {ProviderService} from "../services/provider.service";
 
 @Component({
     selector: 'app-events-list',
@@ -77,11 +76,13 @@ export class EventsListComponent implements OnInit {
     }
 
     updateSearchValue() {
-        const val = this.formSearch.get('searchKey').value;
-        console.log('searchKey =>', this.searchKey, ' -> ', val);
-        UtilsService.updateURLParameter('searchKey', this.searchKey, val);
-        this.searchKey = val;
-        this.applyFilter();
+        const val = this.formSearch.get('searchKey');
+        if (val) {
+            console.log('searchKey =>', this.searchKey, ' -> ', val);
+            UtilsService.updateURLParameter('searchKey', this.searchKey, val.value);
+            this.searchKey = val.value;
+            this.applyFilter();
+        }
     }
 
     applyFilter() {
@@ -97,13 +98,13 @@ export class EventsListComponent implements OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = false;
         dialogConfig.autoFocus = true;
-        dialogConfig.width = '50rem';
-        dialogConfig.maxWidth = '100vw';
+        dialogConfig.maxWidth = '90vw';
+        dialogConfig.maxHeight = '90vh';
 
         if (blockNumber != null && blockNumber.length > 0) {
             const that = this;
             this.reader.entity.web3.eth.getBlock(blockNumber,
-                (error, block) => {
+                (error: Error, block: any) => {
                     dialogConfig.data = {
                         block: blockNumber,
                         transaction: trxNumber,
@@ -115,8 +116,8 @@ export class EventsListComponent implements OnInit {
 
         if (trxNumber != null && trxNumber.length > 0) {
             const that = this;
-            this.reader.entity.web3.eth.getTransaction(trxNumber).then(tx => {
-                this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then(receipt => {
+            this.reader.entity.web3.eth.getTransaction(trxNumber).then((tx: any) => {
+                this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then((receipt: any) => {
                     dialogConfig.data = {
                         block: blockNumber,
                         transaction: trxNumber,

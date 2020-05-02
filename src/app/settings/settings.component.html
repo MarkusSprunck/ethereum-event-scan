@@ -34,7 +34,7 @@
                 <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" (keyup.enter)="reloadPage()"
                                                    [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
                                                    formControlName="abi" id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
-                </mat-form-field>
+            </mat-form-field>
 
             <div style="width: 100%;">
                 <mat-checkbox (click)="updateRefreshValue()" [(ngModel)]="refresh" [color]="'primary'" formControlName="refresh" id="refresh" layout-align="end">Automatic update

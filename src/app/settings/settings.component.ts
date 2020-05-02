@@ -120,59 +120,69 @@ export class SettingsComponent implements OnInit {
     }
 
     updateStartValue() {
-        let val = this.form.get('startBlock').value;
-        val = (val.length === 0) ? '0' : val;
-        console.log('updateStartValue =>', this.startBlock, ' -> ', val);
-        UtilsService.updateURLParameter('start', this.startBlock, val);
-        this.startBlock = val;
+        let val = this.form.get('startBlock');
+        if (val) {
+            const result: string = (val.value.length === 0) ? '0' : val.value;
+            console.log('updateStartValue =>', this.startBlock, ' -> ', result);
+            UtilsService.updateURLParameter('start', this.startBlock, result);
+            this.startBlock = result
+        }
     }
 
     updateProviderValue() {
-        const val = this.form.get('provider').value;
-        console.log('updateProviderValue =>', this.provider, ' -> ', val);
-        UtilsService.updateURLParameter('provider', this.provider, val);
-        this.provider = val.trim();
-        this.form.controls.provider.clearValidators();
-        this.loadContractData();
+        const val = this.form.get('provider');
+        if (val) {
+            console.log('updateProviderValue =>', this.provider, ' -> ', val);
+            UtilsService.updateURLParameter('provider', this.provider, val.value);
+            this.provider = val.value.trim();
+            this.form.controls.provider.clearValidators();
+            this.loadContractData();
+        }
     }
 
-    updateEndValue() {
-        const val = this.form.get('endBlock').value;
-        console.log('updateEndValue =>', this.endBlock, ' -> ', val);
-        UtilsService.updateURLParameter('end', this.endBlock, val);
-        this.endBlock = val;
-        this.loadContractData();
 
+    updateEndValue() {
+        const val = this.form.get('endBlock');
+        if (val) {
+            console.log('updateEndValue =>', this.endBlock, ' -> ', val);
+            UtilsService.updateURLParameter('end', this.endBlock, val.value);
+            this.endBlock = val.value;
+            this.loadContractData();
+        }
     }
 
     updateContractValue() {
-        const val = this.form.get('contract').value;
-        console.log('updateContractValue =>', this.contract, ' -> ', val);
-        if (this.provider.length > 0 && val.trim() > 0 && this.abi.length === 0) {
-            UtilsService.fetchABIFromVerifiedContract(val.trim(), (value) => {
-                    this.form.controls.abi.setValue(value);
-                    this.updateContract(val);
-                }
-            );
-        } else {
-            this.updateContract(val);
+        const val = this.form.get('contract');
+        if (val) {
+            console.log('updateContractValue =>', this.contract, ' -> ', val);
+            if (this.provider.length > 0 && val.value.trim() > 0 && this.abi.length === 0) {
+                UtilsService.fetchABIFromVerifiedContract(val.value.trim(), (value: any) => {
+                        this.form.controls.abi.setValue(value);
+                        this.updateContract(val.value);
+                    }
+                );
+            } else {
+                this.updateContract(val.value);
+            }
         }
     }
 
     updateABIValue() {
-        const val = this.form.get('abi').value;
-        console.log('updateABIValue =>', this.abi, ' -> ', val);
-        if (this.provider.length > 0 && this.contract.trim().length > 0 && val.trim().length === 0) {
-            UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value) => {
-                    UtilsService.updateURLWithCompressedAbi(this.abi, value);
-                    this.form.controls.abi.setValue(value);
-                    this.abi = value;
-                }
-            );
-        } else {
-            UtilsService.updateURLWithCompressedAbi(this.abi, val);
-            this.abi = val;
-            this.loadContractData();
+        const val = this.form.get('abi');
+        if (val) {
+            console.log('updateABIValue =>', this.abi, ' -> ', val);
+            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
+                UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: any) => {
+                        UtilsService.updateURLWithCompressedAbi(this.abi, value);
+                        this.form.controls.abi.setValue(value);
+                        this.abi = value;
+                    }
+                );
+            } else {
+                UtilsService.updateURLWithCompressedAbi(this.abi, val.value);
+                this.abi = val.value;
+                this.loadContractData();
+            }
         }
     }
 
@@ -206,7 +216,7 @@ export class SettingsComponent implements OnInit {
         this.appComponent.control.reset();
     }
 
-    private updateContract(val) {
+    private updateContract(val: string) {
         UtilsService.updateURLParameter('contract', this.contract, val.trim());
         this.contract = val.trim();
         this.clearTable();

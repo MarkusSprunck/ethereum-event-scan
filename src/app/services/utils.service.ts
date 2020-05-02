@@ -32,7 +32,7 @@ export class UtilsService {
     /**
      * Creates a human readable time format
      */
-    static convertTimestamp(time) {
+    static convertTimestamp(time: number) {
         const d = new Date(time * 1000);
         const yy = d.getFullYear();
         const MM = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -46,7 +46,7 @@ export class UtilsService {
     /**
      * Truncate middle part of string in the case it exceeds the maximum length
      */
-    static truncate(str, maxLength) {
+    static truncate(str: string, maxLength: number) {
         if (str.length <= maxLength) {
             return str;
         }
@@ -58,7 +58,7 @@ export class UtilsService {
     /**
      * Truncate middle part of string in the case it exceeds the maximum length
      */
-    static break(str, maxLength) {
+    static break(str: string, maxLength: number) {
         if (str.length < maxLength * 2) {
             return str;
         }
@@ -67,10 +67,10 @@ export class UtilsService {
 
     static updateURLWithCompressedAbi(oldValue: string, newValue: string) {
         const that = this;
-        zlib.deflate(oldValue, (err, oldBuffer) => {
+        zlib.deflate(oldValue, (err: Error | null, oldBuffer: Buffer) => {
             if (!err) {
                 const oldString = encodeURIComponent(oldBuffer.toString('base64'));
-                zlib.deflate(newValue, (error, newBuffer) => {
+                zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
                     if (!error) {
                         const newString = encodeURIComponent(newBuffer.toString('base64'));
                         that.updateURLParameter('abi', oldString, newString);
@@ -92,7 +92,7 @@ export class UtilsService {
         window.history.pushState('', '', url);
     }
 
-    static fetchABIFromVerifiedContract(contract, callback) {
+    static fetchABIFromVerifiedContract(contract: string, callback: any) {
 
         const domainURLs = [
             'http://api.etherscan.io',
@@ -129,7 +129,7 @@ export class UtilsService {
     /**
      *  Replaces all spaces with non breaking spaces in html
      */
-    static spaces(value) {
+    static spaces(value: string) {
         return value.replace(/\s/g, '&nbsp;');
     }
 

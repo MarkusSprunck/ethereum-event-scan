@@ -33,7 +33,7 @@ import {Injectable} from '@angular/core';
 })
 export class ProviderService {
 
-    public web3 = null;
+    public web3: any = null;
 
     public currentBlock = 0;
 
@@ -44,7 +44,7 @@ export class ProviderService {
     /**
      * Create connection to blockchain
      */
-    setProvider(providerUrl) {
+    setProvider(providerUrl: string) {
 
         this.connected = false;
         this.web3 = null;
@@ -75,7 +75,7 @@ export class ProviderService {
             return false;
         }
 
-        this.web3.eth.isSyncing((error, sync) => {
+        this.web3.eth.isSyncing((error: Error, sync: any) => {
             if (!error && sync) {
                 this.currentBlock = sync.currentBlock;
                 this.highestBlock = sync.highestBlock;

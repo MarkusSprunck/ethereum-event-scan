@@ -60,12 +60,12 @@ export class Reader {
     public abi = '';
     public provider = '';
     public refresh = true;
-    public abiBase64Data;
+    public abiBase64Data: string;
     public runningJobs = 0;
     public callbackUpdateUI: () => void; // { (): void; };
     private imageCache = new Map<string, string>();
     private isLoading = false;
-    private contractInstance = null;
+    private contractInstance: any = null;
 
     constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
@@ -104,7 +104,7 @@ export class Reader {
 
     }
 
-    setUpdateCallback(callback) {
+    setUpdateCallback(callback: any) {
         this.callbackUpdateUI = callback;
     }
 
@@ -114,15 +114,15 @@ export class Reader {
         this.contractInstance = null;
     }
 
-    setStartBlock(startBlock) {
+    setStartBlock(startBlock: string) {
         this.startBlock = startBlock;
     }
 
-    setEndBlock(endBlock) {
+    setEndBlock(endBlock: string) {
         this.endBlock = endBlock;
     }
 
-    setAbi(abi) {
+    setAbi(abi: string) {
         this.abi = abi;
         this.createActiveContract();
     }
@@ -154,7 +154,7 @@ export class Reader {
         if (this.abiBase64Data.length > 0) {
             const buf = Buffer.from(this.abiBase64Data, 'base64');
             const that = this;
-            zlib.unzip(buf, (err, buffer) => {
+            zlib.unzip(buf, (err: Error | null, buffer: Buffer) => {
                 if (!err) {
                     that.abi = buffer.toString('utf8');
                     if (that.contract.length > 0 && that.abi.length > 0) {
@@ -192,7 +192,7 @@ export class Reader {
      */
     getCurrentBlockNumber() {
         if (this.entity.isConnectionWorking() && !this.entity.isSyncing()) {
-            this.entity.web3.eth.getBlockNumber().then(data => {
+            this.entity.web3.eth.getBlockNumber().then((data: number) => {
                 this.entity.currentBlock = data;
             });
         }
@@ -229,7 +229,7 @@ export class Reader {
             'allEvents', {
                 fromBlock: start,
                 toBlock: end
-            }, (errors, events) => {
+            }, (errors: Error, events: any) => {
 
                 if (!errors) {
                     if (events.length > 0) {
@@ -237,7 +237,6 @@ export class Reader {
                         for (const event in events) {
                             if (events.hasOwnProperty(event)) {
                                 console.log('Load [' + start + '..' + end + '] -> events.length=' + events.length);
-
                                 index++;
 
                                 // Prepare return values for this event
