@@ -32,12 +32,11 @@
 
       td.mat-cell:not(.mat-column-actions) {
         display: grid;
-        grid-template-columns: 10% 90%;
+        grid-template-columns: 15% 85%;
         padding: 0.1rem;
         text-align: left;
         align-content: end;
         word-break: break-word;
-        white-space: pre;
         font-family: Consolas, Menlo, Monaco, monospace;
         font-size: x-small;
 

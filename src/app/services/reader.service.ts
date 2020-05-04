@@ -245,12 +245,12 @@ export class Reader {
                                 for (const key in returnValues) {
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
-                                            values += '<b>' + key.replace('_', '') + ':</b>\n';
+                                            values += '<b>' + key.replace('_', '') + ':</b></br>';
                                         }
                                     }
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
-                                            values += returnValues[key] + '\n';
+                                            values += returnValues[key].replace('\n', '</br>') + '</br>';
                                         }
                                     }
                                 }
