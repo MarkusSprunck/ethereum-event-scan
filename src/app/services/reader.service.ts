@@ -60,6 +60,7 @@ export class Reader {
     public abi = '';
     public provider = '';
     public refresh = true;
+    public skipUpdate = false;
     public abiBase64Data: string;
     public runningJobs = 0;
     public callbackUpdateUI: () => void; // { (): void; };
@@ -95,6 +96,7 @@ export class Reader {
 
             if (params.refresh) {
                 this.refresh = params.refresh === 'true';
+                this.skipUpdate = params.refresh !== 'true';
             }
 
             this.entity.setProvider(this.provider);
@@ -136,13 +138,13 @@ export class Reader {
     }
 
     fetchCurrentBlockNumber() {
-        if (this.refresh && this.entity.isConnectionWorking()) {
+        if (!this.skipUpdate && this.entity.isConnectionWorking()) {
             this.getCurrentBlockNumber();
         }
     }
 
     fetchEvents() {
-        if (this.refresh && this.entity.isConnectionWorking()) {
+        if (!this.skipUpdate && this.entity.isConnectionWorking()) {
             this.getPastEvents();
         }
     }
@@ -205,20 +207,19 @@ export class Reader {
     getPastEvents() {
 
         // Just in the case there is a valid contract
-        if (this.contractInstance === null ||
-            +(this.startBlock) > +(this.entity.currentBlock) ||
-            this.isLoading) {
+        if (this.contractInstance === null || +(this.startBlock) > +(this.entity.currentBlock) || this.isLoading) {
             return;
         }
 
         this.isLoading = true;
-        const that = this;
         const start = parseInt(this.startBlock, 10);
         const end = (this.endBlock === 'latest') ? (this.entity.currentBlock) : parseInt(this.endBlock, 10);
 
         // Store next block number for new events
-        this.startBlock = '' + end;
-        this.readEventsRange(start, end, that);
+        if (start < this.entity.currentBlock) {
+            this.startBlock = '' + (end + 1);
+            this.readEventsRange(start, end, this);
+        }
         this.isLoading = false;
     }
 
@@ -236,7 +237,9 @@ export class Reader {
                         let index = 0;
                         for (const event in events) {
                             if (events.hasOwnProperty(event)) {
-                                console.log('Load [' + start + '..' + end + '] -> events.length=' + events.length);
+                                if (index === 0) {
+                                    console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + events.length);
+                                }
                                 index++;
 
                                 // Prepare return values for this event
