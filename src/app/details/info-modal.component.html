@@ -1,9 +1,13 @@
-<h2 mat-dialog-title>
-    {{data.block.length > 0 ? 'Block' : 'Transaction'}}
-</h2>
+<div class="fixActionRow">
 
-<div [innerHTML]="data.content" mat-dialog-content></div>
+    <h2 mat-dialog-title>Details</h2>
 
-<div mat-dialog-actions>
-    <button (click)="onCloseClick()" color="primary" mat-button>Close</button>
+    <inner-component [inputData]="data"></inner-component>
+
+    <div class="spacer"></div>
+
+    <div align="end" mat-dialog-actions>
+        <button (click)="onCloseClick()" color="primary" mat-button>Close</button>
+    </div>
+
 </div>

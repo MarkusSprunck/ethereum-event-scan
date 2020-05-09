@@ -1,11 +1,16 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {UtilsService} from "../services/utils.service";
+import {
+    MAT_DIALOG_DATA,
+    MatDialog,
+    MatDialogConfig,
+    MatDialogRef
+} from '@angular/material/dialog';
+import {Reader} from "../services/reader.service";
 
 export interface DialogData {
-    block: string;
-    transaction: string;
-    content: string;
+    blockNumber: string;
+    trxNumber: string;
+    reader: any;
 }
 
 @Component({
@@ -16,68 +21,31 @@ export interface DialogData {
 export class InfoModalComponent {
 
     constructor(public dialogRef: MatDialogRef<InfoModalComponent>,
-                @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+                @Inject(MAT_DIALOG_DATA) public data: DialogData,
+                public dialog: MatDialog) {
     }
 
-    public static printBlock(block: any, numberLast: any) {
-        const blockNumber = block.number;
-        const child = (numberLast > blockNumber) ? (blockNumber + 1) : 'n.a.';
-        const current = (blockNumber);
-        const parent = (blockNumber > 0) ? (blockNumber - 1) : '0';
-        let result = ''
-            + UtilsService.spaces('Number       : ') + current + '<br/>'
-            + UtilsService.spaces('Parent       : ') + parent + '<br/>'
-            + UtilsService.spaces('Child        : ') + child + '<br/>'
-            + UtilsService.spaces('Time         : ') + UtilsService.convertTimestamp(block.timestamp) + '<br/>'
-            + UtilsService.spaces('Current hash : ') + block.hash + '<br/>'
-            + UtilsService.spaces('Sha3Uncles   : ') + block.sha3Uncles + '<br/>'
-            + UtilsService.spaces('StateRoot    : ') + block.stateRoot + '<br/>'
-            + UtilsService.spaces('Miner        : ') + block.miner + '<br/>'
-            + UtilsService.spaces('ExtraData    : ') + block.extraData + '<br/>'
-            + UtilsService.spaces('Size         : ') + block.size + '<br/>'
-            + UtilsService.spaces('GasUsed      : ') + block.gasUsed + '<br/>'
-            + UtilsService.spaces('TrxCount     : ') + block.transactions.length + '<br/>';
+    public openDetailsDialog(event: any, blockNumber: string, trxNumber: string, reader: Reader): void {
 
-        // print all transactions of block
-        if (block.transactions.length > 0) {
-            let index = 0;
-            block.transactions.forEach((trxHash: any) => {
-                if (0 === index) {
-                    result += 'Transactions : ' + trxHash + '<br/>';
-                } else {
-                    result += UtilsService.spaces('               ') + trxHash + '<br/>';
-                }
-                index++;
-            });
+        if (event != null) {
+            event.preventDefault();
         }
 
-        return result;
-    }
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = false;
+        dialogConfig.autoFocus = true;
+        dialogConfig.maxWidth = '100vw';
+        dialogConfig.width = '45rem';
+        dialogConfig.height = '45rem';
+        dialogConfig.minHeight = '20rem';
+        dialogConfig.minWidth = ' 40rem';
+        dialogConfig.data = {
+            blockNumber: blockNumber,
+            trxNumber: trxNumber,
+            reader: reader
+        };
 
-    public static printTrx(tx: any, receipt: any) {
-
-        // Format input (in the case it is too long for one line)
-        let input = ' ' + tx.input;
-        const width = 3;
-        for (let x = 1; (width * x) <= input.length; x++) {
-            input = input.slice(0, width * x) + ' ' + input.slice(width * x);
-        }
-
-        // Print transaction details
-        const contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
-        return ''
-            + UtilsService.spaces('Hash          : ') + (tx.hash) + '<br/>'
-            + UtilsService.spaces('Index         : ') + tx.transactionIndex + '<br/>'
-            + UtilsService.spaces('Block         : ') + (tx.blockNumber) + '<br/>'
-            + UtilsService.spaces('From          : ') + tx.from + '<br/>'
-            + UtilsService.spaces('To            : ') + ((tx.to == null) ? 'n.a.' : tx.to) + '<br/>'
-            + UtilsService.spaces('Value         : ') + tx.value + '<br/>'
-            + UtilsService.spaces('Nonce         : ') + tx.nonce + '<br/>'
-            + UtilsService.spaces('Contract      : ') + contractAddress + '<br/>'
-            + UtilsService.spaces('GasUsed       : ') + receipt.gasUsed + '<br/>'
-            + UtilsService.spaces('GasPrice      : ') + tx.gasPrice + '<br/>'
-            + UtilsService.spaces('CumulativeGas : ') + receipt.cumulativeGasUsed + '<br/>'
-            + UtilsService.spaces('InputLength   : ') + tx.input.length + '<br/><br/>' + input;
+        this.dialog.open(InfoModalComponent, dialogConfig);
     }
 
     onCloseClick(): void {

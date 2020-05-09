@@ -34,9 +34,9 @@ export class EventsListComponent implements OnInit {
     screenWidth = window.innerWidth;
 
     constructor(private fb: FormBuilder,
-                private reader: Reader,
-                public dialog: MatDialog,
-                private route: ActivatedRoute) {
+                public eventReader: Reader,
+                private route: ActivatedRoute,
+                public detailsDialog : InfoModalComponent) {
 
         this.route.queryParams.subscribe(params => {
             if (params.searchKey) {
@@ -53,7 +53,7 @@ export class EventsListComponent implements OnInit {
             searchKey: [''],
         });
 
-        this.reader.setUpdateCallback(() => {
+        this.eventReader.setUpdateCallback(() => {
 
             const sortedEvents = Array.from(EventData.values())
                 .sort((first, second) => {
@@ -89,50 +89,12 @@ export class EventsListComponent implements OnInit {
         this.listData.filter = this.searchKey.trim().toLowerCase();
     }
 
-    openDetailsDialog(event: any, blockNumber: string, trxNumber: string): void {
 
-        if (event != null) {
-            event.preventDefault();
-        }
-
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.disableClose = false;
-        dialogConfig.autoFocus = true;
-        dialogConfig.maxWidth = '90vw';
-        dialogConfig.maxHeight = '90vh';
-
-        if (blockNumber != null && blockNumber.length > 0) {
-            const that = this;
-            this.reader.entity.web3.eth.getBlock(blockNumber,
-                (error: Error, block: any) => {
-                    dialogConfig.data = {
-                        block: blockNumber,
-                        transaction: trxNumber,
-                        content: InfoModalComponent.printBlock(block, that.reader.getCurrentBlockNumber())
-                    };
-                    that.dialog.open(InfoModalComponent, dialogConfig);
-                });
-        }
-
-        if (trxNumber != null && trxNumber.length > 0) {
-            const that = this;
-            this.reader.entity.web3.eth.getTransaction(trxNumber).then((tx: any) => {
-                this.reader.entity.web3.eth.getTransactionReceipt(trxNumber).then((receipt: any) => {
-                    dialogConfig.data = {
-                        block: blockNumber,
-                        transaction: trxNumber,
-                        content: InfoModalComponent.printTrx(tx, receipt)
-                    };
-                    that.dialog.open(InfoModalComponent, dialogConfig);
-                });
-            });
-        }
-    }
 
     panelMessage() {
         let jobs = '';
-        if (this.reader.runningJobs > 1) {
-            jobs = ' [' + this.reader.runningJobs + ' jobs running]';
+        if (this.eventReader.runningJobs > 1) {
+            jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
         }
         let message = 'No Events';
         if (EventData.size > 0) {

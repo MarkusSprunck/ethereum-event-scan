@@ -1,0 +1,19 @@
+div, .mat-list-base .mat-list-item, .mat-list-item-content, {
+  white-space: pre-wrap;
+  font-family: monospace;
+  line-height: 1.1rem;
+  font-size: medium;
+}
+
+.mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
+  height: 1.1rem;
+  padding: 0 0;
+}
+
+.mat-list-base {
+  padding-top: 8px;
+}
+
+a {
+  color: darkblue;
+}

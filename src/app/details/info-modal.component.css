@@ -5,6 +5,16 @@ mat-dialog-content {
 div {
     font-family: Consolas, Menlo, Monaco, monospace;
     font-weight: lighter;
-    font-size: x-small;
+    font-size: medium;
     line-height: 1.4;
+}
+
+.fixActionRow {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.spacer {
+    flex-grow: 1;
 }

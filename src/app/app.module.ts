@@ -49,10 +49,12 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatSelectModule} from '@angular/material/select';
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {EventsListComponent} from './events-list/events-list.component';
 import {HighlightSearch} from './services/highlight-search.pipe';
 import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-responsive.module";
+import {InnerComponent} from "./details/inner.component";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
     declarations: [
@@ -62,7 +64,9 @@ import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-respons
         JsonFormatterDirective,
         EventsListComponent,
         EventsListComponent,
-        HighlightSearch
+        HighlightSearch,
+        InfoModalComponent,
+        InnerComponent
     ],
     imports: [
         BrowserModule,
@@ -96,12 +100,19 @@ import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-respons
         MatOptionModule,
         MatDialogModule,
         MatTableResponsiveModule,
+        MatListModule
     ],
-    providers: [Reader, DecimalPipe],
+    providers: [Reader, DecimalPipe, InnerComponent,
+        {
+            provide: MatDialogRef,
+            useValue: {}
+        },
+        {
+            provide: MAT_DIALOG_DATA, useValue: {}
+        },
+        InfoModalComponent],
     bootstrap: [AppComponent],
-    entryComponents: [
-        InfoModalComponent
-    ],
+    entryComponents: [InfoModalComponent]
 })
 export class AppModule {
 }
