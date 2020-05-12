@@ -67,17 +67,26 @@ export class UtilsService {
 
     static updateURLWithCompressedAbi(oldValue: string, newValue: string) {
         const that = this;
-        zlib.deflate(oldValue, (err: Error | null, oldBuffer: Buffer) => {
-            if (!err) {
-                const oldString = encodeURIComponent(oldBuffer.toString('base64'));
-                zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
-                    if (!error) {
-                        const newString = encodeURIComponent(newBuffer.toString('base64'));
-                        that.updateURLParameter('abi', oldString, newString);
-                    }
-                });
-            }
-        });
+        if (oldValue.length > 0) {
+            zlib.deflate(oldValue, (err: Error | null, oldBuffer: Buffer) => {
+                if (!err) {
+                    const oldString = (oldBuffer.toString('base64'));
+                    zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
+                        if (!error) {
+                            const newString = (newBuffer.toString('base64'));
+                            that.updateURLParameter('abi', oldString, newString);
+                        }
+                    });
+                }
+            });
+        } else {
+            zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
+                if (!error) {
+                    const newString = (newBuffer.toString('base64'));
+                    that.updateURLParameter('abi', "", newString);
+                }
+            });
+        }
     }
 
     static updateURLParameter(key: string, oldValue: string, newValue: string) {
