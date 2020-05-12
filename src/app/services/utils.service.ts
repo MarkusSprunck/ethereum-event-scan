@@ -87,6 +87,8 @@ export class UtilsService {
                 }
             });
         }
+        let url = (new URL(window.location.href)).search;
+        window.history.pushState('', '', url);
     }
 
     static updateURLParameter(key: string, oldValue: string, newValue: string) {
