@@ -43,7 +43,8 @@
     "webpack": "4.41.6",
     "webpack-dev-server": "3.10.3",
     "zlib": "1.0.5",
-    "zone.js": "0.10.2"
+    "zone.js": "0.10.2",
+    "json-stringify-pretty-compact": "^2.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.900.4",

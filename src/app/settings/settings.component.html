@@ -32,7 +32,7 @@
 
             <mat-form-field style="width: 100%;">
                 <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" (keyup.enter)="reloadPage()"
-                                                   [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi" cdkAutosizeMinRows="1" cdkTextareaAutosize
+                                                   [cdkAutosizeMaxRows]="noOfRowsAbi"  [value]="abi" appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
                                                    formControlName="abi" id="abi" matInput placeholder="Abi" spellcheck="false" type="text"></textarea>
             </mat-form-field>
 
