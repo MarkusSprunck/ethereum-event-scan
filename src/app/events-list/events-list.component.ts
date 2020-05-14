@@ -79,7 +79,7 @@ export class EventsListComponent implements OnInit {
         const val = this.formSearch.get('searchKey');
         if (val) {
             console.log('searchKey =>', this.searchKey, ' -> ', val);
-            UtilsService.updateURLParameter('searchKey', this.searchKey, val.value);
+            UtilsService.updateURLParameter('searchKey', val.value);
             this.searchKey = val.value;
             this.applyFilter();
         }

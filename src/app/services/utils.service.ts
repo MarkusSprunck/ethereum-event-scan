@@ -65,42 +65,21 @@ export class UtilsService {
         return str.substr(0, maxLength) + '\n' + str.substring(maxLength);
     }
 
-    static updateURLWithCompressedAbi(oldValue: string, newValue: string) {
+    static updateURLWithCompressedAbi(newValue: string) {
         const that = this;
-        if (oldValue.length > 0) {
-            zlib.deflate(oldValue, (err: Error | null, oldBuffer: Buffer) => {
-                if (!err) {
-                    const oldString = (oldBuffer.toString('base64'));
-                    zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
-                        if (!error) {
-                            const newString = (newBuffer.toString('base64'));
-                            that.updateURLParameter('abi', oldString, newString);
-                        }
-                    });
-                }
-            });
-        } else {
+
             zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
                 if (!error) {
                     const newString = (newBuffer.toString('base64'));
-                    that.updateURLParameter('abi', "", newString);
+                    that.updateURLParameter('abi',  newString);
                 }
             });
-        }
-        let url = (new URL(window.location.href)).search;
-        window.history.pushState('', '', url);
     }
 
-    static updateURLParameter(key: string, oldValue: string, newValue: string) {
-        let url = (new URL(window.location.href)).search;
-        if (url === '') {
-            url = '?' + key + '=' + encodeURIComponent(newValue);
-        } else if (url.search(key + '=') > 0) {
-            url = url.replace(key + '=' + encodeURIComponent(oldValue), key + '=' + encodeURIComponent(newValue));
-        } else {
-            url = url.replace('?', '?' + key + '=' + encodeURIComponent(newValue) + '&');
-        }
-        window.history.pushState('', '', url);
+    static updateURLParameter(key: string, newValue: string) {
+        let href = new URL(window.location.href);
+        href.searchParams.set(key, newValue);
+        window.history.pushState('', '', href.search);
     }
 
     static fetchABIFromVerifiedContract(contract: string, callback: any) {

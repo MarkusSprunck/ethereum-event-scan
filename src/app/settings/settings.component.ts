@@ -124,7 +124,7 @@ export class SettingsComponent implements OnInit {
         if (val) {
             const result: string = (val.value.length === 0) ? '0' : val.value;
             console.debug('updateStartValue: ', this.startBlock, ' -> ', result);
-            UtilsService.updateURLParameter('start', this.startBlock, result);
+            UtilsService.updateURLParameter('start',  result);
             this.startBlock = result
         }
     }
@@ -133,7 +133,7 @@ export class SettingsComponent implements OnInit {
         const val = this.form.get('provider');
         if (val) {
             console.debug('updateProviderValue: ', this.provider, ' -> ', val);
-            UtilsService.updateURLParameter('provider', this.provider, val.value);
+            UtilsService.updateURLParameter('provider', val.value);
             this.provider = val.value.trim();
             this.form.controls.provider.clearValidators();
             this.loadContractData();
@@ -145,7 +145,7 @@ export class SettingsComponent implements OnInit {
         const val = this.form.get('endBlock');
         if (val) {
             console.debug('updateEndValue: ', this.endBlock, ' -> ', val);
-            UtilsService.updateURLParameter('end', this.endBlock, val.value);
+            UtilsService.updateURLParameter('end', val.value);
             this.endBlock = val.value;
             this.loadContractData();
         }
@@ -173,13 +173,13 @@ export class SettingsComponent implements OnInit {
             console.debug('updateABIValue: ', this.abi, ' -> ', val);
             if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
                 UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: any) => {
-                        UtilsService.updateURLWithCompressedAbi(this.abi, value);
+                        UtilsService.updateURLWithCompressedAbi(value);
                         this.form.controls.abi.setValue(value);
                         this.abi = value;
                     }
                 );
             } else {
-                UtilsService.updateURLWithCompressedAbi(this.abi, val.value);
+                UtilsService.updateURLWithCompressedAbi(val.value);
                 this.abi = val.value;
                 this.loadContractData();
             }
@@ -189,7 +189,7 @@ export class SettingsComponent implements OnInit {
     updateRefreshValue() {
         const val = !this.refresh;
         console.debug('updateRefreshValue: ', this.refresh, ' -> ', val);
-        UtilsService.updateURLParameter('refresh', String(this.refresh), String(val));
+        UtilsService.updateURLParameter('refresh',  String(val));
         this.appComponent.control.skipUpdate = !val;
     }
 
@@ -218,7 +218,7 @@ export class SettingsComponent implements OnInit {
     }
 
     private updateContract(val: string) {
-        UtilsService.updateURLParameter('contract', this.contract, val.trim());
+        UtilsService.updateURLParameter('contract', val.trim());
         this.contract = val.trim();
         this.clearTable();
         this.form.controls.contract.clearValidators();
