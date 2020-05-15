@@ -97,7 +97,7 @@ export class EventsListComponent implements OnInit {
             jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
         }
         let message = 'No Events';
-        if (EventData.size > 0) {
+        if (typeof EventData !== "undefined" && typeof this.listData !== "undefined" && EventData.size > 0) {
             message = 'Events ' + this.listData.filteredData.length + ' of ' + EventData.size + ' ' + jobs;
         }
         return message;

@@ -253,7 +253,7 @@ export class Reader {
                                     }
                                     if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
-                                            values += returnValues[key].replace('\n', '</br>') + '</br>';
+                                            values += ('' + returnValues[key]).replace('\n', '</br>') + '</br>';
                                         }
                                     }
                                 }
