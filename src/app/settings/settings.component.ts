@@ -170,7 +170,6 @@ export class SettingsComponent implements OnInit {
     updateABIValue() {
         const val = this.form.get('abi');
         if (val) {
-            console.debug('updateABIValue: ', this.abi, ' -> ', val);
             if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
                 UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: any) => {
                         UtilsService.updateURLWithCompressedAbi(value);
@@ -179,9 +178,11 @@ export class SettingsComponent implements OnInit {
                     }
                 );
             } else {
-                UtilsService.updateURLWithCompressedAbi(val.value);
-                this.abi = val.value;
+                this.abi = JSON.stringify(JSON.parse(val.value));
+                UtilsService.updateURLWithCompressedAbi(this.abi);
                 this.loadContractData();
+
+                setInterval( this.reloadPage, 500);
             }
         }
     }

@@ -143,4 +143,9 @@ img {
 
 .table-link {
     color: darkblue;
+    text-decoration: none;
+}
+
+.table-link :hover {
+    text-decoration: underline;
 }

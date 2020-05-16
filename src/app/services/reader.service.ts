@@ -151,27 +151,41 @@ export class Reader {
 
     /**
      * Creates the active contract based on the ABI and contract address
+     *
+     * The decoding of base64 is implemented here due historical reasons. The base64
+     * encoding makes problems with urls send via email. Url length with hex encoding
+     * is larger, but stable.
+     *
      */
     createActiveContract() {
         if (this.abiBase64Data.length > 0) {
-            const buf = Buffer.from(this.abiBase64Data, 'base64');
-            const that = this;
-            zlib.unzip(buf, (err: Error | null, buffer: Buffer) => {
-                if (!err) {
-                    that.abi = buffer.toString('utf8');
-                    if (that.contract.length > 0 && that.abi.length > 0) {
-                        try {
-                            that.contractInstance = new that.entity.web3.eth.Contract(
-                                JSON.parse(that.abi),
-                                that.contract
-                            );
-                        } catch (e) {
-                            console.warn('ALERT_UNABLE_TO_PARSE_ABI', e.message);
-                        }
-                    }
-                }
-            });
+            if (!zlib.unzip(
+                Buffer.from(this.abiBase64Data, 'hex'),
+                this.processUnzippedABI.bind(this))) {
+                zlib.unzip(
+                    Buffer.from(this.abiBase64Data, 'base64'),
+                    this.processUnzippedABI.bind(this));
+            }
         }
+    }
+
+
+    private processUnzippedABI(err: Error | null, buffer: Buffer) {
+        if (!err) {
+            this.abi = buffer.toString('utf8');
+            if (this.contract.length > 0 && this.abi.length > 0) {
+                try {
+                    this.contractInstance = new this.entity.web3.eth.Contract(
+                        JSON.parse(this.abi),
+                        this.contract
+                    );
+                    return true;
+                } catch (e) {
+                    console.warn('ALERT_UNABLE_TO_PARSE_ABI', e.message);
+                }
+            }
+        }
+        return false;
     }
 
 

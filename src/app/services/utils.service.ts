@@ -67,10 +67,9 @@ export class UtilsService {
 
     static updateURLWithCompressedAbi(newValue: string) {
         const that = this;
-
             zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
                 if (!error) {
-                    const newString = (newBuffer.toString('base64'));
+                    const newString = (newBuffer.toString('hex'));
                     that.updateURLParameter('abi',  newString);
                 }
             });

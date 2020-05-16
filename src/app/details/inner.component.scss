@@ -17,3 +17,7 @@ div, .mat-list-base .mat-list-item, .mat-list-item-content, {
 a {
   color: darkblue;
 }
+
+a:hover {
+  text-decoration: underline;
+}
