@@ -167,21 +167,26 @@ export class SettingsComponent implements OnInit {
         }
     }
 
+    resetABIValue() {
+        this.form.get('abi')?.setValue('[]');
+        this.updateABIValue();
+    }
+
     updateABIValue() {
         const val = this.form.get('abi');
         if (val) {
-            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
+            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim() === '[]') {
                 UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: any) => {
                         UtilsService.updateURLWithCompressedAbi(value);
                         this.form.controls.abi.setValue(value);
                         this.abi = value;
+                        setInterval( this.reloadPage, 500);
                     }
                 );
             } else {
                 this.abi = JSON.stringify(JSON.parse(val.value));
                 UtilsService.updateURLWithCompressedAbi(this.abi);
                 this.loadContractData();
-
                 setInterval( this.reloadPage, 500);
             }
         }

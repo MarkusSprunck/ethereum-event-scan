@@ -92,23 +92,23 @@ img {
 @media (min-width: 769px) {
 
     td.mat-column-image {
-        font-size: x-small;
+        font-size: small;
     }
 
     td.mat-column-name {
-        font-size: x-small;
+        font-size: small;
     }
 
     td.mat-column-block {
-        font-size: x-small;
+        font-size: small;
     }
 
     td.mat-column-trxHash {
-        font-size: x-small;
+        font-size: small;
     }
 
     td.mat-column-value {
-        font-size: x-small;
+        font-size: small;
     }
 
 }
@@ -116,23 +116,23 @@ img {
 @media (min-width: 1025px) {
 
     td.mat-column-image {
-        font-size: small;
+        font-size: medium;
     }
 
     td.mat-column-name {
-        font-size: small;
+        font-size: medium;
     }
 
     td.mat-column-block {
-        font-size: small;
+        font-size: medium;
     }
 
     td.mat-column-trxHash {
-        font-size: small;
+        font-size: medium;
     }
 
     td.mat-column-value {
-        font-size: small;
+        font-size: medium;
     }
 
 }

@@ -10,22 +10,22 @@
             </mat-expansion-panel-header>
 
 
-            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
                 <mat-form-field>
                     <label for="startBlock"></label><input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock" formControlName="startBlock"
                                                            id="startBlock" matInput placeholder="Start" type="text">
-                </mat-form-field>&nbsp;&nbsp;
+                </mat-form-field>
                 <mat-form-field>
                     <label for="endBlock"></label><input (change)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock" formControlName="endBlock" id="endBlock"
                                                          matInput placeholder="End" type="text">
                 </mat-form-field>
             </div>
 
-            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
                 <mat-form-field>
                     <label for="provider"></label><input (change)="updateProviderValue()" (keyup.enter)="reloadPage()" [value]="provider" formControlName="provider" id="provider"
                                                          matInput placeholder="Provider" type="text">
-                </mat-form-field>&nbsp;&nbsp;
+                </mat-form-field>
                 <mat-form-field>
                     <label for="contract"></label><input (change)="updateContractValue()" (keyup.enter)="reloadPage()" [value]="contract" formControlName="contract" id="contract"
                                                          matInput placeholder="Contract" type="text">
@@ -37,6 +37,10 @@
                 <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
                                                    appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize formControlName="abi" id="abi" matInput placeholder="Abi"
                                                    spellcheck="false" type="text"></textarea>
+                <button (click)="resetABIValue()" *ngIf="startBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
+                    <mat-icon>x</mat-icon>
+                </button>
+
             </mat-form-field>
 
             <div>
