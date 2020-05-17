@@ -23,14 +23,14 @@
  */
 
 import {Component} from '@angular/core';
-import {Reader} from './services/reader.service';
+import {Reader} from '../../services/reader.service';
 
 @Component({
     selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.css']
 })
-export class AppComponent {
+export class MainComponent {
 
     constructor(public control: Reader) {
         this.control.runLoadTable();

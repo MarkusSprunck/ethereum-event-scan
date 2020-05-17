@@ -67,16 +67,16 @@ export class UtilsService {
 
     static updateURLWithCompressedAbi(newValue: string) {
         const that = this;
-            zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
-                if (!error) {
-                    const newString = (newBuffer.toString('hex'));
-                    that.updateURLParameter('abi',  newString);
-                }
-            });
+        zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
+            if (!error) {
+                const newString = (newBuffer.toString('hex'));
+                that.updateURLParameter('abi', newString);
+            }
+        });
     }
 
     static updateURLParameter(key: string, newValue: string) {
-        let href = new URL(window.location.href);
+        const href = new URL(window.location.href);
         href.searchParams.set(key, newValue);
         window.history.pushState('', '', href.search);
     }

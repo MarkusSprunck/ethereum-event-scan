@@ -1,13 +1,13 @@
-import {Component, Input, OnInit} from "@angular/core";
-import {UtilsService} from "../services/utils.service";
-import {DialogData} from "./info-modal.component";
+import {Component, Input, OnInit} from '@angular/core';
+import {UtilsService} from '../../services/utils.service';
+import {DialogData} from './modal-dialog.component';
 
 @Component({
-    selector: 'inner-component',
-    templateUrl: './inner.component.html',
-    styleUrls: ['./inner.component.scss']
+    selector: 'app-inner-component',
+    templateUrl: './modal-dialog-content.component.html',
+    styleUrls: ['./modal-dialog-content.component.scss']
 })
-export class InnerComponent implements OnInit {
+export class ModalDialogContentComponent implements OnInit {
 
     @Input()
     inputData: DialogData;
@@ -48,10 +48,11 @@ export class InnerComponent implements OnInit {
         this.transactions = [];
         this.inputData.reader.entity.web3.eth.getBlock(this.currentBlockNumber,
             (error: Error, block: any) => {
-                this.child = (this.inputData.reader.getCurrentBlockNumber() > +this.currentBlockNumber) ? '' + (+this.currentBlockNumber + 1) : 'n.a.';
+                this.child = (this.inputData.reader.getCurrentBlockNumber() > +this.currentBlockNumber) ?
+                    '' + (+this.currentBlockNumber + 1) : 'n.a.';
                 this.current = (this.currentBlockNumber);
                 this.parent = (+this.currentBlockNumber > 0) ? '' + (+this.currentBlockNumber - 1) : '0';
-                this.details = this.printBlock(block)
+                this.details = this.printBlock(block);
                 this.transactions = block.transactions;
             });
     }

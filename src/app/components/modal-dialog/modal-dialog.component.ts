@@ -5,7 +5,7 @@ import {
     MatDialogConfig,
     MatDialogRef
 } from '@angular/material/dialog';
-import {Reader} from "../services/reader.service";
+import {Reader} from '../../services/reader.service';
 
 export interface DialogData {
     blockNumber: string;
@@ -15,12 +15,12 @@ export interface DialogData {
 
 @Component({
     selector: 'app-info-modal',
-    templateUrl: './info-modal.component.html',
-    styleUrls: ['./info-modal.component.css']
+    templateUrl: './modal-dialog.component.html',
+    styleUrls: ['./modal-dialog.component.css']
 })
-export class InfoModalComponent {
+export class ModalDialogComponent {
 
-    constructor(public dialogRef: MatDialogRef<InfoModalComponent>,
+    constructor(public dialogRef: MatDialogRef<ModalDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: DialogData,
                 public dialog: MatDialog) {
     }
@@ -40,12 +40,12 @@ export class InfoModalComponent {
         dialogConfig.minHeight = '20rem';
         dialogConfig.minWidth = ' 40rem';
         dialogConfig.data = {
-            blockNumber: blockNumber,
-            trxNumber: trxNumber,
-            reader: reader
+            blockNumber,
+            trxNumber,
+            reader
         };
 
-        this.dialog.open(InfoModalComponent, dialogConfig);
+        this.dialog.open(ModalDialogComponent, dialogConfig);
     }
 
     onCloseClick(): void {

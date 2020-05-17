@@ -12,9 +12,6 @@ describe('Class: UtilsService', () => {
             expect(UtilsService.convertTimestamp(0)).toEqual('01.01.1970 01:00:00h');
         });
 
-        it('get expected 01.01.1970 01:00:00h for null', () => {
-            expect(UtilsService.convertTimestamp(null)).toEqual('01.01.1970 01:00:00h');
-        });
     });
 
     describe('truncate()', () => {

@@ -5,14 +5,14 @@ import {
     OnDestroy,
     OnInit,
     Renderer2
-} from "@angular/core";
-import {BehaviorSubject, combineLatest, Subject} from "rxjs";
-import {map, mapTo, takeUntil} from "rxjs/operators";
+} from '@angular/core';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
+import {map, mapTo, takeUntil} from 'rxjs/operators';
 
 @Directive({
-    selector: "[matTableResponsive]"
+    selector: '[appTableResponsive]'
 })
-export class MatTableResponsiveDirective implements OnInit, AfterViewInit, OnDestroy {
+export class EventsListResponsiveDirective implements OnInit, AfterViewInit, OnDestroy {
 
     private onDestroy$ = new Subject<boolean>();
 
@@ -29,8 +29,8 @@ export class MatTableResponsiveDirective implements OnInit, AfterViewInit, OnDes
     }
 
     ngOnInit() {
-        this.thead = this.table.nativeElement.querySelector("thead");
-        this.tbody = this.table.nativeElement.querySelector("tbody");
+        this.thead = this.table.nativeElement.querySelector('thead');
+        this.tbody = this.table.nativeElement.querySelector('tbody');
 
         this.theadObserver.observe(this.thead, {characterData: true, subtree: true});
         this.tbodyObserver.observe(this.tbody, {childList: true});
@@ -57,7 +57,7 @@ export class MatTableResponsiveDirective implements OnInit, AfterViewInit, OnDes
                 rows.forEach(rowCells =>
                     rowCells.forEach(cell => this.renderer.setAttribute(
                         cell,
-                        "data-column-name",
+                        'data-column-name',
                         columnNames[cell.cellIndex]
                         )
                     )

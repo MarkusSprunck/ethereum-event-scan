@@ -6,8 +6,8 @@
     <div *ngFor="let message of transactions">
         <div *ngIf="message === transactions[0]">Transactions&nbsp;&nbsp;:
             <a (click)="renderTransaction(message)">{{message}}</a></div>
-        <div *ngIf="message !== transactions[0]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <a (click)="renderTransaction(message)">{{message}}</a>
+        <div *ngIf="message !== transactions[0]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a
+                (click)="renderTransaction(message)">{{message}}</a>
         </div>
     </div>
 </div>

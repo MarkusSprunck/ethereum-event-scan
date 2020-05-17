@@ -26,13 +26,13 @@ import {CommonModule, DecimalPipe} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserModule} from '@angular/platform-browser';
-import {AppComponent} from './app.component';
+import {MainComponent} from './pages/main/main.component';
 import {AppRoutingModule} from './app-routing.module';
-import {SettingsComponent} from 'src/app/settings/settings.component';
+import {SettingsComponent} from 'src/app/components/settings/settings.component';
 import {Reader} from './services/reader.service';
-import {InfoModalComponent} from './details/info-modal.component';
+import {ModalDialogComponent} from './components/modal-dialog/modal-dialog.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {JsonFormatterDirective} from './services/json-formatter.directive';
+import {JsonFormatterDirective} from './components/settings/directives/json-formatter.directive';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -50,24 +50,25 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {EventsListComponent} from './events-list/events-list.component';
-import {HighlightSearch} from './services/highlight-search.pipe';
-import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-responsive.module";
-import {InnerComponent} from "./details/inner.component";
-import {MatListModule} from "@angular/material/list";
+import {EventsTableComponent} from './components/events-table/events-table.component';
+import {HighlightSearch} from './components/events-table/pipes/highlight-search.pipe';
+import {ModalDialogContentComponent} from './components/modal-dialog/modal-dialog-content.component';
+import {MatListModule} from '@angular/material/list';
 import {FlexModule} from '@angular/flex-layout';
+import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive';
 
 @NgModule({
     declarations: [
-        AppComponent,
+        MainComponent,
         SettingsComponent,
-        InfoModalComponent,
+        ModalDialogComponent,
         JsonFormatterDirective,
-        EventsListComponent,
-        EventsListComponent,
+        EventsTableComponent,
+        EventsTableComponent,
         HighlightSearch,
-        InfoModalComponent,
-        InnerComponent
+        ModalDialogComponent,
+        ModalDialogContentComponent,
+        EventsListResponsiveDirective
     ],
     imports: [
         BrowserModule,
@@ -100,11 +101,11 @@ import {FlexModule} from '@angular/flex-layout';
         MatCheckboxModule,
         MatOptionModule,
         MatDialogModule,
-        MatTableResponsiveModule,
         MatListModule,
         FlexModule
     ],
-    providers: [Reader, DecimalPipe, InnerComponent,
+    exports: [EventsListResponsiveDirective],
+    providers: [Reader, DecimalPipe, ModalDialogContentComponent,
         {
             provide: MatDialogRef,
             useValue: {}
@@ -112,9 +113,9 @@ import {FlexModule} from '@angular/flex-layout';
         {
             provide: MAT_DIALOG_DATA, useValue: {}
         },
-        InfoModalComponent],
-    bootstrap: [AppComponent],
-    entryComponents: [InfoModalComponent]
+        ModalDialogComponent],
+    bootstrap: [MainComponent],
+    entryComponents: [ModalDialogComponent]
 })
 export class AppModule {
 }

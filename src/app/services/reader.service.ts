@@ -26,7 +26,7 @@ import {UtilsService} from './utils.service';
 import {Injectable} from '@angular/core';
 import {ProviderService} from './provider.service';
 import {ActivatedRoute} from '@angular/router';
-import {EthEvent, EventData} from './event';
+import {EthEvent, EventData} from '../models/event';
 
 const zlib = require('zlib');
 const blockies = require('blockies');
@@ -169,26 +169,6 @@ export class Reader {
         }
     }
 
-
-    private processUnzippedABI(err: Error | null, buffer: Buffer) {
-        if (!err) {
-            this.abi = buffer.toString('utf8');
-            if (this.contract.length > 0 && this.abi.length > 0) {
-                try {
-                    this.contractInstance = new this.entity.web3.eth.Contract(
-                        JSON.parse(this.abi),
-                        this.contract
-                    );
-                    return true;
-                } catch (e) {
-                    console.warn('ALERT_UNABLE_TO_PARSE_ABI', e.message);
-                }
-            }
-        }
-        return false;
-    }
-
-
     setContractAddress(contact: string) {
         this.contract = contact;
         if (this.contract.length > 0 && this.abi.length > 0) {
@@ -198,7 +178,7 @@ export class Reader {
                     this.contract
                 );
             } catch (e) {
-                console.warn('ALERT_UNABLE_TO_CREATE_CONTRACT_INSTANCE', e.message);
+                alert('UNABLE TO CREATE CONTRACT INSTANCE:\n' + e.message);
             }
         }
     }
@@ -237,6 +217,24 @@ export class Reader {
         this.isLoading = false;
     }
 
+    private processUnzippedABI(err: Error | null, buffer: Buffer) {
+        if (!err) {
+            this.abi = buffer.toString('utf8');
+            if (this.contract.length > 0 && this.abi.length > 0) {
+                try {
+                    this.contractInstance = new this.entity.web3.eth.Contract(
+                        JSON.parse(this.abi),
+                        this.contract
+                    );
+                    return true;
+                } catch (e) {
+                    alert('UNABLE TO PARSE ABI:\n' + e.message);
+                }
+            }
+        }
+        return false;
+    }
+
     private readEventsRange(start: number, end: number, that: this) {
 
         this.runningJobs += 1;
@@ -264,8 +262,6 @@ export class Reader {
                                         if (isNaN(parseInt(key, 10))) {
                                             values += '<b>' + key.replace('_', '') + ':</b></br>';
                                         }
-                                    }
-                                    if (returnValues.hasOwnProperty(key)) {
                                         if (isNaN(parseInt(key, 10))) {
                                             values += ('' + returnValues[key]).replace('\n', '</br>') + '</br>';
                                         }

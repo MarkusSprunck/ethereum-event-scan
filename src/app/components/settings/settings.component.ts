@@ -24,8 +24,9 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {AppComponent} from '../app.component';
-import {UtilsService} from '../services/utils.service';
+import {MainComponent} from '../../pages/main/main.component';
+import {UtilsService} from '../../services/utils.service';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
     selector: 'app-settings',
@@ -50,7 +51,8 @@ export class SettingsComponent implements OnInit {
     noOfRowsAbi = 1;
 
     constructor(private fb: FormBuilder,
-                public appComponent: AppComponent) {
+                public appComponent: MainComponent,
+                public route: ActivatedRoute) {
     }
 
     panelMessage() {
@@ -73,6 +75,15 @@ export class SettingsComponent implements OnInit {
             lastBlock: [''],
             endBlock: [''],
             refresh: ['']
+        });
+
+        this.route.queryParams.subscribe(params => {
+            if (params.refresh) {
+                const checkBox = this.form.get('refresh');
+                if (checkBox) {
+                    checkBox.setValue(params.refresh === 'true');
+                }
+            }
         });
 
         this.form.controls.contract.clearValidators();
@@ -120,19 +131,17 @@ export class SettingsComponent implements OnInit {
     }
 
     updateStartValue() {
-        let val = this.form.get('startBlock');
+        const val = this.form.get('startBlock');
         if (val) {
             const result: string = (val.value.length === 0) ? '0' : val.value;
-            console.debug('updateStartValue: ', this.startBlock, ' -> ', result);
-            UtilsService.updateURLParameter('start',  result);
-            this.startBlock = result
+            UtilsService.updateURLParameter('start', result);
+            this.startBlock = result;
         }
     }
 
     updateProviderValue() {
         const val = this.form.get('provider');
         if (val) {
-            console.debug('updateProviderValue: ', this.provider, ' -> ', val);
             UtilsService.updateURLParameter('provider', val.value);
             this.provider = val.value.trim();
             this.form.controls.provider.clearValidators();
@@ -140,11 +149,9 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-
     updateEndValue() {
         const val = this.form.get('endBlock');
         if (val) {
-            console.debug('updateEndValue: ', this.endBlock, ' -> ', val);
             UtilsService.updateURLParameter('end', val.value);
             this.endBlock = val.value;
             this.loadContractData();
@@ -154,7 +161,6 @@ export class SettingsComponent implements OnInit {
     updateContractValue() {
         const val = this.form.get('contract');
         if (val) {
-            console.debug('updateContractValue: ', this.contract, ' -> ', val);
             if (this.provider.length > 0 && val.value.trim() > 0 && this.abi.length === 0) {
                 UtilsService.fetchABIFromVerifiedContract(val.value.trim(), (value: any) => {
                         this.form.controls.abi.setValue(value);
@@ -180,22 +186,21 @@ export class SettingsComponent implements OnInit {
                         UtilsService.updateURLWithCompressedAbi(value);
                         this.form.controls.abi.setValue(value);
                         this.abi = value;
-                        setInterval( this.reloadPage, 500);
+                        setInterval(this.reloadPage, 500);
                     }
                 );
             } else {
                 this.abi = JSON.stringify(JSON.parse(val.value));
                 UtilsService.updateURLWithCompressedAbi(this.abi);
                 this.loadContractData();
-                setInterval( this.reloadPage, 500);
+                setInterval(this.reloadPage, 500);
             }
         }
     }
 
     updateRefreshValue() {
         const val = !this.refresh;
-        console.debug('updateRefreshValue: ', this.refresh, ' -> ', val);
-        UtilsService.updateURLParameter('refresh',  String(val));
+        UtilsService.updateURLParameter('refresh', String(val));
         this.appComponent.control.skipUpdate = !val;
     }
 
