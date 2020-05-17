@@ -7,3 +7,11 @@ input.mat-input-element {
     font-family: Consolas, Menlo, Monaco, monospace;
     font-weight: lighter;
 }
+
+.basic-container {
+    padding: 5px;
+}
+
+.mat-form-field {
+    width: 100%;
+}

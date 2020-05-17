@@ -55,6 +55,7 @@ import {HighlightSearch} from './services/highlight-search.pipe';
 import {MatTableResponsiveModule} from "./mat-table-responsive/mat-table-responsive.module";
 import {InnerComponent} from "./details/inner.component";
 import {MatListModule} from "@angular/material/list";
+import {FlexModule} from '@angular/flex-layout';
 
 @NgModule({
     declarations: [
@@ -100,7 +101,8 @@ import {MatListModule} from "@angular/material/list";
         MatOptionModule,
         MatDialogModule,
         MatTableResponsiveModule,
-        MatListModule
+        MatListModule,
+        FlexModule
     ],
     providers: [Reader, DecimalPipe, InnerComponent,
         {
