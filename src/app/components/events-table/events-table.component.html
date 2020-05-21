@@ -20,7 +20,7 @@
             </div>
 
 
-            <table [dataSource]="listData" mat-table matSort appTableResponsive>
+            <table [dataSource]="listData" mat-table matSort matTableResponsive >
 
 
                 <ng-container matColumnDef="image">
@@ -51,8 +51,8 @@
                     <th *matHeaderCellDef mat-header-cell mat-sort-header>Trx</th>
                     <td *matCellDef="let element" mat-cell>
                         <a (click)="detailsDialog.openDetailsDialog($event, '', element.trxHash, eventReader)" class="table-link" href="" rel="nofollow">
-                            <div *ngIf="!(screenWidth > 375 && screenWidth < 769 || screenWidth > 1300)" innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
-                            <div *ngIf="screenWidth > 375 && screenWidth < 769 || screenWidth > 1300" innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
+                            <div *ngIf="!(screenWidth > 1300)" innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                            <div *ngIf="screenWidth > 1300" innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
                         </a>
                     </td>
                 </ng-container>

@@ -1,10 +1,4 @@
-input.mat-input-element {
-    font-family: Consolas, Menlo, Monaco, monospace;
-    font-weight: lighter;
-}
-
-#abi {
-    font-family: Consolas, Menlo, Monaco, monospace;
+input.mat-input-element, textarea, mat-checkbox {
     font-weight: lighter;
 }
 

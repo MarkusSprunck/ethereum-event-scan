@@ -2,13 +2,6 @@ mat-dialog-content {
     padding: 10px;
 }
 
-div {
-    font-family: Consolas, Menlo, Monaco, monospace;
-    font-weight: lighter;
-    font-size: medium;
-    line-height: 1.4;
-}
-
 .fixActionRow {
     height: 100%;
     display: flex;

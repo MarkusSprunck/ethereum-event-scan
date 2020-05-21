@@ -13,6 +13,14 @@ img {
     align-content: center;
 }
 
+.mat-paginator, .mat-paginator-page-size .mat-select-trigger {
+    font-size: small;
+}
+
+.table-link :hover {
+    text-decoration: underline;
+}
+
 
 @media (min-width: 769px) {
 
@@ -26,7 +34,7 @@ img {
 
     td.mat-column-image {
         width: 7%;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        font-weight: lighter;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
@@ -36,7 +44,7 @@ img {
 
     td.mat-column-name {
         width: 15%;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        font-weight: lighter;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
@@ -44,7 +52,7 @@ img {
 
     td.mat-column-block {
         width: 8%;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        font-weight: lighter;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
@@ -54,7 +62,7 @@ img {
 
     td.mat-column-trxHash {
         width: 26%;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        font-weight: lighter;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
@@ -64,7 +72,8 @@ img {
 
     td.mat-column-value {
         width: 45%;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        font-weight: lighter;
+        white-space: pre-wrap;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
@@ -111,41 +120,4 @@ img {
         font-size: small;
     }
 
-}
-
-@media (min-width: 1025px) {
-
-    td.mat-column-image {
-        font-size: medium;
-    }
-
-    td.mat-column-name {
-        font-size: medium;
-    }
-
-    td.mat-column-block {
-        font-size: medium;
-    }
-
-    td.mat-column-trxHash {
-        font-size: medium;
-    }
-
-    td.mat-column-value {
-        font-size: medium;
-    }
-
-}
-
-.mat-paginator, .mat-paginator-page-size .mat-select-trigger {
-    font-size: small;
-}
-
-.table-link {
-    color: darkblue;
-    text-decoration: none;
-}
-
-.table-link :hover {
-    text-decoration: underline;
 }

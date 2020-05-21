@@ -22,8 +22,24 @@ $cdark-theme: mat-light-theme($dark-primary, $dark-accent, $dark-warn);
 // that you are using.
 @include angular-material-theme($cdark-theme);
 
-
 @import 'src/app/components/events-table/directives/events-list-responsive.directive';
+
+@font-face {
+  font-family: 'Lekton';
+  src: url('~src/assets/fonts/Lekton-Regular.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Lekton';
+  src: url('~src/assets/fonts/Lekton-Bold.ttf') format('truetype');
+  font-weight: 400;
+}
+
+* {
+  font-family: Lekton, monospace !important;
+}
 
 body {
   padding-left: 0;
@@ -34,6 +50,7 @@ body {
 
 @media screen and (max-width: 700px) {
   html, body {
-    min-width: 360px
+     min-width: 360px
   }
 }
+

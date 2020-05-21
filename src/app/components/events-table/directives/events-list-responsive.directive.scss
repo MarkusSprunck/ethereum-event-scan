@@ -1,6 +1,5 @@
 @media (max-width: 768px) {
   .mat-table[matTableResponsive] {
-
     .mat-header-row {
       display: flex;
       flex-wrap: wrap;
@@ -38,7 +37,8 @@
         text-align: left;
         align-content: end;
         word-break: break-word;
-        font-family: Consolas, Menlo, Monaco, monospace;
+        white-space: pre;
+        font-weight: lighter;
         font-size: small;
 
         & > * {
