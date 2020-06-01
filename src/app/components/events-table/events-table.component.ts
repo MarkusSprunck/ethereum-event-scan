@@ -20,7 +20,7 @@ export class EventsTableComponent implements OnInit {
 
     listData: MatTableDataSource<any>;
 
-    displayedColumns: string[] = ['image', 'name', 'block', 'trxHash', 'value'];
+    displayedColumns: string[] = ['image', 'name', 'time', 'miner', 'block', 'trxHash', 'value'];
 
     @ViewChild(MatSort) sort: MatSort;
 
@@ -77,7 +77,6 @@ export class EventsTableComponent implements OnInit {
     updateSearchValue() {
         const val = this.formSearch.get('searchKey');
         if (val) {
-            console.log('searchKey =>', this.searchKey, ' -> ', val);
             UtilsService.updateURLParameter('searchKey', val.value);
             this.searchKey = val.value;
             this.applyFilter();
@@ -103,6 +102,13 @@ export class EventsTableComponent implements OnInit {
     @HostListener('window:resize')
     onResize() {
         this.screenWidth = window.innerWidth;
+    }
+
+    isElementVisible( element: any ) {
+        const minID = this.paginator.pageIndex * this.paginator.pageSize
+        const maxID = (this.paginator.pageIndex + 1) * this.paginator.pageSize -1
+        const elementID = this.listData.filteredData.indexOf(element)
+        return  (elementID >= minID) && (elementID <= maxID)
     }
 
 }

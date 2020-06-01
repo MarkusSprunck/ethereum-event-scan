@@ -33,6 +33,7 @@ export class EthEvent {
         public key: string,
         public value: string,
         public time: string,
+        public miner: string,
         public image: string) {
     }
 

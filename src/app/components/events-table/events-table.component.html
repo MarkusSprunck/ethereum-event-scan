@@ -32,14 +32,28 @@
 
 
                 <ng-container matColumnDef="name">
-                    <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+                    <th *matHeaderCellDef mat-header-cell>Name</th>
                     <td *matCellDef="let element" mat-cell>
                         <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
                     </td>
                 </ng-container>
 
+                <ng-container matColumnDef="time">
+                    <th *matHeaderCellDef mat-header-cell>Timestamp</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedTimestamp(element.block) : ''}}"></div>
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="miner">
+                    <th *matHeaderCellDef mat-header-cell>Miner</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedMiner(element.block) : ''}}"></div>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="block">
-                    <th *matHeaderCellDef mat-header-cell mat-sort-header>Block</th>
+                    <th *matHeaderCellDef mat-header-cell>Block</th>
                     <td *matCellDef="let element" mat-cell>
                         <a (click)="detailsDialog.openDetailsDialog($event, element.block, '', eventReader)" class="table-link" href="" rel="nofollow">
                             <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
@@ -48,7 +62,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="trxHash">
-                    <th *matHeaderCellDef mat-header-cell mat-sort-header>Trx</th>
+                    <th *matHeaderCellDef mat-header-cell>Trx</th>
                     <td *matCellDef="let element" mat-cell>
                         <a (click)="detailsDialog.openDetailsDialog($event, '', element.trxHash, eventReader)" class="table-link" href="" rel="nofollow">
                             <div *ngIf="!(screenWidth > 1300)" innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
@@ -76,7 +90,7 @@
 
             </table>
 
-            <mat-paginator [pageSizeOptions]="[5, 10, 50, 100, 500]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons></mat-paginator>
 
         </mat-expansion-panel>
 

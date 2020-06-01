@@ -65,6 +65,8 @@ export class Reader {
     public runningJobs = 0;
     public callbackUpdateUI: () => void; // { (): void; };
     private imageCache = new Map<string, string>();
+    private timestampCache = new Map<string, string>();
+    private minerCache = new Map<string, string>();
     private isLoading = false;
     private contractInstance: any = null;
 
@@ -235,6 +237,31 @@ export class Reader {
         return false;
     }
 
+    public getCachedTimestamp(blockNumber: string) {
+        if (this.timestampCache.has(blockNumber)) {
+            return this.timestampCache.get(blockNumber);
+        } else {
+            this.timestampCache.set(blockNumber,'load...');
+            this.entity.web3.eth.getBlock(blockNumber, false)
+                .then((block: any) => {
+                    this.timestampCache.set(blockNumber, UtilsService.convertTimestamp(block.timestamp));
+                    this.minerCache.set(blockNumber, UtilsService.truncate(block.miner, 12));
+                    console.log('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
+                });
+        }
+        return '';
+    }
+
+    public getCachedMiner(blockNumber: string) {
+        if (this.minerCache.has(blockNumber)) {
+            return this.minerCache.get(blockNumber);
+        } else {
+            this.minerCache.set(blockNumber,'load...');
+            this.getCachedTimestamp(blockNumber);
+        }
+        return '';
+    }
+
     private readEventsRange(start: number, end: number, that: this) {
 
         this.runningJobs += 1;
@@ -292,6 +319,7 @@ export class Reader {
                                             '' + UtilsService.break(trxHash, 33),
                                             '',
                                             '' + values,
+                                            '',
                                             '',
                                             '' + this.imageCache.get(eventName))
                                     );

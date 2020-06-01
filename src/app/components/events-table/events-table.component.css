@@ -43,12 +43,31 @@ img {
     }
 
     td.mat-column-name {
-        width: 15%;
+        width: 12%;
         font-weight: lighter;
         line-height: 1.4;
         vertical-align: top;
         padding-top: 0.4rem;
     }
+
+    td.mat-column-time {
+        width: 12%;
+        font-weight: lighter;
+        line-height: 1.4;
+        vertical-align: top;
+        padding-top: 0.4rem;
+        padding-right: 6px;
+    }
+
+    td.mat-column-miner {
+        width: 8%;
+        font-weight: lighter;
+        line-height: 1.4;
+        vertical-align: top;
+        padding-top: 0.4rem;
+        padding-right: 6px;
+    }
+
 
     td.mat-column-block {
         width: 8%;
@@ -57,7 +76,6 @@ img {
         vertical-align: top;
         padding-top: 0.4rem;
         padding-right: 6px;
-        padding-left: 6px;
     }
 
     td.mat-column-trxHash {
@@ -67,7 +85,6 @@ img {
         vertical-align: top;
         padding-top: 0.4rem;
         padding-right: 6px;
-        padding-left: 6px;
     }
 
     td.mat-column-value {
@@ -78,7 +95,6 @@ img {
         vertical-align: top;
         padding-top: 0.4rem;
         padding-right: 6px;
-        padding-left: 6px;
     }
 
     td.mat-form-field {
