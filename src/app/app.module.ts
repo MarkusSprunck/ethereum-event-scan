@@ -55,7 +55,11 @@ import {HighlightSearch} from './components/events-table/pipes/highlight-search.
 import {ModalDialogContentComponent} from './components/modal-dialog/modal-dialog-content.component';
 import {MatListModule} from '@angular/material/list';
 import {FlexModule} from '@angular/flex-layout';
-import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive';
+import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive'
+import {ThemeService} from "./services/theme.service";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatSliderModule} from "@angular/material/slider";
 
 @NgModule({
     declarations: [
@@ -102,10 +106,13 @@ import {EventsListResponsiveDirective} from './components/events-table/directive
         MatOptionModule,
         MatDialogModule,
         MatListModule,
-        FlexModule
+        FlexModule,
+        MatSlideToggleModule,
+        MatSliderModule
     ],
     exports: [EventsListResponsiveDirective],
-    providers: [Reader, DecimalPipe, ModalDialogContentComponent,
+    providers: [Reader, DecimalPipe,
+        ThemeService, ModalDialogContentComponent,
         {
             provide: MatDialogRef,
             useValue: {}

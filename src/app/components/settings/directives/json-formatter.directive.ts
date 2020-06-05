@@ -19,15 +19,12 @@ export class JsonFormatterDirective {
     @HostListener('focus', ['$event.target.value'])
     onFocus(value: any) {
         this.el.value = this.out(value);
-        this.renderer.setStyle(this.elementRef.nativeElement, 'background', '#F0F0F0');
     }
 
     @HostListener('blur', ['$event.target.value'])
     onBlur(value: any) {
         this.el.value = this.into(value);
-        this.renderer.setStyle(this.elementRef.nativeElement, 'background', 'white');
     }
-
 
     into(input: any) {
         return JSON.stringify(JSON.parse(input));

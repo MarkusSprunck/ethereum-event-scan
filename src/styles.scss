@@ -5,23 +5,6 @@
 // Be sure that you only ever include this mixin once!
 @include mat-core();
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue.
-$dark-primary: mat-palette($mat-blue-grey);
-$dark-accent: mat-palette($mat-amber, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-$dark-warn: mat-palette($mat-deep-orange);
-
-// Create the theme object (a Sass map containing all of the palettes).
-$cdark-theme: mat-light-theme($dark-primary, $dark-accent, $dark-warn);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include angular-material-theme($cdark-theme);
-
 @import 'src/app/components/events-table/directives/events-list-responsive.directive';
 
 @font-face {
@@ -50,7 +33,29 @@ body {
 
 @media screen and (max-width: 700px) {
   html, body {
-     min-width: 360px
+     min-width: 360px;
   }
+}
+
+.table-link {
+  color: blue;
+}
+$light-primary: mat-palette($mat-blue-grey);
+$light-accent: mat-palette($mat-amber, A200, A100, A400);
+$light-warn: mat-palette($mat-deep-orange);
+$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
+@include angular-material-theme($light-theme);
+
+// Our dark theme
+.dark-theme {
+  .table-link {
+    color: lightblue;
+  }
+  color: $light-primary-text;
+  $dark-primary: mat-palette($mat-brown);
+  $dark-accent: mat-palette($mat-amber, A400, A100, A700);
+  $dark-warn: mat-palette($mat-red);
+  $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+  @include angular-material-theme($dark-theme);
 }
 

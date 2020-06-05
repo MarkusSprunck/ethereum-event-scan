@@ -22,19 +22,32 @@
  * SOFTWARE.
  */
 
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Reader} from '../../services/reader.service';
+import {Observable} from "rxjs";
+import {ThemeService} from "../../services/theme.service";
 
 @Component({
     selector: 'app-root',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.css']
 })
-export class MainComponent {
+export class MainComponent  implements OnInit   {
 
-    constructor(public control: Reader) {
+    constructor(public control: Reader,
+                private themeService: ThemeService) {
         this.control.runLoadTable();
     }
 
+    isDarkTheme: Observable<boolean>;
 
+
+    ngOnInit() {
+        this.isDarkTheme = this.themeService.isDarkTheme;
+    }
+
+
+    toggleDarkTheme(checked: boolean) {
+        this.themeService.setDarkTheme(checked);
+    }
 }

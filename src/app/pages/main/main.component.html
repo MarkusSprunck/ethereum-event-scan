@@ -1,27 +1,46 @@
-<mat-toolbar class="header" color="primary">
-    <mat-toolbar-row>
-        <span class="title">Ethereum-Event-Scan</span>
-        <span class="title-sub">Available on
-            <a href="https://github.com/MarkusSprunck/ethereum-event-scan" target="_blank">GitHub</a>
-        </span>
-    </mat-toolbar-row>
-</mat-toolbar>
+<div [ngClass]="{'dark-theme': isDarkTheme | async}" class="mat-app-background">
 
-<!-- Main content -->
-<div class="row">
-    <div class="col-12">
-        <app-settings [abi]="control.abi" [connected]="control.entity.connected" [contract]="control.contract" [endBlock]="control.endBlock"
-                      [lastBlock]="control.entity.currentBlock" [provider]="control.provider" [refresh]="control.refresh" [startBlock]="control.startInitial">
+        <mat-toolbar class="header"
+                     color="primary">
+            <mat-toolbar-row>
+                <span class="title">Ethereum-Event-Scan</span>
+                <span class="title-sub">
+            <mat-slide-toggle (change)="toggleDarkTheme($event.checked)"
+                              [checked]="isDarkTheme | async">Dark Theme</mat-slide-toggle>
+                      </span>
 
-        </app-settings>
-    </div>
+             </mat-toolbar-row>
+        </mat-toolbar>
+
+        <!-- Main content -->
+        <div class="row">
+            <div class="col-12">
+                <app-settings [abi]="control.abi" [connected]="control.entity.connected"
+                              [contract]="control.contract" [endBlock]="control.endBlock"
+                              [lastBlock]="control.entity.currentBlock"
+                              [provider]="control.provider" [refresh]="control.refresh"
+                              [startBlock]="control.startInitial">
+
+                </app-settings>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <app-events-list></app-events-list>
+            </div>
+        </div>
+
+       <div class="row">
+           <div class="footer">An open source Ethereum event explorer. Available on <a href="https://github.com/MarkusSprunck/ethereum-event-scan" class="table-link" target="_blank">GitHub</a></div>
+       </div>
+
 </div>
 
-<div class="row">
-    <div class="col-12">
-        <app-events-list></app-events-list>
-    </div>
-</div>
+
+
+
+
 
 
 
