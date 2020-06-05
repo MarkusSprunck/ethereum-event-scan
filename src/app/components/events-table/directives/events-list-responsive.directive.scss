@@ -55,16 +55,6 @@
         border: none;
       }
 
-      &:not(:last-of-type) td:last-of-type {
-        border-bottom: 0.5rem solid #f1f1f1;
-      }
-    }
-  }
-
-  .mat-card,
-  .mat-expansion-panel {
-    .mat-table[matTableResponsive] {
-      border: 0.5rem solid #f1f1f1;
     }
   }
 }
