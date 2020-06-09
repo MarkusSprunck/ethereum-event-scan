@@ -290,7 +290,9 @@ export class Reader {
                                             values += '<b>' + key.replace('_', '') + ':</b></br>';
                                         }
                                         if (isNaN(parseInt(key, 10))) {
-                                            values += ('' + returnValues[key]).replace('\n', '</br>') + '</br>';
+                                            values += ('' + returnValues[key])
+                                                .replace('\n', '</br>')
+                                                .split(',').join('</br>') + '</br>';
                                         }
                                     }
                                 }
