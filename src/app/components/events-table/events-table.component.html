@@ -39,7 +39,7 @@
                 </ng-container>
 
                 <ng-container matColumnDef="time">
-                    <th *matHeaderCellDef mat-header-cell>Timestamp</th>
+                    <th *matHeaderCellDef mat-header-cell>Time</th>
                     <td *matCellDef="let element" mat-cell>
                         <div innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedTimestamp(element.block) : ''}}"></div>
                     </td>
