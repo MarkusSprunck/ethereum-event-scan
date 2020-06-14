@@ -58,8 +58,8 @@ import {FlexModule} from '@angular/flex-layout';
 import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive'
 import {ThemeService} from "./services/theme.service";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
-import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatSliderModule} from "@angular/material/slider";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
     declarations: [
@@ -108,7 +108,8 @@ import {MatSliderModule} from "@angular/material/slider";
         MatListModule,
         FlexModule,
         MatSlideToggleModule,
-        MatSliderModule
+        MatSliderModule,
+        MatProgressBarModule
     ],
     exports: [EventsListResponsiveDirective],
     providers: [Reader, DecimalPipe,

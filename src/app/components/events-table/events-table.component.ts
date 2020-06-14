@@ -111,4 +111,7 @@ export class EventsTableComponent implements OnInit {
         return  (elementID >= minID) && (elementID <= maxID)
     }
 
+    showSpinner() {
+        return this.eventReader.runningJobs > 0;
+    }
 }

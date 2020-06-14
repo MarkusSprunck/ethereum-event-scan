@@ -6,21 +6,32 @@
         <mat-expansion-panel [expanded]="panelOpenState">
 
             <mat-expansion-panel-header>
-                <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
-                <mat-panel-description></mat-panel-description>
+
+                <mat-panel-title>
+                    <span [innerText]="panelMessage()">
+                    </span>
+                </mat-panel-title>
+
+                <mat-panel-description>
+                    <mat-progress-bar *ngIf="showSpinner()"
+                                      mode="indeterminate"></mat-progress-bar>
+                </mat-panel-description>
+
             </mat-expansion-panel-header>
 
 
             <div class="search-div">
                 <mat-form-field color='primary' style="width: 100%;">
                     <label>
-                        <input (keyup)="updateSearchValue()" [value]="searchKey" autocomplete="off" formControlName="searchKey" id="searchKey" matInput placeholder="Search">
+                        <input (keyup)="updateSearchValue()" [value]="searchKey"
+                               autocomplete="off" formControlName="searchKey"
+                               id="searchKey" matInput placeholder="Search">
                     </label>
                 </mat-form-field>
             </div>
 
 
-            <table [dataSource]="listData" mat-table matSort matTableResponsive >
+            <table [dataSource]="listData" mat-table matSort matTableResponsive>
 
 
                 <ng-container matColumnDef="image">
@@ -55,7 +66,8 @@
                 <ng-container matColumnDef="block">
                     <th *matHeaderCellDef mat-header-cell>Block</th>
                     <td *matCellDef="let element" mat-cell>
-                        <a (click)="detailsDialog.openDetailsDialog($event, element.block, '', eventReader)" class="table-link" href="" rel="nofollow">
+                        <a (click)="detailsDialog.openDetailsDialog($event, element.block, '', eventReader)"
+                           class="table-link" href="" rel="nofollow">
                             <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
                         </a>
                     </td>
@@ -64,9 +76,12 @@
                 <ng-container matColumnDef="trxHash">
                     <th *matHeaderCellDef mat-header-cell>Trx</th>
                     <td *matCellDef="let element" mat-cell>
-                        <a (click)="detailsDialog.openDetailsDialog($event, '', element.trxHash, eventReader)" class="table-link" href="" rel="nofollow">
-                            <div *ngIf="!(screenWidth > 1300)" innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
-                            <div *ngIf="screenWidth > 1300" innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
+                        <a (click)="detailsDialog.openDetailsDialog($event, '', element.trxHash, eventReader)"
+                           class="table-link" href="" rel="nofollow">
+                            <div *ngIf="!(screenWidth > 1300)"
+                                 innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                            <div *ngIf="screenWidth > 1300"
+                                 innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
                         </a>
                     </td>
                 </ng-container>
@@ -90,7 +105,8 @@
 
             </table>
 
-            <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" [pageSize]="5"
+                           showFirstLastButtons></mat-paginator>
 
         </mat-expansion-panel>
 

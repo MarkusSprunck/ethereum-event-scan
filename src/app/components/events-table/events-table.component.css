@@ -21,6 +21,16 @@ img {
     text-decoration: underline;
 }
 
+.mat-expansion-panel-header-title {
+    flex-grow: 0;
+}
+.mat-expansion-panel-header-description {
+    flex-grow: 10;
+}
+
+.mat-progress-bar {
+    margin-top: 0.4rem;
+}
 
 @media (min-width: 769px) {
 
