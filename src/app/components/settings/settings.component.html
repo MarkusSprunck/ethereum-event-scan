@@ -9,7 +9,6 @@
                 <mat-panel-description></mat-panel-description>
             </mat-expansion-panel-header>
 
-
             <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
                 <mat-form-field>
                     <label for="startBlock"></label><input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock" formControlName="startBlock"
@@ -32,15 +31,10 @@
                 </mat-form-field>
             </div>
 
-
             <mat-form-field>
                 <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
                                                    appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize formControlName="abi" id="abi" matInput placeholder="Abi"
                                                    spellcheck="false" type="text"></textarea>
-                <button (click)="resetABIValue()" *ngIf="startBlock" aria-label="Clear" mat-button mat-icon-button matSuffix>
-                    <mat-icon>x</mat-icon>
-                </button>
-
             </mat-form-field>
 
             <div>

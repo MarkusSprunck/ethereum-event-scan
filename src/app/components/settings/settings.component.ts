@@ -173,15 +173,10 @@ export class SettingsComponent implements OnInit {
         }
     }
 
-    resetABIValue() {
-        this.form.get('abi')?.setValue('[]');
-        this.updateABIValue();
-    }
-
     updateABIValue() {
         const val = this.form.get('abi');
         if (val) {
-            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim() === '[]') {
+            if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
                 UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: any) => {
                         UtilsService.updateURLWithCompressedAbi(value);
                         this.form.controls.abi.setValue(value);
