@@ -68,6 +68,7 @@ export class Reader {
     private timestampCache = new Map<string, string>();
     private minerCache = new Map<string, string>();
     private isLoading = false;
+    private isEndBlockNumberSet = false;
     private contractInstance: any = null;
 
     constructor(private route: ActivatedRoute, public entity: ProviderService) {
@@ -202,8 +203,12 @@ export class Reader {
      */
     getPastEvents() {
 
-        // Just in the case there is a valid contract
-        if (this.contractInstance === null || +(this.startBlock) > +(this.entity.currentBlock) || this.isLoading) {
+
+        if (this.contractInstance === null ||                    // Just in the case there is a valid contract
+            +(this.startBlock) > +(this.entity.currentBlock) ||  // Wait till start block has been reached
+            this.isLoading ||                                    // No second start of readEventsRange(...)
+            this.isEndBlockNumberSet                             // Just call once (in the case end block has been read, there will nothing new)
+        ) {
             return;
         }
 
@@ -214,6 +219,7 @@ export class Reader {
         // Store next block number for new events
         if (start < this.entity.currentBlock) {
             this.startBlock = '' + (end + 1);
+            this.isEndBlockNumberSet = (this.endBlock !== 'latest');
             this.readEventsRange(start, end, this);
         }
         this.isLoading = false;
