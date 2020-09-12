@@ -204,10 +204,10 @@ export class Reader {
     getPastEvents() {
 
 
-        if (this.contractInstance === null ||                    // Just in the case there is a valid contract
-            +(this.startBlock) > +(this.entity.currentBlock) ||  // Wait till start block has been reached
-            this.isLoading ||                                    // No second start of readEventsRange(...)
-            this.isEndBlockNumberSet                             // Just call once (in the case end block has been read, there will nothing new)
+        if (this.contractInstance === null ||                   // Just in the case there is a valid contract
+            +(this.startBlock) > +(this.entity.currentBlock) || // Wait till start block has been reached
+            this.isLoading ||                                   // No second start of readEventsRange(...)
+            this.isEndBlockNumberSet                            // Call once (in the case end block has been read, there will nothing new)
         ) {
             return;
         }

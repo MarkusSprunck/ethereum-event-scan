@@ -24,8 +24,8 @@
 
 import {Component, OnInit} from '@angular/core';
 import {Reader} from '../../services/reader.service';
-import {Observable} from "rxjs";
-import {ThemeService} from "../../services/theme.service";
+import {Observable} from 'rxjs';
+import {ThemeService} from '../../services/theme.service';
 
 @Component({
     selector: 'app-root',

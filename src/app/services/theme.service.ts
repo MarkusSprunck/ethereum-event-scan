@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {Subject} from "rxjs";
-import {UtilsService} from "./utils.service";
-import {ActivatedRoute} from "@angular/router";
-import {ProviderService} from "./provider.service";
+import {Subject} from 'rxjs';
+import {UtilsService} from './utils.service';
+import {ActivatedRoute} from '@angular/router';
+import {ProviderService} from './provider.service';
 
 @Injectable()
 export class ThemeService {

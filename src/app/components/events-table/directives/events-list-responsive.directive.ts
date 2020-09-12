@@ -10,7 +10,7 @@ import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 import {map, mapTo, takeUntil} from 'rxjs/operators';
 
 @Directive({
-    selector: '[matTableResponsive]'
+    selector: '[appMatTableResponsive]'
 })
 export class EventsListResponsiveDirective implements OnInit, AfterViewInit, OnDestroy {
 
