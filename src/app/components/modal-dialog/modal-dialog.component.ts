@@ -6,6 +6,8 @@ import {
     MatDialogRef
 } from '@angular/material/dialog';
 import {Reader} from '../../services/reader.service';
+import {SettingsComponent} from "../settings/settings.component";
+import {UtilsService} from "../../services/utils.service";
 
 export interface DialogData {
     blockNumber: string;
@@ -20,12 +22,16 @@ export interface DialogData {
 })
 export class ModalDialogComponent {
 
+    private blockNumber: String = "";
+
     constructor(public dialogRef: MatDialogRef<ModalDialogComponent>,
                 @Inject(MAT_DIALOG_DATA) public data: DialogData,
                 public dialog: MatDialog) {
     }
 
     public openDetailsDialog(event: any, blockNumber: string, trxNumber: string, reader: Reader): void {
+
+        this.blockNumber = blockNumber;
 
         if (event != null) {
             event.preventDefault();
@@ -46,10 +52,22 @@ export class ModalDialogComponent {
         };
 
         this.dialog.open(ModalDialogComponent, dialogConfig);
-    }
+     }
 
     onCloseClick(): void {
         this.dialogRef.close();
     }
 
+    onPinStart() {
+        UtilsService.updateURLParameter('start', this.data.blockNumber);
+        this.data.reader.setStartBlocktInitial(this.data.blockNumber)
+        location.reload();
+     }
+
+
+    onPinEnd() {
+        UtilsService.updateURLParameter('end', this.data.blockNumber);
+        this.data.reader.setEndBlock(this.data.blockNumber);
+        location.reload();
+    }
 }

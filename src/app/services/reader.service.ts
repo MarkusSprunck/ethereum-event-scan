@@ -123,6 +123,10 @@ export class Reader {
         this.startBlock = startBlock;
     }
 
+    setStartBlocktInitial(startBlock: string) {
+        this.startInitial = startBlock;
+    }
+
     setEndBlock(endBlock: string) {
         this.endBlock = endBlock;
     }

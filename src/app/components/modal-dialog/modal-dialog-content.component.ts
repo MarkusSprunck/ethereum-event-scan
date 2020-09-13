@@ -22,11 +22,10 @@ export class ModalDialogContentComponent implements OnInit {
     transactions: any;
 
     ngOnInit() {
-        if (this.inputData.blockNumber != null && this.inputData.blockNumber.length > 0) {
-            this.renderBlock(this.inputData.blockNumber);
-        }
         if (this.inputData.trxNumber != null && this.inputData.trxNumber.length > 0) {
             this.renderTransaction(this.inputData.trxNumber);
+        } else {
+            this.renderBlock(this.inputData.blockNumber);
         }
     }
 

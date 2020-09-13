@@ -5,9 +5,15 @@
     <app-inner-component [inputData]="data"></app-inner-component>
 
     <div class="spacer"></div>
+    <div  align="start" >
+        Set block number {{data.blockNumber}} as
+        <button (click)="onPinStart()" mat-button>Start</button> /
+        <button (click)="onPinEnd()"  mat-button>End</button>,
+        then reload the page.
+    </div>
 
     <div align="end" mat-dialog-actions>
-        <button (click)="onCloseClick()" color="primary" mat-button>Close</button>
+       <button (click)="onCloseClick()" color="primary" mat-button cdkFocusInitial style="padding: 0 16px;min-width: 64px">Close</button>
     </div>
 
 </div>
