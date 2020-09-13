@@ -19,6 +19,7 @@ img {
 
 .table-link :hover {
     text-decoration: underline;
+    cursor: pointer;
 }
 
 .mat-expansion-panel-header-title {
