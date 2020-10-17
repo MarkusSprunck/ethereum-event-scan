@@ -1,5 +1,6 @@
 ### STAGE 1: Build ###
-FROM node:12.13.1-alpine AS build
+FROM alpine:3.10 AS build
+
 RUN echo "Install python, make and g++"
 RUN apk add --no-cache --virtual .gyp \
         python \
@@ -21,13 +22,16 @@ RUN apk --no-cache add \
     openssh \
     sudo
 
+RUN echo "Upgrade all dependecies"
+RUN apk upgrade
+
 WORKDIR /usr/src/app
 COPY . .
 RUN npm install
 RUN npm run build
 
 ### STAGE 2: Run ###
-FROM nginx:1.15.8-alpine
+FROM nginx:stable
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY --from=build /usr/src/app/dist/ethereum-event-scan /usr/share/nginx/html
 RUN  cp /usr/share/nginx/html/index.html /usr/share/nginx/html/main.html
