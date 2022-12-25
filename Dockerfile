@@ -3,13 +3,14 @@ FROM alpine:3.17.0 AS build
 
 RUN echo "Install python, make and g++"
 RUN apk add --no-cache --virtual .gyp \
-        python \
+        python3 \
         make \
         g++
 
 RUN echo "Install NPM AND YARN and some essentials deps"
 RUN apk --no-cache add \
-    nodejs-npm \
+    nodejs \
+    npm \
     curl \
     yarn \
     tar \
