@@ -25,7 +25,6 @@
 import {CommonModule, DecimalPipe} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {BrowserModule} from '@angular/platform-browser';
 import {MainComponent} from './pages/main/main.component';
 import {AppRoutingModule} from './app-routing.module';
 import {SettingsComponent} from 'src/app/components/settings/settings.component';
@@ -54,76 +53,73 @@ import {EventsTableComponent} from './components/events-table/events-table.compo
 import {HighlightSearch} from './components/events-table/pipes/highlight-search.pipe';
 import {ModalDialogContentComponent} from './components/modal-dialog/modal-dialog-content.component';
 import {MatListModule} from '@angular/material/list';
-import {FlexModule} from '@angular/flex-layout';
 import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive'
-import {ThemeService} from './services/theme.service';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatSliderModule} from '@angular/material/slider';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+
 
 @NgModule({
-    declarations: [
-        MainComponent,
-        SettingsComponent,
-        ModalDialogComponent,
-        JsonFormatterDirective,
-        EventsTableComponent,
-        EventsTableComponent,
-        HighlightSearch,
-        ModalDialogComponent,
-        ModalDialogContentComponent,
-        EventsListResponsiveDirective
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        CommonModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AppRoutingModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatCheckboxModule,
-        MatToolbarModule,
-        MatGridListModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatRadioModule,
-        MatSelectModule,
-        MatCheckboxModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        MatButtonModule,
-        MatSnackBarModule,
-        MatTableModule,
-        MatIconModule,
-        MatPaginatorModule,
-        MatSortModule,
-        MatCheckboxModule,
-        MatExpansionModule,
-        MatFormFieldModule,
-        MatCheckboxModule,
-        MatOptionModule,
-        MatDialogModule,
-        MatListModule,
-        FlexModule,
-        MatSlideToggleModule,
-        MatSliderModule,
-        MatProgressBarModule
-    ],
-    exports: [EventsListResponsiveDirective],
-    providers: [Reader, DecimalPipe,
-        ThemeService, ModalDialogContentComponent,
-        {
-            provide: MatDialogRef,
-            useValue: {}
-        },
-        {
-            provide: MAT_DIALOG_DATA, useValue: {}
-        },
-        ModalDialogComponent],
-    bootstrap: [MainComponent],
-    entryComponents: [ModalDialogComponent]
+  declarations: [
+    MainComponent,
+    SettingsComponent,
+    ModalDialogComponent,
+    JsonFormatterDirective,
+    EventsTableComponent,
+    EventsTableComponent,
+    HighlightSearch,
+    ModalDialogComponent,
+    ModalDialogContentComponent,
+    EventsListResponsiveDirective
+  ],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatToolbarModule,
+    MatGridListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatIconModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    MatOptionModule,
+    MatDialogModule,
+    MatListModule,
+    MatSlideToggleModule,
+    MatProgressBarModule
+  ],
+
+  exports: [EventsListResponsiveDirective],
+  providers: [Reader, DecimalPipe, ModalDialogContentComponent,
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
+    {
+      provide: MAT_DIALOG_DATA, useValue: {}
+    },
+    ModalDialogComponent],
+  bootstrap: [MainComponent],
+  entryComponents: [ModalDialogComponent]
 })
 export class AppModule {
 }

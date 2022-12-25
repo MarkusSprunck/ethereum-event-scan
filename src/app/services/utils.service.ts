@@ -21,105 +21,105 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import {Injectable} from '@angular/core';
 
-const zlib = require('zlib');
+const zlib = require('pako');
 
 /**
  * The class Utils provides methods for string manipulation
  */
+@Injectable({
+  providedIn: 'root'
+})
 export class UtilsService {
 
-    /**
-     * Creates a human readable time format
-     */
-    static convertTimestamp(time: number) {
-        const d = new Date(time * 1000);
-        const yy = d.getFullYear();
-        const MM = ('0' + (d.getMonth() + 1)).slice(-2);
-        const dd = ('0' + d.getDate()).slice(-2);
-        const hh = ('0' + d.getHours()).slice(-2);
-        const mm = ('0' + d.getMinutes()).slice(-2);
-        const ss = ('0' + d.getSeconds()).slice(-2);
-        return dd + '.' + MM + '.' + yy + ' ' + hh + ':' + mm + ':' + ss + 'h';
-    }
+  /**
+   * Creates a human readable time format
+   */
+  static convertTimestamp(time: number) {
+    const d = new Date(time * 1000);
+    const yy = d.getFullYear();
+    const MM = ('0' + (d.getMonth() + 1)).slice(-2);
+    const dd = ('0' + d.getDate()).slice(-2);
+    const hh = ('0' + d.getHours()).slice(-2);
+    const mm = ('0' + d.getMinutes()).slice(-2);
+    const ss = ('0' + d.getSeconds()).slice(-2);
+    return dd + '.' + MM + '.' + yy + ' ' + hh + ':' + mm + ':' + ss + 'h';
+  }
 
-    /**
-     * Truncate middle part of string in the case it exceeds the maximum length
-     */
-    static truncate(str: string, maxLength: number) {
-        if (str.length <= maxLength) {
-            return str;
-        }
-        const left = Math.ceil(maxLength / 2);
-        const right = str.length - Math.floor(maxLength / 2) + 2;
-        return str.substr(0, left) + '…' + str.substring(right);
+  /**
+   * Truncate middle part of string in the case it exceeds the maximum length
+   */
+  static truncate(str: string, maxLength: number) {
+    if (str.length <= maxLength) {
+      return str;
     }
+    const left = Math.ceil(maxLength / 2);
+    const right = str.length - Math.floor(maxLength / 2) + 2;
+    return str.substr(0, left) + '…' + str.substring(right);
+  }
 
-    /**
-     * Truncate middle part of string in the case it exceeds the maximum length
-     */
-    static break(str: string, maxLength: number) {
-        if (str.length < maxLength * 2) {
-            return str;
-        }
-        return str.substr(0, maxLength) + '\n' + str.substring(maxLength);
+  /**
+   * Truncate middle part of string in the case it exceeds the maximum length
+   */
+  static break(str: string, maxLength: number) {
+    if (str.length < maxLength * 2) {
+      return str;
     }
+    return str.substr(0, maxLength) + '\n' + str.substring(maxLength);
+  }
 
-    static updateURLWithCompressedAbi(newValue: string) {
-        const that = this;
-        zlib.deflate(newValue, (error: Error | null, newBuffer: Buffer) => {
-            if (!error) {
-                const newString = (newBuffer.toString('hex'));
-                that.updateURLParameter('abi', newString);
+  static updateURLWithCompressedAbi(newValue: string) {
+    const zippedString = zlib.gzip(newValue, {to: 'string'});
+    const zippedStringBase64 = btoa(zippedString)
+    this.updateURLParameter('abi', zippedStringBase64);
+  }
+
+  static updateURLParameter(key: string, newValue: string) {
+    const href = new URL(window.location.href);
+    href.searchParams.set(key, newValue);
+    window.history.pushState('', '', href.search);
+  }
+
+  static fetchABIFromVerifiedContract(contract: string, callback: any) {
+
+    const domainURLs = [
+      'http://api.etherscan.io',
+      'http://api-kovan.etherscan.io',
+      'http://api-ropsten.etherscan.io',
+      'http://api-goerli.etherscan.io',
+      'http://api-rinkeby.etherscan.io',
+    ];
+
+    // try for all networks to load ABI from verified contract
+    let counter = 0;
+    domainURLs.forEach((domain) => {
+
+      setTimeout(() => {
+        let xmlHttp = new XMLHttpRequest();
+        xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = () => {
+          if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            if (xmlHttp.responseText.startsWith('[{')) {
+              callback(xmlHttp.responseText);
             }
-        });
-    }
+          }
+        };
+        const url = domain + '/api?module=contract&action=getabi&format=raw&address=' + contract;
+        xmlHttp.open('GET', url, true);
+        xmlHttp.send();
 
-    static updateURLParameter(key: string, newValue: string) {
-        const href = new URL(window.location.href);
-        href.searchParams.set(key, newValue);
-        window.history.pushState('', '', href.search);
-    }
+      }, counter * 1000 + 50);
 
-    static fetchABIFromVerifiedContract(contract: string, callback: any) {
+      counter++;
+    });
+  }
 
-        const domainURLs = [
-            'http://api.etherscan.io',
-            'http://api-kovan.etherscan.io',
-            'http://api-ropsten.etherscan.io',
-            'http://api-goerli.etherscan.io',
-            'http://api-rinkeby.etherscan.io',
-        ];
-
-        // try for all networks to load ABI from verified contract
-        let counter = 0;
-        domainURLs.forEach((domain) => {
-
-            setTimeout(() => {
-                let xmlHttp = new XMLHttpRequest();
-                xmlHttp = new XMLHttpRequest();
-                xmlHttp.onreadystatechange = () => {
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        if (xmlHttp.responseText.startsWith('[{')) {
-                            callback(xmlHttp.responseText);
-                        }
-                    }
-                };
-                const url = domain + '/api?module=contract&action=getabi&format=raw&address=' + contract;
-                xmlHttp.open('GET', url, true);
-                xmlHttp.send();
-
-            }, counter * 1000 + 50);
-
-            counter++;
-        });
-    }
-
-    /**
-     *  Replaces all spaces with non breaking spaces in html
-     */
-    static spaces(value: string) {
-        return value.replace(/\s/g, '&nbsp;');
-    }
+  /**
+   *  Replaces all spaces with non breaking spaces in html
+   */
+  static spaces(value: string) {
+    return value.replace(/\s/g, '&nbsp;');
+  }
 
 }

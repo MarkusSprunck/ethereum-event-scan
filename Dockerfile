@@ -1,5 +1,5 @@
 ### STAGE 1: Build ###
-FROM alpine:3.10 AS build
+FROM alpine:3.17.0 AS build
 
 RUN echo "Install python, make and g++"
 RUN apk add --no-cache --virtual .gyp \

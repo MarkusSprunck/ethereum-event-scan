@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2019-2020 Markus Sprunck (sprunck.markus@gmail.com)
+ * Copyright (c) 2019-2022 Markus Sprunck (sprunck.markus@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
@@ -24,18 +24,18 @@
 
 export class EthEvent {
 
-    // noinspection JSUnusedGlobalSymbols
-    constructor(
-        public name: string,
-        public block: string,
-        public trxHash: string,
-        public trxHashShort: string,
-        public key: string,
-        public value: string,
-        public time: string,
-        public miner: string,
-        public image: string) {
-    }
+  // noinspection JSUnusedGlobalSymbols
+  constructor(
+    public name: string,
+    public block: string,
+    public trxHash: string,
+    public trxHashShort: string,
+    public key: string,
+    public value: string,
+    public time: string,
+    public miner: string,
+    public image: string) {
+  }
 
 }
 

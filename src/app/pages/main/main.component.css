@@ -1,36 +1,36 @@
 .mat-toolbar-row {
-    height: 65px;
+  height: 65px;
 }
 
 .title {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 .title-sub {
-    margin-left: auto;
-    margin-right: 0;
-    font-weight: lighter;
-    font-size: small;
+  margin-left: auto;
+  margin-right: 0;
+  font-weight: lighter;
+  font-size: small;
 }
 
 .footer {
-    margin-left: auto;
-    margin-right: 0;
-    font-weight: lighter;
-    font-size: small;
-    color: gray;
-    text-align: right;
+  margin-left: auto;
+  margin-right: 0;
+  font-weight: lighter;
+  font-size: small;
+  color: gray;
+  text-align: right;
 }
 
 div {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-    padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.5rem;
 }
 
 
 div.mat-app-background {
-    padding: 0;
-    min-height: calc(100vh);
+  padding: 0;
+  min-height: calc(100vh);
 }
 

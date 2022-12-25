@@ -1,9 +1,4 @@
-@import '~@angular/material/core/theming/all-theme';
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-@include mat-core();
+@import "~@angular/material/prebuilt-themes/purple-green.css";
 
 @import 'src/app/components/events-table/directives/events-list-responsive.directive';
 
@@ -14,14 +9,13 @@
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Lekton';
-  src: url('~src/assets/fonts/Lekton-Bold.ttf') format('truetype');
-  font-weight: 400;
+* {
+  color: wheat;
+  font-family: Lekton, monospace !important;
 }
 
-* {
-  font-family: Lekton, monospace !important;
+a {
+  color: wheat !important;
 }
 
 body {
@@ -33,29 +27,12 @@ body {
 
 @media screen and (max-width: 700px) {
   html, body {
-     min-width: 360px;
+    min-width: 360px;
   }
 }
 
-.table-link {
-  color: blue;
+.mat-form-field {
+  gap: 30px;
 }
-$light-primary: mat-palette($mat-blue-grey);
-$light-accent: mat-palette($mat-amber, A200, A100, A400);
-$light-warn: mat-palette($mat-deep-orange);
-$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
-@include angular-material-theme($light-theme);
 
-// Our dark theme
-.dark-theme {
-  .table-link {
-    color: lightblue;
-  }
-  color: $light-primary-text;
-  $dark-primary: mat-palette($mat-brown);
-  $dark-accent: mat-palette($mat-amber, A400, A100, A700);
-  $dark-warn: mat-palette($mat-red);
-  $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
-  @include angular-material-theme($dark-theme);
-}
 

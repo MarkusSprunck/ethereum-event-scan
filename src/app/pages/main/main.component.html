@@ -1,39 +1,35 @@
-<div [ngClass]="{'dark-theme': isDarkTheme | async}" class="mat-app-background">
+<div class="mat-app-background">
 
-        <mat-toolbar class="header"
-                     color="primary">
-            <mat-toolbar-row>
-                <span class="title">Ethereum-Event-Scan</span>
-                <span class="title-sub">
-            <mat-slide-toggle (change)="toggleDarkTheme($event.checked)"
-                              [checked]="isDarkTheme | async">Dark Theme</mat-slide-toggle>
-                      </span>
+  <mat-toolbar class="header"
+               color="primary">
+    <mat-toolbar-row>
+      <span class="title">Ethereum-Event-Scan</span>
+    </mat-toolbar-row>
+  </mat-toolbar>
 
-             </mat-toolbar-row>
-        </mat-toolbar>
+  <!-- Main content -->
+  <div class="row">
+    <div class="col-12">
+      <app-settings [abi]="control.abi" [connected]="control.entity.connected"
+                    [contract]="control.contract" [endBlock]="control.endBlock"
+                    [lastBlock]="control.entity.currentBlock"
+                    [provider]="control.provider" [refresh]="control.refresh"
+                    [startBlock]="control.startInitial">
 
-        <!-- Main content -->
-        <div class="row">
-            <div class="col-12">
-                <app-settings [abi]="control.abi" [connected]="control.entity.connected"
-                              [contract]="control.contract" [endBlock]="control.endBlock"
-                              [lastBlock]="control.entity.currentBlock"
-                              [provider]="control.provider" [refresh]="control.refresh"
-                              [startBlock]="control.startInitial">
+      </app-settings>
+    </div>
+  </div>
 
-                </app-settings>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-12">
+      <app-events-list></app-events-list>
+    </div>
+  </div>
 
-        <div class="row">
-            <div class="col-12">
-                <app-events-list></app-events-list>
-            </div>
-        </div>
-
-       <div class="row">
-           <div class="footer">An open source Ethereum Event Explorer developed by Markus Sprunck. Available on <a href="https://github.com/MarkusSprunck/ethereum-event-scan" class="table-link" target="_blank">GitHub</a></div>
-       </div>
+  <div class="row">
+    <div class="footer">An open source Ethereum Event Explorer developed by Markus Sprunck. Available on <a
+      href="https://github.com/MarkusSprunck/ethereum-event-scan" class="table-link" target="_blank">GitHub</a></div>
+  </div>
 
 </div>
 

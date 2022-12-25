@@ -10,108 +10,125 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
-    selector: 'app-events-list',
-    templateUrl: './events-table.component.html',
-    styleUrls: ['./events-table.component.css']
+  selector: 'app-events-list',
+  templateUrl: './events-table.component.html',
+  styleUrls: ['./events-table.component.css']
 })
 export class EventsTableComponent implements OnInit {
 
-    public formSearch: FormGroup;
+  // @ts-ignore
+  public formSearch: FormGroup;
 
-    listData: MatTableDataSource<any>;
+  // @ts-ignore
+  listData: MatTableDataSource<EthEvent, MatTableDataSourcePaginator>;
 
-    displayedColumns: string[] = ['image', 'name', 'time', 'miner', 'block', 'trxHash', 'value'];
+  displayedColumns: string[] = ['image', 'name', 'time', 'miner', 'block', 'trxHash', 'value'];
 
-    @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatSort) sort: MatSort | undefined;
 
-    @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
-    @Input() searchKey = '';
+  @Input() searchKey = '';
 
-    panelOpenState = false;
+  panelOpenState = false;
 
-    screenWidth = window.innerWidth;
+  screenWidth = window.innerWidth;
 
-    constructor(private fb: FormBuilder,
-                public eventReader: Reader,
-                private route: ActivatedRoute,
-                public detailsDialog: ModalDialogComponent) {
+  constructor(private fb: FormBuilder,
+              public eventReader: Reader,
+              private route: ActivatedRoute,
+              public detailsDialog: ModalDialogComponent) {
 
-        this.route.queryParams.subscribe(params => {
-            if (params.searchKey) {
-                this.searchKey = params.searchKey;
-            } else {
-                this.searchKey = '';
-            }
-        });
-    }
+    this.route.queryParams.subscribe(params => {
+      if (params['searchKey']) {
+        this.searchKey = params['searchKey'];
+      } else {
+        this.searchKey = '';
+      }
+    });
+  }
 
-    ngOnInit() {
+  ngOnInit() {
 
-        this.formSearch = this.fb.group({
-            searchKey: [''],
-        });
+    this.formSearch = this.fb.group({
+      searchKey: [''],
+    });
 
-        this.eventReader.setUpdateCallback(() => {
+    this.eventReader.setUpdateCallback(() => {
 
-            const sortedEvents = Array.from(EventData.values())
-                .sort((first, second) => {
-                    return Number(second.block) - Number(first.block);
-                });
-
-            this.panelOpenState = true;
-
-            this.listData = new MatTableDataSource([...sortedEvents]);
-            this.listData.sort = this.sort;
-            this.listData.paginator = this.paginator;
-            this.listData.filter = this.searchKey;
-            this.listData.filterPredicate = (data, filter) => {
-                return this.displayedColumns.some(ele => {
-                    return data[ele].toLowerCase().indexOf(filter) !== -1;
-                });
-            };
+      const sortedEvents = Array.from(EventData.values())
+        .sort((first, second) => {
+          return Number(second.block) - Number(first.block);
         });
 
-    }
+      this.panelOpenState = true;
 
-    updateSearchValue() {
-        const val = this.formSearch.get('searchKey');
-        if (val) {
-            UtilsService.updateURLParameter('searchKey', val.value);
-            this.searchKey = val.value;
-            this.applyFilter();
-        }
-    }
+      this.listData = new MatTableDataSource([...sortedEvents]);
 
-    applyFilter() {
-        this.listData.filter = this.searchKey.trim().toLowerCase();
-    }
+      // @ts-ignore
+      this.listData.sort = this.sort;
 
-    panelMessage() {
-        let jobs = '';
-        if (this.eventReader.runningJobs > 1) {
-            jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
-        }
-        let message = 'No Events';
-        if (typeof EventData !== 'undefined' && typeof this.listData !== 'undefined' && EventData.size > 0) {
-            message = 'Events ' + this.listData.filteredData.length + ' of ' + EventData.size + ' ' + jobs;
-        }
-        return message;
-    }
+      // @ts-ignore
+      this.listData.paginator = this.paginator;
+      this.listData.filter = this.searchKey;
+      this.listData.filterPredicate = (data, filter) => {
+        return this.displayedColumns.some(ele => {
+          // @ts-ignore
+          return data[ele].toLowerCase().indexOf(filter) !== -1;
+        });
+      };
+    });
 
-    @HostListener('window:resize')
-    onResize() {
-        this.screenWidth = window.innerWidth;
-    }
+  }
 
-    isElementVisible( element: any ) {
-        const minID = this.paginator.pageIndex * this.paginator.pageSize
-        const maxID = (this.paginator.pageIndex + 1) * this.paginator.pageSize -1
-        const elementID = this.listData.filteredData.indexOf(element)
-        return  (elementID >= minID) && (elementID <= maxID)
-    }
+  updateSearchValue() {
 
-    showSpinner() {
-        return this.eventReader.runningJobs > 0;
+    // @ts-ignore
+    const val = this.formSearch.get('searchKey');
+    if (val) {
+      UtilsService.updateURLParameter('searchKey', val.value);
+      this.searchKey = val.value;
+      this.applyFilter();
     }
+  }
+
+  applyFilter() {
+
+    // @ts-ignore
+    this.listData.filter = this.searchKey.trim().toLowerCase();
+  }
+
+  panelMessage() {
+    let jobs = '';
+    if (this.eventReader.runningJobs > 1) {
+      jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
+    }
+    let message = 'No Events';
+    if (typeof EventData !== 'undefined' && typeof this.listData !== 'undefined' && EventData.size > 0) {
+      message = 'Events ' + this.listData.filteredData.length + ' of ' + EventData.size + ' ' + jobs;
+    }
+    return message;
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.screenWidth = window.innerWidth;
+  }
+
+  isElementVisible(element: any) {
+
+    // @ts-ignore
+    const minID = this.paginator.pageIndex * this.paginator.pageSize
+
+    // @ts-ignore
+    const maxID = (this.paginator.pageIndex + 1) * this.paginator.pageSize - 1
+
+    // @ts-ignore
+    const elementID = this.listData.filteredData.indexOf(element)
+    return (elementID >= minID) && (elementID <= maxID)
+  }
+
+  showSpinner() {
+    return this.eventReader.runningJobs > 0;
+  }
 }

@@ -29,82 +29,94 @@ import {Injectable} from '@angular/core';
  * The class ProviderService stores the connection status.
  */
 @Injectable({
-    providedIn: 'root',
+  providedIn: 'root',
 })
 export class ProviderService {
 
-    public web3: any = null;
+  public web3: any = null;
 
-    public currentBlock = 0;
+  public currentBlock = 0;
 
-    public highestBlock = 0;
+  public highestBlock = 0;
 
-    public connected = false;
+  public connected = false;
 
-    /**
-     * Create connection to blockchain
-     */
-    setProvider(providerUrl: string) {
+  /**
+   * Create connection to blockchain
+   */
+  setProvider(providerUrl: string) {
 
+    this.connected = false;
+    this.web3 = null;
+
+    if (providerUrl.startsWith('http')) {
+      if (providerUrl != null) {
+        this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+      }
+    } else {
+      if (providerUrl.startsWith('ws')) {
+        this.web3 = new Web3(providerUrl);
+      }
+    }
+
+    // Check success
+    if (this.web3 === null) {
+      this.connected = false;
+      return;
+    }
+
+    // Update status
+    this.isConnectionWorking();
+    this.isSyncing();
+  }
+
+  /**
+   * The current value is maybe not the lastBlock status of syncing
+   */
+  isSyncing() {
+
+    if (this.web3 === null) {
+      return false;
+    }
+
+    this.web3.eth.isSyncing((error: Error, sync: any) => {
+      if (!error && sync) {
+        this.currentBlock = sync.currentBlock;
+        this.highestBlock = sync.highestBlock;
+      }
+    });
+
+    return this.highestBlock > this.currentBlock;
+  }
+
+  /**
+   * The current value is maybe not the lastBlock status of connection
+   */
+  isConnectionWorking() {
+
+    if (this.web3 === null) {
+      this.connected = false;
+      return false;
+    }
+
+    this.web3.eth.net.isListening()
+      .then(() => {
+        this.connected = true;
+      })
+      .catch(() => {
         this.connected = false;
-        this.web3 = null;
+      });
 
-        if (providerUrl.startsWith('http')) {
-            this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-        } else if (providerUrl.startsWith('ws')) {
-            this.web3 = new Web3(providerUrl);
-        }
+    /*     this.web3.eth.getBlockNumber((error: Error, blockNumber: number) => {
+             console.log("blockNumber", blockNumber, "error", error)
+             if (!error && blockNumber) {
+                 this.currentBlock = blockNumber;
+                 this.highestBlock = blockNumber;
+             }
+         });*/
 
-        // Check success
-        if (this.web3 === null) {
-            this.connected = false;
-            return;
-        }
-
-        // Update status
-        this.isConnectionWorking();
-        this.isSyncing();
-    }
-
-    /**
-     * The current value is maybe not the lastBlock status of syncing
-     */
-    isSyncing() {
-
-        if (this.web3 === null) {
-            return false;
-        }
-
-        this.web3.eth.isSyncing((error: Error, sync: any) => {
-            if (!error && sync) {
-                this.currentBlock = sync.currentBlock;
-                this.highestBlock = sync.highestBlock;
-            }
-        });
-
-        return this.highestBlock > this.currentBlock;
-    }
-
-    /**
-     * The current value is maybe not the lastBlock status of connection
-     */
-    isConnectionWorking() {
-
-        if (this.web3 === null) {
-            this.connected = false;
-            return false;
-        }
-
-        this.web3.eth.net.isListening()
-            .then(() => {
-                this.connected = true;
-            })
-            .catch(() => {
-                this.connected = false;
-            });
-
-        return this.connected;
-    }
+    return this.connected;
+  }
 
 }
 

@@ -1,50 +1,59 @@
 <form [formGroup]="form">
 
-    <mat-accordion>
+  <mat-accordion>
 
-        <mat-expansion-panel [expanded]="panelOpenState">
+    <mat-expansion-panel [expanded]="panelOpenState">
 
-            <mat-expansion-panel-header>
-                <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
-                <mat-panel-description></mat-panel-description>
-            </mat-expansion-panel-header>
+      <mat-expansion-panel-header>
+        <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
+        <mat-panel-description></mat-panel-description>
+      </mat-expansion-panel-header>
 
-            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
-                <mat-form-field>
-                    <label for="startBlock"></label><input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock" formControlName="startBlock"
-                                                           id="startBlock" matInput placeholder="Start" type="text">
-                </mat-form-field>
-                <mat-form-field>
-                    <label for="endBlock"></label><input (change)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock" formControlName="endBlock" id="endBlock"
-                                                         matInput placeholder="End" type="text">
-                </mat-form-field>
-            </div>
+      <div fxLayout="row">
+        <mat-form-field appearance="fill">
+          <label for="startBlock"></label>
+          <input (change)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock"
+                 formControlName="startBlock"
+                 id="startBlock" matInput placeholder="Start" type="text">
+        </mat-form-field>
+        <mat-form-field>
+          <label for="endBlock"></label>
+          <input (change)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock" formControlName="endBlock"
+                 id="endBlock"
+                 matInput placeholder="End" type="text">
+        </mat-form-field>
+      </div>
 
-            <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="20px">
-                <mat-form-field>
-                    <label for="provider"></label><input (change)="updateProviderValue()" (keyup.enter)="reloadPage()" [value]="provider" formControlName="provider" id="provider"
-                                                         matInput placeholder="Provider" type="text">
-                </mat-form-field>
-                <mat-form-field>
-                    <label for="contract"></label><input (change)="updateContractValue()" (keyup.enter)="reloadPage()" [value]="contract" formControlName="contract" id="contract"
-                                                         matInput placeholder="Contract" type="text">
-                </mat-form-field>
-            </div>
+      <div fxLayout="row">
+        <mat-form-field>
+          <label for="provider"></label><input (change)="updateProviderValue()" (keyup.enter)="reloadPage()"
+                                               [value]="provider" formControlName="provider" id="provider"
+                                               matInput placeholder="Provider" type="text">
+        </mat-form-field>
+        <mat-form-field>
+          <label for="contract"></label><input (change)="updateContractValue()" (keyup.enter)="reloadPage()"
+                                               [value]="contract" formControlName="contract" id="contract"
+                                               matInput placeholder="Contract" type="text">
+        </mat-form-field>
+      </div>
 
-            <mat-form-field>
-                <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()" [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
-                                                   appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize formControlName="abi" id="abi" matInput placeholder="Abi"
-                                                   spellcheck="false" type="text"></textarea>
-            </mat-form-field>
+      <mat-form-field>
+        <label for="abi"></label><textarea (blur)="onBlurAbi()" (change)="updateABIValue()" (focus)="onFocusAbi()"
+                                           [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
+                                           appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
+                                           formControlName="abi" id="abi" matInput placeholder="Abi"
+                                           spellcheck="false" type="text"></textarea>
+      </mat-form-field>
 
-            <div>
-                <mat-checkbox (click)="updateRefreshValue()" [color]="'primary'" formControlName="refresh" id="refresh" layout-align="end">Automatic update
-                </mat-checkbox>
-            </div>
+      <div>
+        <mat-checkbox (click)="updateRefreshValue()" [color]="'primary'" formControlName="refresh" id="refresh"
+                      layout-align="end">Automatic update
+        </mat-checkbox>
+      </div>
 
-        </mat-expansion-panel>
+    </mat-expansion-panel>
 
-    </mat-accordion>
+  </mat-accordion>
 
 </form>
 

@@ -1,19 +1,20 @@
 <div *ngIf="currentBlockNumber.length > 0">
-    <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{current}}</div>
-    <div>Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(parent)">{{parent}}</a></div>
-    <div>Child&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(child)">{{child}}</a></div>
-    <div>{{details}}</div>
-    <div *ngFor="let message of transactions">
-        <div *ngIf="message === transactions[0]">Transactions&nbsp;&nbsp;:
-            <a (click)="renderTransaction(message)">{{message}}</a></div>
-        <div *ngIf="message !== transactions[0]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a
-                (click)="renderTransaction(message)">{{message}}</a>
-        </div>
+  <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{current}}</div>
+  <div>Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(parent)">{{parent}}</a></div>
+  <div>Child&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(child)">{{child}}</a></div>
+  <div>{{details}}</div>
+  <div *ngFor="let message of transactions">
+    <div *ngIf="message === transactions[0]">Transactions&nbsp;&nbsp;:
+      <a (click)="renderTransaction(message)">{{message}}</a></div>
+    <div *ngIf="message !== transactions[0]">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a
+        (click)="renderTransaction(message)">{{message}}</a>
     </div>
+  </div>
 </div>
 
 <div *ngIf="currentTrxNumber.length > 0">
-    <div>Hash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{currentTrxNumber}}</div>
-    <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(current)">{{current}}</a></div>
-    <div>{{details}}</div>
+  <div>Hash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{currentTrxNumber}}</div>
+  <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(current)">{{current}}</a></div>
+  <div>{{details}}</div>
 </div>
