@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   ethereum-event-scan:
-    image: sprunck/ethereum-event-scan:3.0.0
+    image: sprunck/ethereum-event-scan:latest
     container_name: ethereum-event-scan
     build:
       context: .
