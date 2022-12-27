@@ -1,21 +1,30 @@
 <div class="fixActionRow">
-
   <h2>Details</h2>
 
   <app-inner-component [inputData]="data"></app-inner-component>
   <div class="spacer"></div>
 
   <div>
-    Set block number {{data.blockNumber}} as
-    <button (click)="onPinStart()" mat-button>Start</button>
-    /
-    <button (click)="onPinEnd()" mat-button>End</button>
-    , then reload the page.
+    <button (click)="onPinStart()" mat-button style="padding: 16px;min-width: 64px;">Set block number
+      {{data.blockNumber}} as START
+    </button>
   </div>
+
+  <div>
+    <button (click)="onPinEnd()" mat-button style="padding: 16px;min-width: 64px;">Set block number {{data.blockNumber}}
+      as END
+    </button>
+  </div>
+
+  <div>
+    <button (click)="onPinStartEnd()" mat-button style="padding: 16px;min-width: 64px;">Set block number {{data.blockNumber}}
+      as START and END
+    </button>
+  </div>
+
   <div class="spacer-small"></div>
 
-  <button (click)="onCloseClick()" mat-button cdkFocusInitial
-          style="padding: 16px;min-width: 64px; float: left">Close
+  <button (click)="onCloseClick()" mat-button cdkFocusInitial style="padding: 16px;min-width: 64px; float: left">Close
   </button>
   <div class="spacer-small"></div>
 

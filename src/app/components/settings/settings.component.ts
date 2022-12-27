@@ -35,7 +35,6 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class SettingsComponent implements OnInit {
 
-
   public form: FormGroup;
 
   @Input() public lastBlock = 0;
@@ -69,17 +68,12 @@ export class SettingsComponent implements OnInit {
   panelMessage() {
     if (!this.refresh) {
       return 'Automatic refresh stopped';
-    } else if (this.lastBlock === 0) {
-      return 'Automatic refresh running';
     } else {
       return ('Last Block ' + this.lastBlock + '');
     }
   }
 
-
   ngOnInit() {
-
-
     this.route.queryParams.subscribe(params => {
       if (params['refresh']) {
         const checkBox = this.form.get('refresh');
@@ -88,7 +82,6 @@ export class SettingsComponent implements OnInit {
         }
       }
     });
-
     this.form.controls['contract'].clearValidators();
     this.form.controls['abi'].clearValidators();
     this.form.controls['provider'].clearValidators();
@@ -110,7 +103,6 @@ export class SettingsComponent implements OnInit {
     return new Promise((resolve) => {
       setTimeout(() => {
         const regexPattern = /0x[0-9A-Fa-f]{40}/;
-
         const match = this.contract.match(regexPattern);
         if (match && this.contract === match[0]) {
           resolve(null);
@@ -137,8 +129,8 @@ export class SettingsComponent implements OnInit {
   }
 
   updateStartValue() {
-
     const val = this.form.get('startBlock');
+    console.log('startBlock',val )
     if (val) {
       const result: string = (val.value.length === 0) ? '0' : val.value;
       UtilsService.updateURLParameter('start', result);
@@ -147,7 +139,6 @@ export class SettingsComponent implements OnInit {
   }
 
   updateProviderValue() {
-
     const val = this.form.get('provider');
     if (val) {
       UtilsService.updateURLParameter('provider', val.value);
@@ -159,8 +150,8 @@ export class SettingsComponent implements OnInit {
   }
 
   updateEndValue() {
-
     const val = this.form.get('endBlock');
+    console.log('endBlock',val )
     if (val) {
       UtilsService.updateURLParameter('end', val.value);
       this.endBlock = val.value;
@@ -169,13 +160,10 @@ export class SettingsComponent implements OnInit {
   }
 
   updateContractValue() {
-
     const val = this.form.get('contract');
     if (val) {
-
       if (this.provider.length > 0 && val.value.trim() > 0 && this.abi.length === 0) {
         UtilsService.fetchABIFromVerifiedContract(val.value.trim(), (value: string) => {
-
             this.form.controls['abi'].setValue(value);
             this.updateContract(val.value);
           }
@@ -187,15 +175,11 @@ export class SettingsComponent implements OnInit {
   }
 
   updateABIValue() {
-
     const val = this.form.get('abi');
     if (val) {
-
       if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
-
         UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: string) => {
             UtilsService.updateURLWithCompressedAbi(value);
-
             this.form.controls['abi'].setValue(value);
             this.abi = value;
             setInterval(this.reloadPage, 500);
@@ -229,26 +213,11 @@ export class SettingsComponent implements OnInit {
   }
 
   private loadContractData() {
-
-    if (this.abi !== undefined) {
-      this.appComponent.control.setAbi(this.abi);
-    }
-
-    if (this.startBlock !== undefined) {
-      this.appComponent.control.setStartBlock(this.startBlock);
-    }
-
-    if (this.endBlock !== undefined) {
-      this.appComponent.control.setEndBlock(this.endBlock);
-    }
-
-    if (this.contract !== undefined) {
-      this.appComponent.control.setContractAddress(this.contract);
-    }
-
-    if (this.provider !== undefined) {
-      this.appComponent.control.entity.setProvider(this.provider);
-    }
+    this.appComponent.control.setAbi(this.abi);
+    this.appComponent.control.setStartBlock(this.startBlock);
+    this.appComponent.control.setEndBlock(this.endBlock);
+    this.appComponent.control.setContractAddress(this.contract);
+    this.appComponent.control.entity.setProvider(this.provider);
   }
 
   private clearTable() {
@@ -259,10 +228,9 @@ export class SettingsComponent implements OnInit {
     UtilsService.updateURLParameter('contract', val.trim());
     this.contract = val.trim();
     this.clearTable();
-
     this.form.controls['contract'].clearValidators();
-
     this.form.controls['provider'].clearValidators();
     this.loadContractData();
   }
+
 }

@@ -64,4 +64,12 @@ export class ModalDialogComponent {
     this.data.reader.setEndBlock(this.data.blockNumber);
     location.reload();
   }
+
+  onPinStartEnd() {
+    UtilsService.updateURLParameter('start', this.data.blockNumber);
+    this.data.reader.setStartBlocktInitial(this.data.blockNumber)
+    UtilsService.updateURLParameter('end', this.data.blockNumber);
+    this.data.reader.setEndBlock(this.data.blockNumber);
+    location.reload();
+  }
 }

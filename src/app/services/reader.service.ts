@@ -59,8 +59,8 @@ export class Reader {
   // Event table
   public eventsImportSuccess = false;
   public startInitial = '';
-  public startBlock = '0';
-  public endBlock = 'latest';
+  public startBlock = '';
+  public endBlock = '';
   public contract = '';
   public abi = '';
   public provider = '';
@@ -174,7 +174,6 @@ export class Reader {
   createActiveContract() {
 
     if (this.abiBase64Data.length > 0) {
-
       this.abi = pako.ungzip(atob(this.abiBase64Data), {to: 'string'})
     }
 
@@ -359,7 +358,6 @@ export class Reader {
             console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
             this.readEventsRange(start, middle, that);
             this.readEventsRange(middle + 1, end, that);
-
           }
           this.runningJobs -= 1;
         }
