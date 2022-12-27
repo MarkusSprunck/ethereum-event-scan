@@ -1,4 +1,4 @@
-@import "~@angular/material/prebuilt-themes/purple-green.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 @import 'src/app/components/events-table/directives/events-list-responsive.directive';
 
@@ -10,12 +10,12 @@
 }
 
 * {
-  color: wheat;
+  color: black;
   font-family: Lekton, monospace !important;
 }
 
 a {
-  color: wheat !important;
+  color: blue !important;
 }
 
 body {

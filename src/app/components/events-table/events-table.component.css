@@ -23,7 +23,7 @@ img {
 }
 
 .mat-expansion-panel-header-title {
-  flex-grow: 3;
+  flex-grow: 10;
 }
 
 .mat-expansion-panel-header-description {

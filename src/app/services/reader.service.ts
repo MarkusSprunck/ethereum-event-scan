@@ -40,6 +40,10 @@ const TIMER_FETCH_EVENTS = 2000;
 
 const TIMER_FETCH_BLOCK_NUMBER = 1000;
 
+const LIMIT_BLOCK = 5000;
+
+const LIMIT_EVENTS = 5000;
+
 /**
  * The class Reader manages the connection and loads events. With two timers
  * the current block number is loaded and all new events. The configuration is completely
@@ -174,13 +178,15 @@ export class Reader {
       this.abi = pako.ungzip(atob(this.abiBase64Data), {to: 'string'})
     }
 
-
-    if (this.contract.length > 0 && this.abi !== undefined && this.abi.length > 0) {
+    if (this.contract != undefined
+      && this.contract.length > 0
+      && this.abi !== undefined
+      && this.abi.length > 0
+    ) {
       try {
-
         this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
       } catch (e) {
-        console.log('UNABLE TO PARSE ABI:\n' + e);
+        // nothing to do
       }
     }
   }
@@ -194,7 +200,7 @@ export class Reader {
           this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
         }
       } catch (e) {
-        console.log('UNABLE TO CREATE CONTRACT INSTANCE:\n' + e);
+        // nothing to do
       }
     }
   }
@@ -272,83 +278,92 @@ export class Reader {
 
   private readEventsRange(start: number, end: number, that: this) {
 
-    this.runningJobs += 1;
-    this.contractInstance.getPastEvents(
-      'allEvents', {
-        fromBlock: start,
-        toBlock: end
-      }, (errors: Error, events1: any) => {
-        if (!errors) {
-          if (events1.length > 0 && events1.length <= 10000) {
-            let index = 0;
-            for (const event in events1) {
-              if (events1.hasOwnProperty(event)) {
-                if (index === 0) {
-                  console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + events1.length);
-                }
-                index++;
+    if ((end - start) > LIMIT_BLOCK) {
+      const middle = Math.round((start + end) / 2);
+      console.log('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+      this.readEventsRange(start, middle, that);
+      this.readEventsRange(middle + 1, end, that);
+    } else {
+      this.runningJobs += 1;
+      console.log('Start job => ' + this.runningJobs);
 
-                // Prepare return values for this event
-                const returnValues = events1[event].returnValues;
-                let values = '';
-                for (const key in returnValues) {
-                  if (returnValues.hasOwnProperty(key)) {
-                    if (isNaN(parseInt(key, 10))) {
-                      values += '<b>' + key.replace('_', '') + ':</b></br>';
-                    }
-                    if (isNaN(parseInt(key, 10))) {
-                      values += ('' + returnValues[key])
-                        .replace('\n', '</br>')
-                        .split(',').join('</br>') + '</br>';
+      this.contractInstance.getPastEvents(
+        'allEvents', {
+          fromBlock: start,
+          toBlock: end
+        }, (errors: Error, events1: any) => {
+
+          if (!errors) {
+            if (events1.length > 0 && events1.length <= LIMIT_EVENTS) {
+              let index = 0;
+              for (const event in events1) {
+                if (events1.hasOwnProperty(event)) {
+                  if (index === 0) {
+                    console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + events1.length);
+                  }
+                  index++;
+
+                  // Prepare return values for this event
+                  const returnValues = events1[event].returnValues;
+                  let values = '';
+                  for (const key in returnValues) {
+                    if (returnValues.hasOwnProperty(key)) {
+                      if (isNaN(parseInt(key, 10))) {
+                        values += '<b>' + key.replace('_', '') + ':</b></br>';
+                      }
+                      if (isNaN(parseInt(key, 10))) {
+                        values += ('' + returnValues[key])
+                          .replace('\n', '</br>')
+                          .split(',').join('</br>') + '</br>';
+                      }
                     }
                   }
-                }
 
-                const trxHash = events1[event].transactionHash;
-                const blockNumber = events1[event].blockNumber;
-                const eventName = events1[event].event;
+                  const trxHash = events1[event].transactionHash;
+                  const blockNumber = events1[event].blockNumber;
+                  const eventName = events1[event].event;
 
-                if (typeof blockNumber !== 'undefined') {
+                  if (typeof blockNumber !== 'undefined') {
 
 
-                  // Is the image already in cache
-                  if (!this.imageCache.has(eventName)) {
-                    this.imageCache.set(eventName, blockies({
-                      seed: eventName,
-                      size: 8,
-                      scale: 16
-                    }).toDataURL());
+                    // Is the image already in cache
+                    if (!this.imageCache.has(eventName)) {
+                      this.imageCache.set(eventName, blockies({
+                        seed: eventName,
+                        size: 8,
+                        scale: 16
+                      }).toDataURL());
+                    }
+
+                    EventData.set(blockNumber + '_' + events1[event].id,
+                      new EthEvent(
+                        '' + eventName,
+                        '' + blockNumber,
+                        '' + trxHash,
+                        '' + UtilsService.break(trxHash, 33),
+                        '',
+                        '' + values,
+                        '',
+                        '',
+                        '' + this.imageCache.get(eventName))
+                    );
+
+                    that.eventsImportSuccess = true;
                   }
-
-                  EventData.set(blockNumber + '_' + events1[event].id,
-                    new EthEvent(
-                      '' + eventName,
-                      '' + blockNumber,
-                      '' + trxHash,
-                      '' + UtilsService.break(trxHash, 33),
-                      '',
-                      '' + values,
-                      '',
-                      '',
-                      '' + this.imageCache.get(eventName))
-                  );
-
-                  that.eventsImportSuccess = true;
                 }
               }
+              that.callbackUpdateUI();
             }
-            that.callbackUpdateUI();
+          } else {
+            const middle = Math.round((start + end) / 2);
+            console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+            this.readEventsRange(start, middle, that);
+            this.readEventsRange(middle + 1, end, that);
+
           }
           this.runningJobs -= 1;
-        } else {
-          this.runningJobs -= 1;
-
-          const middle = Math.round((start + end) / 2);
-          console.log('10000 limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
-          this.readEventsRange(start, middle, that);
-          this.readEventsRange(middle + 1, end, that);
         }
-      }
-    );
+      );
+    }
   }
 }
