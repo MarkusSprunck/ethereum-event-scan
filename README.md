@@ -25,18 +25,23 @@ services:
   ethereum-event-scan:
     image: sprunck/ethereum-event-scan:latest
     container_name: ethereum-event-scan
-    build:
-      context: .
-      dockerfile: Dockerfile
     ports:
       - '55226:80'
 ```
 
 ## Build
 
-You may download the sources and build with docker-compose:
+You may download the sources, build Angular and then build with docker-compose:
 
+```shell
+$ npm install
 ```
+
+```shell
+$ npm run build
+```
+
+```shell
 $ docker-compose up -d --build   
 ```
 
