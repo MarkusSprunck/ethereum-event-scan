@@ -3,7 +3,7 @@ version: '3.7'
 services:
 
   ethereum-event-scan:
-    image: sprunck/ethereum-event-scan:arm64-latest
+    image: sprunck/ethereum-event-scan:latest
     container_name: ethereum-event-scan
     ports:
       - '55226:80'
