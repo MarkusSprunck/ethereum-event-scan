@@ -5,6 +5,23 @@ The right tool when you develop smart contracts (and your source codes has not b
 submitted to EtherScan). Also in the case you work with a private blockchain you 
 may use Ethereum-Event-Scan.
 
+## Create Cross Platform Docker Images
+
+### Preconditions
+
+- Set docker-desktop to experimental mode true
+- Install docker-buildx
+
+### Create Builder
+
+```shell
+docker buildx create --name mybuilder --use --bootstrap
+```
+
+```shell
+./build_docker_arm64.sh
+```
+
 ## Start 
 
 Start directly with docker-cli:
