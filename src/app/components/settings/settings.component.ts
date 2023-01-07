@@ -64,7 +64,7 @@ export class SettingsComponent implements OnInit {
   }
 
   panelMessage() {
-      return ('Last Block ' + this.lastBlock + '');
+    return ('Last Block ' + this.lastBlock + '');
   }
 
   ngOnInit() {

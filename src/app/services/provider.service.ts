@@ -107,12 +107,12 @@ export class ProviderService {
         this.connected = false;
       });
 
-      this.web3.eth.getBlockNumber((error: Error, blockNumber: number) => {
-         if (!error && blockNumber) {
-             this.currentBlock = blockNumber;
-             this.highestBlock = blockNumber;
-         }
-      });
+    this.web3.eth.getBlockNumber((error: Error, blockNumber: number) => {
+      if (!error && blockNumber) {
+        this.currentBlock = blockNumber;
+        this.highestBlock = blockNumber;
+      }
+    });
 
     return this.connected;
   }
