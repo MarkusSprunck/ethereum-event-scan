@@ -40,7 +40,7 @@ const TIMER_FETCH_EVENTS = 2000;
 
 const TIMER_FETCH_BLOCK_NUMBER = 1000;
 
-const LIMIT_BLOCK = 5000;
+const LIMIT_BLOCK = 50000;
 
 const LIMIT_EVENTS = 5000;
 
@@ -64,7 +64,6 @@ export class Reader {
   public contract = '';
   public abi = '';
   public provider = '';
-  public refresh = true;
   public skipUpdate = false;
   public abiBase64Data = '';
   public runningJobs = 0;
@@ -78,11 +77,15 @@ export class Reader {
 
   constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
+
+    this.startBlock = '0';
+    this.startInitial = this.startBlock;
+
     this.route.queryParams.subscribe(params => {
 
       if (params['start']) {
         this.startBlock = params['start'];
-        this.startInitial = this.startBlock;
+        this.startInitial = params['start'];
       }
 
       if (params['end']) {
@@ -99,11 +102,6 @@ export class Reader {
 
       if (params['provider']) {
         this.provider = params['provider'];
-      }
-
-      if (params['refresh']) {
-        this.refresh = params['refresh'] === 'true';
-        this.skipUpdate = params['refresh'] !== 'true';
       }
 
       this.createActiveContract();
@@ -152,13 +150,13 @@ export class Reader {
   }
 
   fetchCurrentBlockNumber() {
-    if (!this.skipUpdate && this.entity.isConnectionWorking()) {
+    if (this.entity.isConnectionWorking()) {
       this.getCurrentBlockNumber();
     }
   }
 
   fetchEvents() {
-    if (this.entity.isConnectionWorking()) {
+    if (!this.skipUpdate && this.entity.isConnectionWorking()) {
       this.getPastEvents();
     }
   }
@@ -223,30 +221,30 @@ export class Reader {
 
     this.createActiveContract();
 
-    // console.log("this.contractInstance", this.contractInstance)
-    // console.log("this.startBlock", this.startBlock)
-    // console.log("this.entity.currentBlock", this.entity.currentBlock)
-    // console.log("this.isLoading", this.isLoading)
-    // console.log("this.isEndBlockNumberSet", this.isEndBlockNumberSet)
+    this.isEndBlockNumberSet = (this.endBlock.toUpperCase() !== 'LATEST');
 
     if (this.contractInstance === null ||                   // Just in the case there is a valid contract
       (+(this.startBlock) > +(this.entity.currentBlock)) || // Wait till start block has been reached
-      this.isLoading ||                                     // No second start of readEventsRange(...)
-      this.isEndBlockNumberSet                              // Call once (in the case end block has been read, there will nothing new)
+      this.isLoading                                        // No second start of readEventsRange(...)
     ) {
       return;
     }
 
     this.isLoading = true;
-    const start = parseInt(this.startBlock, 10);
-    const end = (this.endBlock === 'latest') ? (this.entity.currentBlock) : parseInt(this.endBlock, 10);
 
-    // Store next block number for new events
-    if (start < this.entity.currentBlock) {
-      this.startBlock = '' + (end + 1);
-      this.isEndBlockNumberSet = (this.endBlock !== 'latest');
+    const start = parseInt(this.startBlock, 10);
+    if (this.isEndBlockNumberSet) {
+      const end = parseInt(this.endBlock, 10);
       this.readEventsRange(start, end, this);
+      // Nothing more to do
+      this.skipUpdate = true;
+    } else {
+      const end = this.entity.currentBlock;
+      this.readEventsRange(start, this.entity.currentBlock, this);
+      // Store next block number for new events
+      this.startBlock = '' + (end + 1);
     }
+
     this.isLoading = false;
   }
 
@@ -259,7 +257,7 @@ export class Reader {
         .then((block: any) => {
           this.timestampCache.set(blockNumber, UtilsService.convertTimestamp(block.timestamp));
           this.minerCache.set(blockNumber, UtilsService.truncate(block.miner, 12));
-          console.log('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
+          console.debug('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
         });
     }
     return '';
@@ -279,12 +277,12 @@ export class Reader {
 
     if ((end - start) > LIMIT_BLOCK) {
       const middle = Math.round((start + end) / 2);
-      console.log('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+      console.debug('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
       this.readEventsRange(start, middle, that);
       this.readEventsRange(middle + 1, end, that);
     } else {
       this.runningJobs += 1;
-      console.log('Start job => ' + this.runningJobs);
+      console.debug('Start job [' + start + '..' + end + '] => ' + this.runningJobs);
 
       this.contractInstance.getPastEvents(
         'allEvents', {

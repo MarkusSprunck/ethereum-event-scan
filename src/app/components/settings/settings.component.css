@@ -4,7 +4,7 @@ input.mat-input-element, textarea, mat-checkbox {
 }
 
 .basic-container {
-  padding: 5px;
+  padding: 0px;
 }
 
 mat-form-field {

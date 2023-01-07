@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2019-2022 Markus Sprunck (sprunck.markus@gmail.com)
+ * Copyright (c) 2019-2020 Markus Sprunck (sprunck.markus@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
@@ -43,8 +43,7 @@ export class SettingsComponent implements OnInit {
   @Input() public abi = '';
   @Input() public contract = '';
   @Input() public provider = '';
-  @Input() public connected = false
-  @Input() public refresh = true;
+  @Input() public connected = false;
 
   panelOpenState = true;
 
@@ -58,30 +57,17 @@ export class SettingsComponent implements OnInit {
       provider: ['', [Validators.required], this.isProviderConnected.bind(this)],
       contract: ['', [Validators.required], this.isContractOk.bind(this)],
       abi: ['', [Validators.required], this.isABIOk.bind(this)],
-      startBlock: [''],
+      startBlock: ['0', [Validators.required], this.isStartBlockOk.bind(this)],
       lastBlock: [''],
-      endBlock: [''],
-      refresh: ['']
+      endBlock: ['latest', [Validators.required], this.isEndBlockOk.bind(this)]
     });
   }
 
   panelMessage() {
-    if (!this.refresh) {
-      return 'Automatic refresh stopped';
-    } else {
       return ('Last Block ' + this.lastBlock + '');
-    }
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params['refresh']) {
-        const checkBox = this.form.get('refresh');
-        if (checkBox) {
-          checkBox.setValue(params['refresh'] === 'true');
-        }
-      }
-    });
     this.form.controls['contract'].clearValidators();
     this.form.controls['abi'].clearValidators();
     this.form.controls['provider'].clearValidators();
@@ -128,9 +114,38 @@ export class SettingsComponent implements OnInit {
     });
   }
 
+  isStartBlockOk() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const regexPattern = /[0-9]+/;
+        const match = this.startBlock.match(regexPattern);
+        if (match && this.startBlock === match[0]) {
+          resolve(null);
+        } else {
+          resolve({isEndBlockValid: false});
+        }
+      }, 500);
+    });
+  }
+
+  isEndBlockOk() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const regexPattern = /[0-9]+/;
+        const match = this.endBlock.match(regexPattern);
+        if (match && this.endBlock === match[0]) {
+          resolve(null);
+        } else if (this.endBlock.toUpperCase() === 'LATEST') {
+          resolve(null);
+        } else {
+          resolve({isEndBlockValid: false});
+        }
+      }, 500);
+    });
+  }
+
   updateStartValue() {
     const val = this.form.get('startBlock');
-    console.log('startBlock',val )
     if (val) {
       const result: string = (val.value.length === 0) ? '0' : val.value;
       UtilsService.updateURLParameter('start', result);
@@ -151,7 +166,6 @@ export class SettingsComponent implements OnInit {
 
   updateEndValue() {
     const val = this.form.get('endBlock');
-    console.log('endBlock',val )
     if (val) {
       UtilsService.updateURLParameter('end', val.value);
       this.endBlock = val.value;
@@ -178,8 +192,10 @@ export class SettingsComponent implements OnInit {
     const val = this.form.get('abi');
     if (val) {
       if (this.provider.length > 0 && this.contract.trim().length > 0 && val.value.trim().length === 0) {
+
         UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: string) => {
             UtilsService.updateURLWithCompressedAbi(value);
+
             this.form.controls['abi'].setValue(value);
             this.abi = value;
             setInterval(this.reloadPage, 500);
@@ -192,12 +208,6 @@ export class SettingsComponent implements OnInit {
         setInterval(this.reloadPage, 1000);
       }
     }
-  }
-
-  updateRefreshValue() {
-    const val = !this.refresh;
-    UtilsService.updateURLParameter('refresh', String(val));
-    this.appComponent.control.skipUpdate = !val;
   }
 
   onBlurAbi() {
@@ -213,11 +223,26 @@ export class SettingsComponent implements OnInit {
   }
 
   private loadContractData() {
-    this.appComponent.control.setAbi(this.abi);
-    this.appComponent.control.setStartBlock(this.startBlock);
-    this.appComponent.control.setEndBlock(this.endBlock);
-    this.appComponent.control.setContractAddress(this.contract);
-    this.appComponent.control.entity.setProvider(this.provider);
+
+    if (this.abi !== undefined) {
+      this.appComponent.control.setAbi(this.abi);
+    }
+
+    if (this.startBlock !== undefined) {
+      this.appComponent.control.setStartBlock(this.startBlock);
+    }
+
+    if (this.endBlock !== undefined) {
+      this.appComponent.control.setEndBlock(this.endBlock);
+    }
+
+    if (this.contract !== undefined) {
+      this.appComponent.control.setContractAddress(this.contract);
+    }
+
+    if (this.provider !== undefined) {
+      this.appComponent.control.entity.setProvider(this.provider);
+    }
   }
 
   private clearTable() {
@@ -228,9 +253,9 @@ export class SettingsComponent implements OnInit {
     UtilsService.updateURLParameter('contract', val.trim());
     this.contract = val.trim();
     this.clearTable();
+
     this.form.controls['contract'].clearValidators();
     this.form.controls['provider'].clearValidators();
     this.loadContractData();
   }
-
 }
