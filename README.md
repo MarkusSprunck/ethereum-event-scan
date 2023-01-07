@@ -42,6 +42,9 @@ services:
   ethereum-event-scan:
     image: sprunck/ethereum-event-scan:latest
     container_name: ethereum-event-scan
+    build:
+      context: .
+      dockerfile: Dockerfile    
     ports:
       - '55226:80'
 ```
