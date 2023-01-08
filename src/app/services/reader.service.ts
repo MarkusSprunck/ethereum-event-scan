@@ -277,8 +277,7 @@ export class Reader {
 
   private readEventsRange(start: number, end: number, that: this) {
 
-    let delta = end - start;
-    if (delta >= LIMIT_BLOCK_MIN && delta > LIMIT_BLOCK_MAX) {
+    if ( (end < start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX)) {
       const middle = Math.round((start + end) / 2);
       console.debug('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
       this.readEventsRange(start, middle, that);
@@ -286,13 +285,11 @@ export class Reader {
     } else {
       this.runningJobs += 1;
       console.debug('Start job [' + start + '..' + end + '] => ' + this.runningJobs);
-
       this.contractInstance.getPastEvents(
         'allEvents', {
           fromBlock: start,
           toBlock: end
         }, (errors: Error, events1: any) => {
-
           if (!errors) {
             if (events1.length > 0 && events1.length <= LIMIT_EVENTS) {
               let index = 0;
@@ -353,17 +350,14 @@ export class Reader {
                 }
               }
               that.callbackUpdateUI();
+            } else if ( (end < start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX)) {
+                const middle = Math.round((start + end) / 2);
+                console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+                this.readEventsRange(start, middle, that);
+                this.readEventsRange(middle + 1, end, that);
             }
           } else {
-            let delta = end - start;
-            if (delta >= LIMIT_BLOCK_MIN && delta > LIMIT_BLOCK_MAX) {
-              const middle = Math.round((start + end) / 2);
-              console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
-              this.readEventsRange(start, middle, that);
-              this.readEventsRange(middle + 1, end, that);
-            } else {
-              console.warn("Event Limit exceeded or errors occurred ", errors)
-            }
+            console.warn("Errors occurred: ", errors)
           }
           this.runningJobs -= 1;
         }
