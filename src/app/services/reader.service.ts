@@ -355,10 +355,15 @@ export class Reader {
               that.callbackUpdateUI();
             }
           } else {
-            const middle = Math.round((start + end) / 2);
-            console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
-            this.readEventsRange(start, middle, that);
-            this.readEventsRange(middle + 1, end, that);
+            let delta = end - start;
+            if (delta >= LIMIT_BLOCK_MIN && delta > LIMIT_BLOCK_MAX) {
+              const middle = Math.round((start + end) / 2);
+              console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+              this.readEventsRange(start, middle, that);
+              this.readEventsRange(middle + 1, end, that);
+            } else {
+              console.warn("Event Limit exceeded or errors occurred ", errors)
+            }
           }
           this.runningJobs -= 1;
         }
