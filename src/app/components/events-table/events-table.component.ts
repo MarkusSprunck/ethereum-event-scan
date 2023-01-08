@@ -105,9 +105,9 @@ export class EventsTableComponent implements OnInit {
     }
     let message = 'No Events';
     if (typeof EventData !== 'undefined' && typeof this.listData !== 'undefined' && EventData.size > 0) {
-      message = 'Events ' + this.listData.filteredData.length + ' of ' + EventData.size + ' ' + jobs;
+      message = 'Events ' + this.listData.filteredData.length + ' of ' + EventData.size ;
     }
-    return message;
+    return message + ' ' + jobs;
   }
 
   @HostListener('window:resize')
