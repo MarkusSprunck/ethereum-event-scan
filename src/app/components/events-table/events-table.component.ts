@@ -100,7 +100,7 @@ export class EventsTableComponent implements OnInit {
 
   panelMessage() {
     let jobs = '';
-    if (this.eventReader.runningJobs > 1) {
+    if (this.eventReader.runningJobs >= 1) {
       jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
     }
     let message = 'No Events';
