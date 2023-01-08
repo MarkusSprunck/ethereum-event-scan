@@ -40,9 +40,11 @@ const TIMER_FETCH_EVENTS = 2000;
 
 const TIMER_FETCH_BLOCK_NUMBER = 1000;
 
-const LIMIT_BLOCK = 5000;
+const LIMIT_BLOCK_MIN = 2500;
 
-const LIMIT_EVENTS = 5000;
+const LIMIT_BLOCK_MAX = 25000;
+
+const LIMIT_EVENTS = 10000;
 
 /**
  * The class Reader manages the connection and loads events. With two timers
@@ -275,7 +277,8 @@ export class Reader {
 
   private readEventsRange(start: number, end: number, that: this) {
 
-    if ((end - start) > LIMIT_BLOCK) {
+    let delta = end - start;
+    if (delta >= LIMIT_BLOCK_MIN && delta > LIMIT_BLOCK_MAX) {
       const middle = Math.round((start + end) / 2);
       console.debug('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
       this.readEventsRange(start, middle, that);
