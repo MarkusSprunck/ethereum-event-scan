@@ -42,9 +42,7 @@ const TIMER_FETCH_BLOCK_NUMBER = 1000;
 
 const LIMIT_BLOCK_MIN = 1000;
 
-const LIMIT_BLOCK_MAX = 50000;
-
-const LIMIT_EVENTS = 5000;
+const LIMIT_BLOCK_MAX = 100000;
 
 /**
  * The class Reader manages the connection and loads events. With two timers
@@ -59,7 +57,6 @@ const LIMIT_EVENTS = 5000;
 export class Reader {
 
   // Event table
-  public eventsImportSuccess = false;
   public startInitial = '';
   public startBlock = '';
   public endBlock = '';
@@ -275,93 +272,88 @@ export class Reader {
     return '';
   }
 
+  private isBlockLimitExceeded(start: number, end: number) {
+    return (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX);
+  }
+
   private readEventsRange(start: number, end: number, that: this) {
 
-    if ( (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX)) {
+    if (that.isBlockLimitExceeded(start, end)) {
       const middle = Math.round((start + end) / 2);
       console.debug('Block limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
       this.readEventsRange(start, middle, that);
       this.readEventsRange(middle + 1, end, that);
-    } else {
-      this.runningJobs += 1;
-      console.debug('Start job [' + start + '..' + end + '] => ' + this.runningJobs);
-      this.contractInstance.getPastEvents(
-        'allEvents', {
-          fromBlock: start,
-          toBlock: end
-        }, (errors: Error, events1: any) => {
-          if (!errors) {
-            if (events1.length > 0 && events1.length <= LIMIT_EVENTS) {
-              let index = 0;
-              for (const event in events1) {
-                if (events1.hasOwnProperty(event)) {
-                  if (index === 0) {
-                    console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + events1.length);
-                  }
-                  index++;
-
-                  // Prepare return values for this event
-                  const returnValues = events1[event].returnValues;
-                  let values = '';
-                  for (const key in returnValues) {
-                    if (returnValues.hasOwnProperty(key)) {
-                      if (isNaN(parseInt(key, 10))) {
-                        values += '<b>' + key.replace('_', '') + ':</b></br>';
-                      }
-                      if (isNaN(parseInt(key, 10))) {
-                        values += ('' + returnValues[key])
-                          .replace('\n', '</br>')
-                          .split(',').join('</br>') + '</br>';
-                      }
-                    }
-                  }
-
-                  const trxHash = events1[event].transactionHash;
-                  const blockNumber = events1[event].blockNumber;
-                  const eventName = events1[event].event;
-
-                  if (typeof blockNumber !== 'undefined') {
-
-
-                    // Is the image already in cache
-                    if (!this.imageCache.has(eventName)) {
-                      this.imageCache.set(eventName, blockies({
-                        seed: eventName,
-                        size: 8,
-                        scale: 16
-                      }).toDataURL());
-                    }
-
-                    EventData.set(blockNumber + '_' + events1[event].id,
-                      new EthEvent(
-                        '' + eventName,
-                        '' + blockNumber,
-                        '' + trxHash,
-                        '' + UtilsService.break(trxHash, 33),
-                        '',
-                        '' + values,
-                        '',
-                        '',
-                        '' + this.imageCache.get(eventName))
-                    );
-
-                    that.eventsImportSuccess = true;
-                  }
-                }
-              }
-              that.callbackUpdateUI();
-            } else if ( (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX)) {
-                const middle = Math.round((start + end) / 2);
-                console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
-                this.readEventsRange(start, middle, that);
-                this.readEventsRange(middle + 1, end, that);
-            }
-          } else {
-            console.warn("Errors occurred: ", errors)
-          }
-          this.runningJobs -= 1;
-        }
-      );
+      return
     }
+
+    // Start new job
+    this.runningJobs += 1;
+    console.debug('Start job [' + start + '..' + end + '] => #' + this.runningJobs);
+
+    this.contractInstance.getPastEvents('allEvents', {fromBlock: start, toBlock: end}, (errors: Error, eventsList: any) => {
+
+      // Finish job
+      this.runningJobs -= 1;
+
+      // In the case Infura returned block limit error, split job in smaller parts
+      if (errors) {
+        console.error( 'Error in allEvents: ' + errors.message)
+        if (errors.message === 'Returned error: query returned more than 10000 results'
+            && (end > start)
+            && ((end - start) > LIMIT_BLOCK_MIN)
+            && ((end - start) > LIMIT_BLOCK_MAX)
+        ) {
+          const middle = Math.round((start + end) / 2);
+          console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+          this.readEventsRange(start, middle, that);
+          this.readEventsRange(middle + 1, end, that);
+        }
+        return;
+      }
+
+      // Everything is ok so far, so proceed to parse event list
+      console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + eventsList.length);
+      for (const event in eventsList) {
+        if (eventsList.hasOwnProperty(event)) {
+
+          // Prepare return values for this event
+          const returnValues = eventsList[event].returnValues;
+          let values = '';
+          for (const key in returnValues) {
+            if (returnValues.hasOwnProperty(key)) {
+              if (isNaN(parseInt(key, 10))) {
+                values += '<b>' + key.replace('_', '') + ':</b></br>';
+                values += ('' + returnValues[key]).replace('\n', '</br>').split(',').join('</br>') + '</br>';
+              }
+            }
+          }
+          const trxHash = eventsList[event].transactionHash;
+          const eventName = eventsList[event].event;
+          const blockNumber = eventsList[event].blockNumber;
+
+          if (typeof blockNumber !== 'undefined') {
+
+            // check if image is already in cache
+            if (!this.imageCache.has(eventName)) {
+              this.imageCache.set(eventName, blockies({seed: eventName, size: 8, scale: 16}).toDataURL());
+            }
+
+            const eventId = blockNumber + '_' + eventsList[event].id
+            EventData.set(
+              eventId,
+              new EthEvent(
+                '' + eventName,
+                '' + blockNumber,
+                '' + trxHash,
+                '' + UtilsService.break(trxHash, 33), '',
+                '' + values, '', '',
+                '' + this.imageCache.get(eventName)
+                )
+            );
+          }
+         }
+      }
+      that.callbackUpdateUI();
+    });
   }
 }
