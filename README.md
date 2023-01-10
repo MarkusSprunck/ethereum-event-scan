@@ -12,21 +12,11 @@ may use Ethereum-Event-Scan.
 - Set docker-desktop to experimental mode true
 - Install docker-buildx
 
-### Create Builder
-
-```shell
-docker buildx create --name mybuilder --use --bootstrap
-```
-
-```shell
-./build_docker_arm64.sh
-```
-
 ## Start 
 
 Start directly with docker-cli:
 
-```
+```shell
 $ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:latest  
 ```
 
@@ -38,13 +28,9 @@ use docker-compose.yml:
 version: '3.7'
 
 services:
-
   ethereum-event-scan:
     image: sprunck/ethereum-event-scan:latest
     container_name: ethereum-event-scan
-    build:
-      context: .
-      dockerfile: Dockerfile    
     ports:
       - '55226:80'
 ```
@@ -58,11 +44,11 @@ $ npm install
 ```
 
 ```shell
-$ npm run build
+$ ./build.sh
 ```
 
 ```shell
-$ docker-compose up -d --build   
+$ docker-compose up -d
 ```
 
 ## Links
