@@ -12,3 +12,9 @@ mat-form-field {
   margin-right: 10px;
   width: 100%;
 }
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  display:flex;
+  flex-basis: fit-content;
+}

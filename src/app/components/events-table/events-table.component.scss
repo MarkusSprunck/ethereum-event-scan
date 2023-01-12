@@ -1,0 +1,210 @@
+
+table {
+  width: 100%;
+}
+
+cell {
+  white-space: nowrap;
+}
+
+img {
+  width: 20px;
+  height: 20px;
+  align-content: center;
+}
+
+.mat-mdc-paginator, .mat-mdc-paginator-page-size .mat-mdc-select-trigger {
+  font-size: small;
+}
+
+.table-link :hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.mat-mdc-progress-bar {
+  margin-top: 0.4rem;
+}
+
+.mat-expansion-panel-header-title, .mat-expansion-panel-header-description {
+  flex-grow: 3 !important;
+}
+
+@media (min-width: 769px) {
+
+  th.mat-mdc-header-cell:first-of-type, td.mat-mdc-cell:first-of-type, td.mat-mdc-footer-cell:first-of-type {
+    padding-left: 0;
+  }
+
+  th.mat-mdc-header-cell:last-of-type, td.mat-mdc-cell:last-of-type, td.mat-mdc-footer-cell:last-of-type {
+    padding-right: 0;
+  }
+
+  td.mat-mdc-column-image {
+    width: 7%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  td.mat-mdc-column-name {
+    width: 12%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+  }
+
+  td.mat-mdc-column-time {
+    width: 12%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+  }
+
+  td.mat-mdc-column-miner {
+    width: 8%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+  }
+
+
+  td.mat-mdc-column-block {
+    width: 8%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+  }
+
+  td.mat-mdc-column-trxHash {
+    width: 26%;
+    font-weight: lighter;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+  }
+
+  td.mat-mdc-column-value {
+    width: 45%;
+    font-weight: lighter;
+    white-space: pre-wrap;
+    line-height: 1.4;
+    vertical-align: top;
+    padding-top: 0.4rem;
+    padding-right: 6px;
+  }
+
+  td.mat-mdc-form-field {
+    margin-top: 1.0rem;
+    margin-left: 1.5rem;
+  }
+
+  td.mat-mdc-cell, td.mat-mdc-header-cell, td.mat-mdc-footer-cell {
+    min-height: 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  td.mat-mdc-form-field {
+    margin-top: 0;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 769px) {
+
+  td.mat-mdc-column-image {
+    font-size: small;
+  }
+
+  td.mat-mdc-column-name {
+    font-size: small;
+  }
+
+  td.mat-mdc-column-block {
+    font-size: small;
+  }
+
+  td.mat-mdc-column-trxHash {
+    font-size: small;
+  }
+
+  td.mat-mdc-column-value {
+    font-size: small;
+  }
+
+}
+
+
+@media (max-width: 768px) {
+  .mat-mdc-table[appMatTableResponsive] {
+
+    .mat-mdc-header-row {
+      display: flex;
+      flex-wrap: wrap;
+      height: auto;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+
+      th.mat-mdc-header-cell {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        padding: 1rem 0.5rem;
+        justify-content: space-around;
+
+        & > .mat-mdc-sort-header-container {
+          padding-left: 15px; // padding is used to center the header table cells, due to the width of the sort icon
+        }
+
+        &:not([mat-sort-header]),
+        &.mat-mdc-sort-header-disabled,
+        &.mat-mdc-column-actions {
+          display: none;
+        }
+      }
+    }
+
+    .mat-mdc-row {
+      height: auto;
+
+      td.mat-mdc-cell:not(.mat-mdc-column-actions) {
+        display: grid;
+        grid-template-columns: 15% 85%;
+        padding: 0.2rem;
+        text-align: left;
+        align-content: end;
+        word-break: break-word;
+        white-space: pre-line;
+        font-weight: lighter;
+        font-size: small;
+
+        & > * {
+          grid-column: 2;
+        }
+
+        &:before {
+          content: attr(data-column-name);
+          text-align: left;
+        }
+      }
+
+      &:last-of-type td:last-of-type {
+        border: none;
+      }
+
+    }
+  }
+}
