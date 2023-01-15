@@ -11,14 +11,14 @@
   margin-left: auto;
   margin-right: 0;
   font-weight: lighter;
-  font-size: small;
+  font-size: smaller;
 }
 
 .footer {
   margin-left: auto;
   margin-right: 0;
   font-weight: lighter;
-  font-size: small;
+  font-size: smaller;
   color: gray;
   text-align: right;
 }

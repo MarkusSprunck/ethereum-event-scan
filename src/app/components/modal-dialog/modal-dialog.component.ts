@@ -12,7 +12,7 @@ export interface DialogData {
 @Component({
   selector: 'app-info-modal',
   templateUrl: './modal-dialog.component.html',
-  styleUrls: ['./modal-dialog.component.css']
+  styleUrls: ['./modal-dialog.component.scss']
 })
 export class ModalDialogComponent {
 
@@ -35,10 +35,10 @@ export class ModalDialogComponent {
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.maxWidth = '100vw';
-    dialogConfig.width = '45rem';
-    dialogConfig.height = '45rem';
+    dialogConfig.width = '40rem';
+    dialogConfig.height = '50rem';
     dialogConfig.minHeight = '20rem';
-    dialogConfig.minWidth = ' 40rem';
+    dialogConfig.minWidth = ' 10rem';
     dialogConfig.data = {
       blockNumber,
       trxNumber,

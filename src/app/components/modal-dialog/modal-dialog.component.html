@@ -2,31 +2,24 @@
   <h2>Details</h2>
 
   <app-inner-component [inputData]="data"></app-inner-component>
+
   <div class="spacer"></div>
 
-  <div>
-    <button (click)="onPinStart()" mat-button style="padding: 16px;min-width: 64px;">Set block number
-      {{data.blockNumber}} as START
-    </button>
-  </div>
+  <mat-grid-list cols="10" >
 
-  <div>
-    <button (click)="onPinEnd()" mat-button style="padding: 16px;min-width: 64px;">Set block number {{data.blockNumber}}
-      as END
-    </button>
-  </div>
+    <mat-grid-tile colspan="2">
+      <button (click)="onCloseClick()" mat-button cdkFocusInitial style="">Close</button>
+    </mat-grid-tile>
 
-  <div>
-    <button (click)="onPinStartEnd()" mat-button style="padding: 16px;min-width: 64px;">Set block
-      number {{data.blockNumber}}
-      as START and END
-    </button>
-  </div>
+    <mat-grid-tile colspan="1">
+    </mat-grid-tile>
 
-  <div class="spacer-small"></div>
+    <mat-grid-tile colspan="7">
+      <div>
+      Set block number {{data.blockNumber}}  as  <a (click)="onPinStart()" >start</a>,  <a (click)="onPinEnd()" >end</a> or <a (click)="onPinStartEnd()" >both</a>
+      </div>
+    </mat-grid-tile>
 
-  <button (click)="onCloseClick()" mat-button cdkFocusInitial style="padding: 16px;min-width: 64px; float: left">Close
-  </button>
-  <div class="spacer-small"></div>
+  </mat-grid-list>
 
 </div>

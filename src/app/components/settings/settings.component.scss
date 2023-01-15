@@ -1,10 +1,11 @@
-input.mat-input-element, textarea{
+input.mat--mdc-input-element, textarea{
   font-weight: lighter;
   line-height: 1.1rem;
+  font-size: x-small;
 }
 
 .basic-container {
-  padding: 0px;
+  padding: 0;
 }
 
 mat-form-field {

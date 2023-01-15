@@ -23,14 +23,24 @@ body {
   margin: 0;
 }
 
-@media screen and (max-width: 700px) {
-  html, body {
-    min-width: 360px;
+.mat-mdc-form-field {
+  gap: 15px;
+  font-size: inherit;
+}
+
+// for modal dialog
+@media (max-width: 768px) {
+
+  .cdk-dialog-container {
+    min-width: 8rem !important;
   }
+
+  .mat-mdc-dialog-container {
+    position: fixed !important;
+  }
+
+  .mat-mdc-form-field {
+    font-size: small;
+  }
+
 }
-
-.mat-form-field {
-  gap: 30px;
-}
-
-
