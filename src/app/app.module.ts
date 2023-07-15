@@ -118,8 +118,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
       provide: MAT_DIALOG_DATA, useValue: {}
     },
     ModalDialogComponent],
-  bootstrap: [MainComponent],
-  entryComponents: [ModalDialogComponent]
+  bootstrap: [MainComponent]
 })
 export class AppModule {
 }
