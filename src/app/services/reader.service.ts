@@ -210,7 +210,7 @@ export class Reader {
         this.entity.currentBlock = data;
       });
     }
-    return this.entity.currentBlock;
+    return Number(this.entity.currentBlock);
   }
 
   /**
@@ -223,7 +223,7 @@ export class Reader {
     this.isEndBlockNumberSet = (this.endBlock.toUpperCase() !== 'LATEST');
 
     if (this.contractInstance === null ||                   // Just in the case there is a valid contract
-      (+(this.startBlock) > +(this.entity.currentBlock)) || // Wait till start block has been reached
+      (+(this.startBlock) > this.getCurrentBlockNumber()) || // Wait till start block has been reached
       this.isLoading                                        // No second start of readEventsRange(...)
     ) {
       return;
@@ -238,8 +238,8 @@ export class Reader {
       // Nothing more to do
       this.skipUpdate = true;
     } else {
-      const end = this.entity.currentBlock;
-      this.readEventsRange(start, this.entity.currentBlock, this);
+      const end = this.getCurrentBlockNumber();
+      this.readEventsRange(start, end, this);
       // Store next block number for new events
       this.startBlock = '' + (end + 1);
     }
