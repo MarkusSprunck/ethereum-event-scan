@@ -16,7 +16,6 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class EventsTableComponent implements OnInit {
 
-  // @ts-ignore
   public formSearch: FormGroup;
 
   // @ts-ignore
@@ -73,7 +72,6 @@ export class EventsTableComponent implements OnInit {
       this.listData.filter = this.searchKey;
       this.listData.filterPredicate = (data, filter) => {
         return this.displayedColumns.some(ele => {
-          // @ts-ignore
           return data[ele].toLowerCase().indexOf(filter) !== -1;
         });
       };
@@ -83,7 +81,6 @@ export class EventsTableComponent implements OnInit {
 
   updateSearchValue() {
 
-    // @ts-ignore
     const val = this.formSearch.get('searchKey');
     if (val) {
       UtilsService.updateURLParameter('searchKey', val.value);
@@ -93,8 +90,6 @@ export class EventsTableComponent implements OnInit {
   }
 
   applyFilter() {
-
-    // @ts-ignore
     this.listData.filter = this.searchKey.trim().toLowerCase();
   }
 

@@ -5,15 +5,15 @@
     <mat-expansion-panel [expanded]="panelOpenState">
 
       <mat-expansion-panel-header>
-        <mat-panel-title ><span [innerText]="panelMessage()"></span></mat-panel-title>
-        <mat-panel-description ></mat-panel-description>
+        <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
+        <mat-panel-description></mat-panel-description>
       </mat-expansion-panel-header>
 
-      <mat-form-field appearance="fill">
+      <mat-form-field>
         <label for="startBlock"></label>
         <input (ngModelChange)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock"
                formControlName="startBlock"
-               id="startBlock" matInput placeholder="Enter start block number" type="text">
+               id="startBlock" matInput placeholder="Enter start block number" type="text" autocomplete="off">
       </mat-form-field>
 
       <mat-form-field>
@@ -21,30 +21,44 @@
         <input (ngModelChange)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock"
                formControlName="endBlock"
                id="endBlock"
-               matInput placeholder="Enter end block number or string latest" type="text">
+               matInput
+               placeholder="Enter end block number or string latest"
+               type="text"
+               autocomplete="off">
       </mat-form-field>
 
       <mat-form-field>
         <label for="provider"></label><input (ngModelChange)="updateProviderValue()" (keyup.enter)="reloadPage()"
                                              [value]="provider" formControlName="provider" id="provider"
-                                             matInput placeholder="Enter web3 provider URL" type="text">
+                                             matInput
+                                             placeholder="Enter web3 provider URL"
+                                             spellcheck="false"
+                                             type="text"
+                                             autocomplete="off">
       </mat-form-field>
 
       <mat-form-field>
         <label for="contract"></label><input (ngModelChange)="updateContractValue()" (keyup.enter)="reloadPage()"
                                              [value]="contract" formControlName="contract" id="contract"
-                                             matInput placeholder="Enter contract address" type="text">
+                                             matInput
+                                             placeholder="Enter contract address"
+                                             spellcheck="false"
+                                             type="text"
+                                             autocomplete="off">
       </mat-form-field>
 
-      <mat-form-field>
+
+      <mat-form-field class="mat-form-field-full-line">
         <label for="abi"></label><textarea (blur)="onBlurAbi()" (ngModelChange)="updateABIValue()"
                                            (focus)="onFocusAbi()"
                                            [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
                                            appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
-                                           formControlName="abi" id="abi" matInput placeholder="Enter ABI of contract"
-                                           spellcheck="false" type="text"></textarea>
+                                           formControlName="abi" id="abi" matInput
+                                           placeholder="Enter ABI of contract"
+                                           spellcheck="false"
+                                           type="text"
+                                           autocomplete="off"></textarea>
       </mat-form-field>
-
 
     </mat-expansion-panel>
 

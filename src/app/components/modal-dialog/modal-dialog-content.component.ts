@@ -69,7 +69,6 @@ export class ModalDialogContentComponent implements OnInit {
         this.child = (this.inputData.reader.getCurrentBlockNumber() > +this.currentBlockNumber) ? '' + (+this.currentBlockNumber + 1) : 'n.a.';
         this.current = (this.currentBlockNumber);
 
-        // @ts-ignore
         this.parent = (+this.currentBlockNumber > 0) ? '' + (+this.currentBlockNumber - 1) : '0';
         this.details = this.printBlock(block);
         this.transactions = block.transactions;

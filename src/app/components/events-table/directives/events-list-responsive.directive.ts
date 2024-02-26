@@ -16,9 +16,7 @@ export class EventsListResponsiveDirective
   implements OnInit, AfterViewInit, OnDestroy {
   private onDestroy$ = new Subject<boolean>();
 
-  // @ts-ignore
   private thead: HTMLTableSectionElement;
-  // @ts-ignore
   private tbody: HTMLTableSectionElement;
 
   private theadChanged$ = new BehaviorSubject(true);

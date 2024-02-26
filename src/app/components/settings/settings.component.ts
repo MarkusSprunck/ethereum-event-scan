@@ -27,6 +27,14 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MainComponent} from '../../pages/main/main.component';
 import {UtilsService} from '../../services/utils.service';
 import {ActivatedRoute} from '@angular/router';
+const stringify = require('json-stringify-pretty-compact');
+
+interface AbiEntry {
+   anonymous?: boolean;
+   inputs: any[];
+   name: string;
+   type: string;
+}
 
 @Component({
   selector: 'app-settings',
@@ -195,14 +203,20 @@ export class SettingsComponent implements OnInit {
 
         UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (value: string) => {
             UtilsService.updateURLWithCompressedAbi(value);
-
             this.form.controls['abi'].setValue(value);
             this.abi = value;
             setInterval(this.reloadPage, 500);
           }
         );
       } else {
-        this.abi = JSON.stringify(JSON.parse(val.value));
+        // filter just needed event description
+        const objAbi: AbiEntry[]  = JSON.parse(val.value);
+        const filteredData: AbiEntry[] = (objAbi.filter((abiEntry) => abiEntry.type === "event"));
+        filteredData.forEach(function (value) {
+           delete value["anonymous"];
+        });
+        this.abi = stringify(filteredData, null , 3);
+
         UtilsService.updateURLWithCompressedAbi(this.abi);
         this.loadContractData();
         setInterval(this.reloadPage, 1000);
