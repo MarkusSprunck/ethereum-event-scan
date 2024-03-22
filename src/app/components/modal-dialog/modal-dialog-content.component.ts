@@ -70,6 +70,7 @@ export class ModalDialogContentComponent implements OnInit {
         this.current = (this.currentBlockNumber);
 
         this.parent = (+this.currentBlockNumber > 0) ? '' + (+this.currentBlockNumber - 1) : '0';
+        UtilsService.patchMinerAccountClique(block);
         this.details = this.printBlock(block);
         this.transactions = block.transactions;
       });

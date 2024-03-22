@@ -22,8 +22,86 @@
  * SOFTWARE.
  */
 import {Injectable} from '@angular/core';
+import {
+  addHexPrefix,
+  defineProperties,
+  ecrecover,
+  fromRpcSig,
+  intToBuffer,
+  pubToAddress, rlphash,
+  toBuffer,
+  zeros
+} from "ethereumjs-util";
 
 const zlib = require('pako');
+
+var BlockHeader = function (this: any, data: {
+  parentHash: Buffer; uncleHash: Buffer; coinbase: Buffer; stateRoot: Buffer; transactionsTrie: Buffer; receiptTrie: Buffer;
+  // @ts-ignore
+  bloom: Buffer; difficulty: Buffer; number: Buffer; gasLimit: Buffer; gasUsed: Buffer; timestamp: Buffer; extraData: Buffer; mixHash: Buffer; nonce: Buffer;
+}, opts: undefined) {
+
+  var fields = [{
+    name: 'parentHash',
+    length: 32,
+    default: zeros(32)
+  }, {
+    name: 'uncleHash'
+  }, {
+    name: 'coinbase',
+    length: 20,
+    default: zeros(20)
+  }, {
+    name: 'stateRoot',
+    length: 32,
+    default: zeros(32)
+  }, {
+    name: 'transactionsTrie',
+    length: 32
+  }, {
+    name: 'receiptTrie',
+    length: 32
+  }, {
+    name: 'bloom',
+    default: zeros(256)
+  }, {
+    name: 'difficulty',
+    default: Buffer.from([])
+  }, {
+    name: 'number',
+    // TODO: params.homeSteadForkNumber.v left for legacy reasons, replace on future release
+    default: intToBuffer(1150000)
+  }, {
+    name: 'gasLimit',
+    default: Buffer.from('ffffffffffffff', 'hex')
+  }, {
+    name: 'gasUsed',
+    empty: true,
+    default: Buffer.from([])
+  }, {
+    name: 'timestamp',
+    default: Buffer.from([])
+  }, {
+    name: 'extraData',
+    allowZero: true,
+    empty: true,
+    default: Buffer.from([])
+  }, {
+    name: 'mixHash',
+    default: zeros(32)
+    // length: 32
+  }, {
+    name: 'nonce',
+    default: zeros(8) // sha3(42)
+  }]
+  defineProperties(this, fields, data)
+
+}
+
+BlockHeader.prototype.hash = function () {
+  return rlphash(this.raw)
+}
+
 
 /**
  * The class Utils provides methods for string manipulation
@@ -120,6 +198,36 @@ export class UtilsService {
    */
   static spaces(value: string) {
     return value.replace(/\s/g, '&nbsp;');
+  }
+
+  static patchMinerAccountClique(block: any) {
+    if (block !== "undefined" && block.miner === '0x0000000000000000000000000000000000000000') {
+      const dataBuff = toBuffer(block.extraData)
+      // @ts-ignore
+      const sig = fromRpcSig(dataBuff.slice(dataBuff.length - 65, dataBuff.length))
+      block.extraData = '0x' + toBuffer(block.extraData).slice(0, dataBuff.length - 65).toString('hex')
+      // @ts-ignore
+      const headerHash = new BlockHeader({
+        parentHash: toBuffer(block.parentHash),
+        uncleHash: toBuffer(block.sha3Uncles),
+        coinbase: toBuffer(block.miner),
+        stateRoot: toBuffer(block.stateRoot),
+        transactionsTrie: toBuffer(block.transactionsRoot),
+        receiptTrie: toBuffer(block.receiptsRoot),
+        // @ts-ignore
+        bloom: toBuffer(block.logsBloom),
+        difficulty: toBuffer(addHexPrefix(Number(block.difficulty).toString(16))),
+        number: toBuffer(block.number),
+        gasLimit: toBuffer(block.gasLimit),
+        gasUsed: toBuffer(block.gasUsed),
+        timestamp: toBuffer(block.timestamp),
+        extraData: toBuffer(block.extraData),
+        mixHash: toBuffer(block.mixHash),
+        nonce: toBuffer(block.nonce)
+      })
+      const pub = ecrecover(toBuffer(headerHash.hash()), sig.v, sig.r, sig.s)
+      block.miner = addHexPrefix(pubToAddress(pub).toString('hex'))
+    }
   }
 
 }

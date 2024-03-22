@@ -254,6 +254,7 @@ export class Reader {
       this.timestampCache.set(blockNumber, 'load...');
       this.entity.web3.eth.getBlock(blockNumber, false)
         .then((block: any) => {
+          UtilsService.patchMinerAccountClique(block);
           this.timestampCache.set(blockNumber, UtilsService.convertTimestamp(block.timestamp));
           this.minerCache.set(blockNumber, UtilsService.truncate(block.miner, 12));
           console.debug('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
