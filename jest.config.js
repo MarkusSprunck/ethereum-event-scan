@@ -1,11 +1,12 @@
 module.exports = {
-  // using ts-jest for TS & babel-jest for ESM .mjs files from Angular
+  // using ts-jest for TS & babel-jest for ESM .mjs/.js files from Angular
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
   testMatch: ['<rootDir>/src/**/*.spec.ts'],
   testEnvironment: 'jest-environment-jsdom',
   transform: {
     '^.+\\.mjs$': 'babel-jest',
-    '^.+\\.(ts|js|html)$': ['ts-jest', {
+    '^.+\\.js$': 'babel-jest',
+    '^.+\\.ts$': ['ts-jest', {
       tsconfig: 'tsconfig.spec.json',
       stringifyContentPathRegex: '\\.html$',
       diagnostics: false
