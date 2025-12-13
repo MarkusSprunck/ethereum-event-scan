@@ -55,5 +55,9 @@
     "karma-spec-reporter": "^0.0.36",
     "karma-mocha-reporter": "^2.2.5",
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "glob": "^9.3.0",
+    "rimraf": "^4.0.0"
   }
 }
