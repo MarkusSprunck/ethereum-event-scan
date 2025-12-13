@@ -22,8 +22,7 @@
  * SOFTWARE.
  */
 import {Injectable} from '@angular/core';
-
-const zlib = require('pako');
+import * as zlib from 'pako';
 
 /**
  * The class Utils provides methods for string manipulation

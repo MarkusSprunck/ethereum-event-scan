@@ -12,8 +12,7 @@
     "ng": "ng",
     "start": "ng serve --port 55226",
     "build": "ng build --configuration production --aot",
-    "test": "ng test --watch=false --browsers=ChromeHeadless",
-    "lint": "ng lint"
+    "test": "ng test --watch=false --browsers=ChromeHeadless"
   },
   "optionalDependencies": {
     "fsevents": "*"
@@ -35,6 +34,7 @@
     "cors": "^2.8.5",
     "css-select": "^6.0.0",
     "json-stringify-pretty-compact": "^4.0.0",
+    "karma-mocha-reporter": "^2.2.5",
     "pako": "^2.1.0",
     "path-browserify": "^1.0.1",
     "rxjs": "~7.8.2",
@@ -58,6 +58,7 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "karma-spec-reporter": "^0.0.34",
     "typescript": "~5.9.3"
   }
 }
