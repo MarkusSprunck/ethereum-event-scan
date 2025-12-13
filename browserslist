@@ -6,14 +6,14 @@
 #   npx browserslist
 
 # Browserslist configuration for production
-# Keep targets explicit to avoid resolving to less-common vendor browsers
-last 2 Chrome versions
-last 2 Firefox versions
-last 2 Edge versions
-last 2 Safari versions
-iOS >= 13
+# Explicit modern browser targets to match Angular supported browsers
+Chrome >= 114
+Firefox >= 115
+Edge >= 114
+Safari >= 16.4
+iOS >= 16.4
 not dead
-not op_mini all
+not op_mini allr
 
 # Browserslist configuration for development
 # Faster builds during development
