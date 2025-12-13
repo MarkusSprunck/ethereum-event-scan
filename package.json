@@ -12,7 +12,8 @@
     "ng": "ng",
     "start": "ng serve --port 55226",
     "build": "ng build --configuration production --aot",
-    "test": "ng test --watch=false --browsers=ChromeHeadless"
+    "test": "ng test --watch=false --browsers=ChromeHeadless",
+    "lint": "npx eslint \"src/**/*.ts\" --ext .ts"
   },
   "optionalDependencies": {
     "fsevents": "*"
