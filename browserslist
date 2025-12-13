@@ -5,10 +5,19 @@
 # You can see what browsers were selected by your queries by running:
 #   npx browserslist
 
-> 0.5%
-last 2 versions
-Firefox ESR
+# Browserslist configuration for production
+# Keep targets explicit to avoid resolving to less-common vendor browsers
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Edge versions
+last 2 Safari versions
+iOS >= 13
 not dead
-not IE 9-11 # For IE 9-11 support, remove 'not'.
-not KaiOS <= 100
 not op_mini all
+
+# Browserslist configuration for development
+# Faster builds during development
+[development]
+last 1 Chrome version
+last 1 Firefox version
+last 1 Safari version
