@@ -49,12 +49,14 @@ export class ProviderService {
     this.connected = false;
     this.web3 = null;
 
-    if (providerUrl.startsWith('http')) {
-      if (providerUrl != null) {
-        this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-      }
-    } else {
-      if (providerUrl.startsWith('ws')) {
+    if (providerUrl && providerUrl.startsWith('http')) {
+      this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+    } else if (providerUrl && providerUrl.startsWith('ws')) {
+      // Use Websocket provider explicitly for websocket urls
+      try {
+        this.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
+      } catch (e) {
+        // fallback to direct constructor
         this.web3 = new Web3(providerUrl);
       }
     }
@@ -75,16 +77,25 @@ export class ProviderService {
    */
   isSyncing() {
 
-    if (this.web3 === null) {
+    if (this.web3 === null || !this.web3.eth || !this.web3.eth.isSyncing) {
       return false;
     }
 
-    this.web3.eth.isSyncing((error: Error, sync: any) => {
-      if (!error && sync) {
-        this.currentBlock = sync.currentBlock;
-        this.highestBlock = sync.highestBlock;
-      }
-    });
+    // web3.eth.isSyncing() can return a boolean (false) or an object with currentBlock/highestBlock
+    try {
+      this.web3.eth.isSyncing()
+        .then((sync: any) => {
+          if (sync && typeof sync !== 'boolean') {
+            this.currentBlock = sync.currentBlock || this.currentBlock;
+            this.highestBlock = sync.highestBlock || this.highestBlock;
+          }
+        })
+        .catch(() => {
+          // ignore
+        });
+    } catch (e) {
+      // ignore synchronous errors
+    }
 
     return this.highestBlock > this.currentBlock;
   }
@@ -99,23 +110,34 @@ export class ProviderService {
       return false;
     }
 
-    this.web3.eth.net.isListening()
-      .then(() => {
-        this.connected = true;
-      })
-      .catch(() => {
-        this.connected = false;
-      });
+    if (this.web3.eth && this.web3.eth.net && this.web3.eth.net.isListening) {
+      this.web3.eth.net.isListening()
+        .then(() => {
+          this.connected = true;
+        })
+        .catch(() => {
+          this.connected = false;
+        });
+    }
 
-    this.web3.eth.getBlockNumber((error: Error, blockNumber: number) => {
-      if (!error && blockNumber) {
-        this.currentBlock = blockNumber;
-        this.highestBlock = blockNumber;
+    if (this.web3.eth && this.web3.eth.getBlockNumber) {
+      try {
+        this.web3.eth.getBlockNumber()
+          .then((blockNumber: number) => {
+            if (blockNumber || blockNumber === 0) {
+              this.currentBlock = blockNumber;
+              this.highestBlock = blockNumber;
+            }
+          })
+          .catch(() => {
+            // ignore
+          });
+      } catch (e) {
+        // ignore
       }
-    });
+    }
 
     return this.connected;
   }
 
 }
-

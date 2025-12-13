@@ -192,9 +192,8 @@ export class Reader {
 
     if (this.contract.length > 0 && this.abi.length > 0) {
       try {
-        if (typeof this.abi === "string") {
-          this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
-        }
+        // `abi` is typed as string in this class, drop redundant typeof check
+        this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
       } catch (e) {
         // nothing to do
       }
@@ -290,26 +289,11 @@ export class Reader {
     this.runningJobs += 1;
     console.debug('Start job [' + start + '..' + end + '] => #' + this.runningJobs);
 
-    this.contractInstance.getPastEvents('allEvents', {fromBlock: start, toBlock: end}, (errors: Error, eventsList: any) => {
+    // Some web3 definitions may not expose a Promise-typed overload; coerce to any to allow .then/.catch usage
+    (this.contractInstance.getPastEvents as any)('allEvents', {fromBlock: start, toBlock: end}).then((eventsList: any) => {
 
       // Finish job
       this.runningJobs -= 1;
-
-      // In the case Infura returned block limit error, split job in smaller parts
-      if (errors) {
-        console.error( 'Error in allEvents: ' + errors.message)
-        if (errors.message === 'Returned error: query returned more than 10000 results'
-            && (end > start)
-            && ((end - start) > LIMIT_BLOCK_MIN)
-            && ((end - start) > LIMIT_BLOCK_MAX)
-        ) {
-          const middle = Math.round((start + end) / 2);
-          console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
-          this.readEventsRange(start, middle, that);
-          this.readEventsRange(middle + 1, end, that);
-        }
-        return;
-      }
 
       // Everything is ok so far, so proceed to parse event list
       console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + eventsList.length);
@@ -354,6 +338,22 @@ export class Reader {
          }
       }
       that.callbackUpdateUI();
+    }).catch((errors: Error) => {
+
+      // Finish job
+      this.runningJobs -= 1;
+
+      console.error( 'Error in allEvents: ' + errors.message)
+      if (errors.message === 'Returned error: query returned more than 10000 results'
+          && (end > start)
+          && ((end - start) > LIMIT_BLOCK_MIN)
+          && ((end - start) > LIMIT_BLOCK_MAX)
+      ) {
+        const middle = Math.round((start + end) / 2);
+        console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+        this.readEventsRange(start, middle, that);
+        this.readEventsRange(middle + 1, end, that);
+      }
     });
   }
 }
