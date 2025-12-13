@@ -5,3 +5,4 @@ qodana.yaml
 /node_modules
 /.idea
 /.angular/
+/coverage/

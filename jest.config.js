@@ -12,8 +12,8 @@ module.exports = {
       diagnostics: false
     }]
   },
-  // transform node_modules for Angular, zone.js and rxjs packages
-  transformIgnorePatterns: ['/node_modules/(?!(@angular|zone.js|rxjs)/)'],
+  // transform node_modules for Angular, zone.js, rxjs and json-stringify-pretty-compact packages
+  transformIgnorePatterns: ['/node_modules/(?!(@angular|zone.js|rxjs|json-stringify-pretty-compact)/)'],
   moduleFileExtensions: ['ts', 'js', 'mjs', 'html', 'json'],
   collectCoverageFrom: ['src/**/*.ts', '!src/main.ts', '!src/environments/**']
 }
