@@ -64,7 +64,7 @@
         <ng-container matColumnDef="block">
           <th *matHeaderCellDef mat-header-cell>Block</th>
           <td *matCellDef="let element" mat-cell>
-            <a (click)="detailsDialog.openDetailsDialog($event, element.block, '', eventReader)"
+            <a (click)="openDetailsDialog($event, element.block, '')"
                class="table-link" href="" rel="nofollow">
               <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
             </a>
@@ -74,7 +74,7 @@
         <ng-container matColumnDef="trxHash">
           <th *matHeaderCellDef mat-header-cell>Trx</th>
           <td *matCellDef="let element" mat-cell>
-            <a (click)="detailsDialog.openDetailsDialog($event, element.block, element.trxHash, eventReader)"
+            <a (click)="openDetailsDialog($event, element.block, element.trxHash)"
                class="table-link" href="" rel="nofollow">
               <div *ngIf="!(screenWidth > 1300)"
                    innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>

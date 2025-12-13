@@ -10,14 +10,15 @@ import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 @Directive({
-  selector: '[appMatTableResponsive]'
+  selector: '[appMatTableResponsive]',
+  standalone: true
 })
 export class EventsListResponsiveDirective
   implements OnInit, AfterViewInit, OnDestroy {
   private onDestroy$ = new Subject<boolean>();
 
-  private thead: HTMLTableSectionElement;
-  private tbody: HTMLTableSectionElement;
+  private thead!: HTMLTableSectionElement;
+  private tbody!: HTMLTableSectionElement;
 
   private theadChanged$ = new BehaviorSubject(true);
   private tbodyChanged$ = new Subject<boolean>();
@@ -35,11 +36,16 @@ export class EventsListResponsiveDirective
     this.thead = this.table.nativeElement.querySelector('thead');
     this.tbody = this.table.nativeElement.querySelector('tbody');
 
-    this.theadObserver.observe(this.thead, {
-      characterData: true,
-      subtree: true
-    });
-    this.tbodyObserver.observe(this.tbody, { childList: true });
+    if (this.thead) {
+      this.theadObserver.observe(this.thead, {
+        characterData: true,
+        subtree: true
+      });
+    }
+
+    if (this.tbody) {
+      this.tbodyObserver.observe(this.tbody, { childList: true });
+    }
   }
 
   ngAfterViewInit() {

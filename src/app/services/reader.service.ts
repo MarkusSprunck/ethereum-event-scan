@@ -73,6 +73,8 @@ export class Reader {
   private isLoading = false;
   private isEndBlockNumberSet = false;
   private contractInstance: any = null;
+  private createContractAttempts = 0;
+  private readonly maxCreateContractAttempts = 10;
 
   constructor(private route: ActivatedRoute, public entity: ProviderService) {
 
@@ -103,8 +105,9 @@ export class Reader {
         this.provider = params['provider'];
       }
 
-      this.createActiveContract();
+      // Ensure provider is set before creating the contract instance
       this.entity.setProvider(this.provider);
+      this.createActiveContract();
       this.fetchCurrentBlockNumber();
       this.fetchEvents();
     });
@@ -169,20 +172,187 @@ export class Reader {
    *
    */
   createActiveContract() {
-
     if (this.abiBase64Data.length > 0) {
-      this.abi = pako.ungzip(atob(this.abiBase64Data), {to: 'string'})
+      try {
+        // normalize URL-safe base64 variants
+        const normalizeBase64 = (s: string) => {
+          let r = s.replace(/-/g, '+').replace(/_/g, '/');
+          while (r.length % 4 !== 0) { r += '='; }
+          return r;
+        };
+
+        const isHex = (s: string) => /^[0-9a-fA-F]+$/.test(s);
+
+        const base64ToUint8 = (b64: string) => {
+          const bin = atob(b64);
+          const len = bin.length;
+          const arr = new Uint8Array(len);
+          for (let i = 0; i < len; i++) arr[i] = bin.charCodeAt(i) & 0xff;
+          return arr;
+        };
+
+        const hexToUint8 = (hex: string) => {
+          const len = hex.length / 2;
+          const arr = new Uint8Array(len);
+          for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substr(i * 2, 2), 16);
+          return arr;
+        };
+
+        let base64 = this.abiBase64Data.trim();
+        // Replace spaces (may appear if '+' was turned into space in URL) back to '+'
+        base64 = base64.replace(/\s/g, '+');
+        base64 = normalizeBase64(base64);
+
+        // Try decode base64 to Uint8Array directly
+        let arr: Uint8Array | null = null;
+        try {
+          arr = base64ToUint8(base64);
+        } catch (err) {
+          console.warn('base64->bin failed, will try alternate decode', err);
+        }
+
+        let decodedData: string | null = null;
+        if (arr) {
+          // quick header inspect
+          const b0 = arr[0] || 0;
+          const b1 = arr[1] || 0;
+          const headerHex = (b0.toString(16).padStart(2,'0') + ' ' + b1.toString(16).padStart(2,'0'));
+          console.debug('ABI decoded header bytes:', headerHex, 'len=', arr.length);
+          // gzip header 0x1f 0x8b
+          if (b0 === 0x1f && b1 === 0x8b) {
+            try {
+              this.abi = pako.ungzip(arr, { to: 'string' });
+            } catch (e) {
+              // log sample bytes and decodedData preview for debugging
+              const sampleHex = Array.from(arr.slice(0,16)).map(x=>x.toString(16).padStart(2,'0')).join(' ');
+              console.error('pako.ungzip failed on Uint8Array. sampleBytes=', sampleHex, 'error=', e);
+              // try inflate variants
+              try { this.abi = pako.inflate(arr, { to: 'string' }); } catch(e2) { console.error('inflate failed', e2); }
+              try { this.abi = pako.inflateRaw(arr, { to: 'string' }); } catch(e3) { console.error('inflateRaw failed', e3); }
+            }
+          } else if (b0 === 0x78 && (b1 === 0x01 || b1 === 0x9c || b1 === 0xda)) {
+            // zlib header
+            try {
+              this.abi = pako.inflate(arr, { to: 'string' });
+            } catch (e) {
+              console.error('pako.inflate failed on Uint8Array:', e);
+            }
+          } else {
+            // Not a known compressed header. Try to interpret as text
+            try {
+              decodedData = String.fromCharCode.apply(null, Array.from(arr));
+            } catch (e) {
+              // fallback building string slowly
+              decodedData = '';
+              for (let i = 0; i < arr.length; i++) decodedData += String.fromCharCode(arr[i]);
+            }
+            // log a preview for diagnosis
+            console.debug('decodedData preview (first 120 chars):', decodedData.substring(0,120));
+          }
+        }
+
+        // If we didn't set this.abi yet, try other fallbacks
+        if (!this.abi || this.abi.length === 0) {
+          // If decodedData not ready, attempt atob fallback
+          if (!decodedData) {
+            try {
+              decodedData = atob(base64);
+              console.debug('atob fallback produced preview (first 200 chars):', decodedData.substring(0,200));
+            } catch (e) {
+              // atob may fail if base64 is not correct; try to detect hex
+              const candidate = this.abiBase64Data.replace(/^0x/, '');
+              if (isHex(candidate) && candidate.length % 2 === 0) {
+                try {
+                  arr = hexToUint8(candidate);
+                } catch (hexErr) {
+                  console.error('hex->uint8 failed', hexErr);
+                }
+              } else {
+                console.error('Failed to decode base64 and not hex; aborting');
+                this.abi = '';
+                return;
+              }
+            }
+          }
+
+          if (decodedData && decodedData.length > 0 && (!this.abi || this.abi.length === 0)) {
+            // If decodedData looks like JSON -> use directly
+            const firstChar = decodedData.charAt(0);
+            if (firstChar === '{' || firstChar === '[') {
+              this.abi = decodedData;
+            } else {
+              // If arr available, try decompression attempts in order
+              if (!arr && decodedData) {
+                // create arr from decodedData
+                const tmp = new Uint8Array(decodedData.length);
+                for (let i = 0; i < decodedData.length; i++) tmp[i] = decodedData.charCodeAt(i) & 0xff;
+                arr = tmp;
+              }
+
+              if (arr) {
+                let decompressed: string | null = null;
+                const methods = [
+                  (a: Uint8Array) => pako.ungzip(a, { to: 'string' }),
+                  (a: Uint8Array) => pako.inflate(a, { to: 'string' }),
+                  (a: Uint8Array) => pako.inflateRaw(a, { to: 'string' })
+                ];
+                let lastErr: any = null;
+                for (const m of methods) {
+                  try {
+                    const out = m(arr);
+                    if (out && out.length > 0) { decompressed = out; break; }
+                  } catch (e) { lastErr = e; console.error('decompression attempt failed:', e); }
+                }
+                if (decompressed) {
+                  this.abi = decompressed;
+                } else {
+                  // try treat decodedData as raw string JSON
+                  try { JSON.parse(decodedData); this.abi = decodedData; console.warn('ABI not compressed, using raw decodedData.'); }
+                  catch (je) { console.error('All decompression attempts failed. Last error:', lastErr, 'decodedData preview:', decodedData.substring(0,120)); this.abi = ''; return; }
+                }
+              } else {
+                console.error('No binary data to attempt decompression');
+                this.abi = '';
+                return;
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error decoding ABI data from Base64:', error);
+        this.abi = '';
+        return;
+      }
     }
 
-    if (this.contract != undefined
-      && this.contract.length > 0
-      && this.abi !== undefined
-      && this.abi.length > 0
+    if (
+      this.contract &&
+      this.contract.length > 0 &&
+      this.abi &&
+      this.abi.length > 0
     ) {
       try {
-        this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
+        if (!this.entity || !this.entity.web3 || !this.entity.web3.eth) {
+          // If provider isn't ready yet, schedule a retry (avoid immediate TypeError)
+          if (this.createContractAttempts < this.maxCreateContractAttempts) {
+            this.createContractAttempts++;
+            console.warn(`Web3 provider not initialized yet; retrying createActiveContract (${this.createContractAttempts}/${this.maxCreateContractAttempts})`);
+            setTimeout(() => this.createActiveContract(), 500);
+          } else {
+            console.warn('Max attempts reached; cannot create contract instance.');
+            this.contractInstance = null;
+          }
+        } else {
+          this.contractInstance = new this.entity.web3.eth.Contract(
+            JSON.parse(this.abi),
+            this.contract
+          );
+          // reset attempts on success
+          this.createContractAttempts = 0;
+        }
       } catch (e) {
-        // nothing to do
+        console.error('Error creating contract instance:', e);
+        this.contractInstance = null;
       }
     }
   }
@@ -193,9 +363,15 @@ export class Reader {
     if (this.contract.length > 0 && this.abi.length > 0) {
       try {
         // `abi` is typed as string in this class, drop redundant typeof check
-        this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
+        if (this.entity && this.entity.web3 && this.entity.web3.eth) {
+          this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
+        } else {
+          console.warn('Web3 provider not initialized; cannot create contract instance in setContractAddress.');
+          this.contractInstance = null;
+        }
       } catch (e) {
         // nothing to do
+        this.contractInstance = null;
       }
     }
   }
@@ -251,12 +427,20 @@ export class Reader {
       return this.timestampCache.get(blockNumber);
     } else {
       this.timestampCache.set(blockNumber, 'load...');
-      this.entity.web3.eth.getBlock(blockNumber, false)
-        .then((block: any) => {
-          this.timestampCache.set(blockNumber, UtilsService.convertTimestamp(block.timestamp));
-          this.minerCache.set(blockNumber, UtilsService.truncate(block.miner, 12));
-          console.debug('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
-        });
+      if (this.entity && this.entity.web3 && this.entity.web3.eth) {
+        this.entity.web3.eth.getBlock(blockNumber, false)
+          .then((block: any) => {
+            this.timestampCache.set(blockNumber, UtilsService.convertTimestamp(block.timestamp));
+            this.minerCache.set(blockNumber, UtilsService.truncate(block.miner, 12));
+            console.debug('lazy load block data -> ', blockNumber, this.timestampCache.get(blockNumber))
+          }).catch((err: any) => {
+            console.error('Error loading block data for timestamp cache:', err);
+            this.timestampCache.set(blockNumber, 'n.a.');
+          });
+      } else {
+        console.warn('Web3 not available for getCachedTimestamp');
+        this.timestampCache.set(blockNumber, 'n.a.');
+      }
     }
     return '';
   }

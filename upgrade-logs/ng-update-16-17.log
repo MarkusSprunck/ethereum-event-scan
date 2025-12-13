@@ -1,0 +1,187 @@
+
+# RUN: npx @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Need to install the following packages:
+@angular/cli@17.3.17
+Ok to proceed? (y) 
+npm warn deprecated read-package-json@7.0.1: This package is no longer supported. Please use @npmcli/package-json instead.
+Error: Unknown command. Did you mean g?
+[ERROR] command failed: npx @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Aborting. Check upgrade-logs/ng-update-16-17.log
+
+# RUN: npx @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Need to install the following packages:
+@angular/cli@17.3.17
+Ok to proceed? (y) 
+Error: Unknown command. Did you mean g?
+[ERROR] command failed: npx @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Aborting. Check upgrade-logs/ng-update-16-17.log
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+- Installing packages...
+(node:42364) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Packages successfully installed.
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 43 dependencies.
+Fetching dependency metadata from registry...
+                  Package "@angular-eslint/schematics" has an incompatible peer dependency to "@angular/cli" (requires ">= 16.0.0 < 17.0.0", would install "17.3.17").
+✖ Migration failed: Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+  See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-ppAH0p/angular-errors.log" for further details.
+
+[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Aborting. Check upgrade-logs/ng-update-16-17.log
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+- Installing packages...
+(node:42481) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Packages successfully installed.
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 43 dependencies.
+Fetching dependency metadata from registry...
+                  Package "@angular-eslint/schematics" has an incompatible peer dependency to "@angular/cli" (requires ">= 16.0.0 < 17.0.0", would install "17.3.17").
+✖ Migration failed: Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+  See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-VJlgWc/angular-errors.log" for further details.
+
+[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Aborting. Check upgrade-logs/ng-update-16-17.log
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+- Installing packages...
+(node:42708) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Packages successfully installed.
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 43 dependencies.
+Fetching dependency metadata from registry...
+                  Package "@angular-eslint/schematics" has an incompatible peer dependency to "@angular/cli" (requires ">= 16.0.0 < 17.0.0", would install "17.3.17").
+✖ Migration failed: Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+  See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-g2wRaz/angular-errors.log" for further details.
+
+[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Continuing despite error (continue-on-error=true)
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+- Installing packages...
+(node:42938) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Packages successfully installed.
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 35 dependencies.
+Fetching dependency metadata from registry...
+    Updating package.json with dependency @angular-devkit/build-angular @ "17.3.17" (was "16.1.4")...
+    Updating package.json with dependency @angular/cli @ "17.3.17" (was "16.1.4")...
+    Updating package.json with dependency @angular/compiler-cli @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency typescript @ "5.4.5" (was "4.9.5")...
+    Updating package.json with dependency @angular/animations @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/common @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/compiler @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/core @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/forms @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/platform-browser @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/platform-browser-dynamic @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency @angular/router @ "17.3.12" (was "16.1.5")...
+    Updating package.json with dependency zone.js @ "0.14.10" (was "0.13.1")...
+UPDATE package.json (1725 bytes)
+- Installing packages...
+(node:42955) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ Packages successfully installed.
+** Executing migrations of package '@angular/cli' **
+
+❯ Replace usages of '@nguniversal/builders' with '@angular-devkit/build-angular'.
+  Migration completed (No changes made).
+
+❯ Replace usages of '@nguniversal/' packages with '@angular/ssr'.
+  Migration completed (No changes made).
+
+❯ Replace deprecated options in 'angular.json'.
+UPDATE angular.json (3334 bytes)
+  Migration completed (1 file modified).
+
+❯ Add 'browser-sync' as dev dependency when '@angular-devkit/build-angular:ssr-dev-server' is used, as it is no longer a direct dependency of '@angular-devkit/build-angular'.
+  Migration completed (No changes made).
+
+** Executing migrations of package '@angular/core' **
+
+❯ Angular v17 introduces a new control flow syntax that uses the @ and } characters.
+  This migration replaces the existing usages with their corresponding HTML entities.
+  Migration completed (No changes made).
+
+❯ Updates `TransferState`, `makeStateKey`, `StateKey` imports from `@angular/platform-browser` to `@angular/core`.
+  Migration completed (No changes made).
+
+❯ CompilerOption.useJit and CompilerOption.missingTranslation are unused under Ivy.
+  This migration removes their usage
+  Migration completed (No changes made).
+
+❯ Updates two-way bindings that have an invalid expression to use the longform expression instead.
+  Migration completed (No changes made).
+
+[OK] npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+(node:44429) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 33 dependencies.
+Fetching dependency metadata from registry...
+                  Package "@angular/compiler-cli" has an incompatible peer dependency to "@angular/compiler" (requires "18.2.14" (extended), would install "17.3.12").
+✖ Migration failed: Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+  See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-IZJHGH/angular-errors.log" for further details.
+
+[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Continuing despite error (continue-on-error=true)
+
+# RUN: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+The installed Angular CLI version is outdated.
+Installing a temporary Angular CLI versioned 17.3.17 to perform the update.
+(node:44607) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Repository is not clean. Update changes will be mixed with pre-existing changes.
+Using package manager: npm
+Collecting installed dependencies...
+Found 33 dependencies.
+Fetching dependency metadata from registry...
+                  Package "@angular/compiler-cli" has an incompatible peer dependency to "@angular/compiler" (requires "18.2.14" (extended), would install "17.3.12").
+✖ Migration failed: Incompatible peer dependencies found.
+Peer dependency warnings when installing dependencies means that those dependencies might not work correctly together.
+You can use the '--force' option to ignore incompatible peer dependencies and instead address these warnings later.
+  See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-0LpQCf/angular-errors.log" for further details.
+
+[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/cli@17 @angular/core@17 --allow-dirty
+Continuing despite error (continue-on-error=true)

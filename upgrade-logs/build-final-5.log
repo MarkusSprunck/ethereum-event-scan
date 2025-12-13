@@ -9,13 +9,12 @@ and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, oper
 - Generating index html...
 [32m✔[39m Index html generation complete.
 
-Initial chunk files | Names         |  Raw size
-vendor.js           | vendor        |   6.81 MB | 
-styles.css          | styles        | 212.66 kB | 
-main.js             | main          | 164.34 kB | 
-polyfills.js        | polyfills     |  93.88 kB | 
-runtime.js          | runtime       |   6.08 kB | 
+Initial chunk files           | Names         |  Raw size | Estimated transfer size
+main.964a13c56f7f84c6.js      | main          |   1.60 MB |               366.78 kB
+styles.bbfcee32450d62ed.css   | styles        | 104.18 kB |                 7.80 kB
+polyfills.0321cb8e8bc0f6ab.js | polyfills     |  35.52 kB |                11.40 kB
+runtime.47b91ffc07a3a748.js   | runtime       |   1.19 kB |               629 bytes
 
-                    | Initial total |   7.29 MB
+                              | Initial total |   1.74 MB |               386.61 kB
 
-Build at: 2025-12-13T13:51:16.670Z - Hash: 27b75855fff44a79 - Time: 6906ms
+Build at: 2025-12-13T12:26:11.900Z - Hash: c04f428da676e6e8 - Time: 18499ms

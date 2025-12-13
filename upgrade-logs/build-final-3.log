@@ -1,0 +1,31 @@
+One or more browsers which are configured in the project's Browserslist configuration fall outside Angular's browser support for this version.
+Unsupported browsers:
+and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, opera 122, opera 121, samsung 29, samsung 28
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+- Copying assets...
+[32m✔[39m Copying assets complete.
+- Generating index html...
+[32m✔[39m Index html generation complete.
+
+Initial chunk files           | Names         |  Raw size | Estimated transfer size
+main.ac4a4dbb0f129fba.js      | main          |   1.46 MB |               325.44 kB
+styles.bbfcee32450d62ed.css   | styles        | 104.18 kB |                 7.80 kB
+polyfills.0270b4f39a70c2f1.js | polyfills     |  35.52 kB |                11.40 kB
+runtime.47b91ffc07a3a748.js   | runtime       |   1.19 kB |               629 bytes
+
+                              | Initial total |   1.60 MB |               345.27 kB
+
+Build at: 2025-12-13T12:23:43.071Z - Hash: c5d85abf09352c36 - Time: 20711ms
+
+Warning: [96msrc/app/components/events-table/events-table.component.ts[0m:[93m37[0m:[93m5[0m - [93mwarning[0m[90m NG8113: [0mModalDialogComponent is not used within the template of EventsTableComponent
+
+[7m37[0m     ModalDialogComponent
+[7m  [0m [93m    ~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/src/app/app.module.ts depends on 'src/app/components/settings/settings.component'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+

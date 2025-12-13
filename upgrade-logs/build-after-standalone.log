@@ -1,0 +1,224 @@
+One or more browsers which are configured in the project's Browserslist configuration fall outside Angular's browser support for this version.
+Unsupported browsers:
+and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, opera 122, opera 121, samsung 29, samsung 28
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+Warning: [96msrc/app/components/events-table/events-table.component.ts[0m:[93m37[0m:[93m5[0m - [93mwarning[0m[90m NG8113: [0mModalDialogComponent is not used within the template of EventsTableComponent
+
+[7m37[0m     ModalDialogComponent
+[7m  [0m [93m    ~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth-accounts/lib/esm/common/common.js depends on 'crc-32'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth-accounts/lib/esm/tx/eip1559Transaction.js depends on '@ethereumjs/rlp'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth/lib/esm/index.js depends on 'setimmediate'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-providers-http/lib/esm/index.js depends on 'cross-fetch'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/src/app/app.module.ts depends on 'src/app/components/settings/settings.component'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+
+Error: [96msrc/app/components/modal-dialog/modal-dialog.component.html[0m:[93m4[0m:[93m3[0m - [91merror[0m[90m NG8001: [0m'app-inner-component' is not a known element:
+1. If 'app-inner-component' is an Angular component, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-inner-component' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+
+[7m4[0m   <app-inner-component [inputData]="data"></app-inner-component>
+[7m [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/components/modal-dialog/modal-dialog.component.ts[0m:[93m20[0m:[93m16[0m
+    [7m20[0m   templateUrl: './modal-dialog.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component ModalDialogComponent.
+
+
+Error: [96msrc/app/components/modal-dialog/modal-dialog.component.html[0m:[93m4[0m:[93m24[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'inputData' since it isn't a known property of 'app-inner-component'.
+1. If 'app-inner-component' is an Angular component and it has 'inputData' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-inner-component' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m4[0m   <app-inner-component [inputData]="data"></app-inner-component>
+[7m [0m [91m                       ~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/components/modal-dialog/modal-dialog.component.ts[0m:[93m20[0m:[93m16[0m
+    [7m20[0m   templateUrl: './modal-dialog.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component ModalDialogComponent.
+
+
+Error: [96msrc/app/components/settings/directives/json-formatter.directive.ts[0m:[93m41[0m:[93m14[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+  Type 'typeof import("json-stringify-pretty-compact")' has no call signatures.
+
+[7m41[0m       return stringify(JSON.parse(data), {maxLength: 120, indent: 2});
+[7m  [0m [91m             ~~~~~~~~~[0m
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m3[0m:[93m3[0m - [91merror[0m[90m NG8001: [0m'mat-toolbar' is not a known element:
+1. If 'mat-toolbar' is an Angular component, then verify that it is included in the '@Component.imports' of this component.
+2. If 'mat-toolbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+
+[7m3[0m   <mat-toolbar class="header"
+[7m [0m [91m  ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m4[0m                color="primary">
+[7m [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m5[0m:[93m5[0m - [91merror[0m[90m NG8001: [0m'mat-toolbar-row' is not a known element:
+1. If 'mat-toolbar-row' is an Angular component, then verify that it is included in the '@Component.imports' of this component.
+2. If 'mat-toolbar-row' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+
+[7m5[0m     <mat-toolbar-row>
+[7m [0m [91m    ~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m13[0m:[93m7[0m - [91merror[0m[90m NG8001: [0m'app-settings' is not a known element:
+1. If 'app-settings' is an Angular component, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+
+[7m 13[0m       <app-settings [abi]="control.abi" [connected]="control.entity.connected"
+[7m   [0m [91m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 14[0m                     [contract]="control.contract" [endBlock]="control.endBlock"
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m...[0m 
+[7m 16[0m                     [provider]="control.provider"
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[7m 17[0m                     [startBlock]="control.startInitial">
+[7m   [0m [91m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m13[0m:[93m21[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'abi' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'abi' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m13[0m       <app-settings [abi]="control.abi" [connected]="control.entity.connected"
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m13[0m:[93m41[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'connected' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'connected' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m13[0m       <app-settings [abi]="control.abi" [connected]="control.entity.connected"
+[7m  [0m [91m                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m14[0m:[93m21[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'contract' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'contract' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m14[0m                     [contract]="control.contract" [endBlock]="control.endBlock"
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m14[0m:[93m51[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'endBlock' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'endBlock' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m14[0m                     [contract]="control.contract" [endBlock]="control.endBlock"
+[7m  [0m [91m                                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m15[0m:[93m21[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'lastBlock' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'lastBlock' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m15[0m                     [lastBlock]="control.entity.currentBlock"
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m16[0m:[93m21[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'provider' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'provider' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m16[0m                     [provider]="control.provider"
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m17[0m:[93m21[0m - [91merror[0m[90m NG8002: [0mCan't bind to 'startBlock' since it isn't a known property of 'app-settings'.
+1. If 'app-settings' is an Angular component and it has 'startBlock' input, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-settings' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@Component.schemas' of this component.
+
+[7m17[0m                     [startBlock]="control.startInitial">
+[7m  [0m [91m                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+Error: [96msrc/app/pages/main/main.component.html[0m:[93m24[0m:[93m7[0m - [91merror[0m[90m NG8001: [0m'app-events-list' is not a known element:
+1. If 'app-events-list' is an Angular component, then verify that it is included in the '@Component.imports' of this component.
+2. If 'app-events-list' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@Component.schemas' of this component to suppress this message.
+
+[7m24[0m       <app-events-list></app-events-list>
+[7m  [0m [91m      ~~~~~~~~~~~~~~~~~[0m
+
+  [96msrc/app/pages/main/main.component.ts[0m:[93m30[0m:[93m16[0m
+    [7m30[0m   templateUrl: './main.component.html',
+    [7m  [0m [96m               ~~~~~~~~~~~~~~~~~~~~~~~[0m
+    Error occurs in the template of component MainComponent.
+
+
+

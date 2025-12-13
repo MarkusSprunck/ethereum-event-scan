@@ -1,7 +1,12 @@
 import {Component, Inject} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from '@angular/material/dialog';
+import {CommonModule} from '@angular/common';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import {Reader} from '../../services/reader.service';
 import {UtilsService} from "../../services/utils.service";
+import {MatButtonModule} from '@angular/material/button';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatListModule} from '@angular/material/list';
+import {ModalDialogContentComponent} from './modal-dialog-content.component';
 
 export interface DialogData {
   blockNumber: string;
@@ -11,6 +16,8 @@ export interface DialogData {
 
 @Component({
   selector: 'app-info-modal',
+  standalone: true,
+  imports: [CommonModule, MatDialogModule, MatButtonModule, MatGridListModule, MatListModule, ModalDialogContentComponent],
   templateUrl: './modal-dialog.component.html',
   styleUrls: ['./modal-dialog.component.scss']
 })
@@ -35,7 +42,7 @@ export class ModalDialogComponent {
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
     dialogConfig.maxWidth = '100vw';
-    dialogConfig.width = '40rem';
+    dialogConfig.width = '50rem';
     dialogConfig.height = '50rem';
     dialogConfig.minHeight = '20rem';
     dialogConfig.minWidth = ' 10rem';
@@ -44,6 +51,8 @@ export class ModalDialogComponent {
       trxNumber,
       reader
     };
+
+    console.debug('Opening details dialog with data:', dialogConfig.data);
 
     this.dialog.open(ModalDialogComponent, dialogConfig);
   }

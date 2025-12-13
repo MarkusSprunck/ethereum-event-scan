@@ -1,0 +1,25 @@
+
+# RUN: npm install --save-dev @angular-eslint/builder@^17 @angular-eslint/eslint-plugin@^17 @angular-eslint/eslint-plugin-template@^17 @angular-eslint/schematics@^17 @angular-eslint/template-parser@^17 @typescript-eslint/eslint-plugin@^8 @typescript-eslint/parser@^8 eslint@^9
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: ethereum-event-scan@3.0.0
+npm error Found: eslint@9.39.2
+npm error node_modules/eslint
+npm error   dev eslint@"^9" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer eslint@"^7.20.0 || ^8.0.0" from @angular-eslint/builder@17.5.3
+npm error node_modules/@angular-eslint/builder
+npm error   dev @angular-eslint/builder@"^17" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/markus/.npm/_logs/2025-12-13T11_34_20_180Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/markus/.npm/_logs/2025-12-13T11_34_20_180Z-debug-0.log
+[ERROR] command failed: npm install --save-dev @angular-eslint/builder@^17 @angular-eslint/eslint-plugin@^17 @angular-eslint/eslint-plugin-template@^17 @angular-eslint/schematics@^17 @angular-eslint/template-parser@^17 @typescript-eslint/eslint-plugin@^8 @typescript-eslint/parser@^8 eslint@^9
+Continuing despite error (continue-on-error=true)

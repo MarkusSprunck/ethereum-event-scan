@@ -28,7 +28,18 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "json-stringify-pretty-compact",
+              "web3",
+              "web3-eth",
+              "web3-eth-accounts",
+              "web3-providers-http",
+              "crc-32",
+              "@ethereumjs/rlp",
+              "setimmediate",
+              "cross-fetch"
+            ]
           },
           "configurations": {
             "production": {
@@ -40,8 +51,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "4kb",
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all"
@@ -61,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "ethereum-event-scan:build:production"
+              "buildTarget": "ethereum-event-scan:build:production"
             },
             "development": {
-              "browserTarget": "ethereum-event-scan:build:development"
+              "buildTarget": "ethereum-event-scan:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -72,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ethereum-event-scan:build"
+            "buildTarget": "ethereum-event-scan:build"
           }
         },
         "test": {

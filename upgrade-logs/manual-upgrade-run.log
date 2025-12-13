@@ -1,0 +1,143 @@
+Starting upgrade at Sat Dec 13 13:12:07 CET 2025
+Checking environment
+v24.12.0
+11.6.2
+Running npm-check-updates (ncu) to update package.json versions
+Upgrading /Users/markus/Projects/IntelliJ/ethereum-event-scan/package.json
+
+
+All dependencies match the latest package versions :)
+Installing updated packages (npm install)
+
+up to date, audited 1063 packages in 2s
+
+201 packages are looking for funding
+  run `npm fund` for details
+
+3 vulnerabilities (2 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+Patching /Users/markus/Projects/IntelliJ/ethereum-event-scan/tsconfig.json
+patched /Users/markus/Projects/IntelliJ/ethereum-event-scan/tsconfig.json
+Attempting: ng update @angular/cli@17 @angular/core@17 --allow-dirty --force --yes
+Error: Unknown argument: yes
+ng update to 17 failed or had migrations; see log
+Attempting: ng update @angular/cli@18 @angular/core@18 --allow-dirty --force --yes
+Error: Unknown argument: yes
+ng update to 18 failed or had migrations; see log
+Attempting: ng update @angular/cli@19 @angular/core@19 --allow-dirty --force --yes
+Error: Unknown argument: yes
+ng update to 19 failed or had migrations; see log
+Attempting: ng update @angular/cli@20 @angular/core@20 --allow-dirty --force --yes
+Error: Unknown argument: yes
+ng update to 20 failed or had migrations; see log
+Attempting: ng update @angular/cli@21 @angular/core@21 --allow-dirty --force --yes
+Error: Unknown argument: yes
+ng update to 21 failed or had migrations; see log
+Installing packages after ng update
+
+up to date, audited 1063 packages in 2s
+
+201 packages are looking for funding
+  run `npm fund` for details
+
+3 vulnerabilities (2 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+Running production build (AOT)
+One or more browsers which are configured in the project's Browserslist configuration fall outside Angular's browser support for this version.
+Unsupported browsers:
+and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, opera 122, opera 121, samsung 29, samsung 28
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth-accounts/lib/esm/common/common.js depends on 'crc-32'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth-accounts/lib/esm/tx/eip1559Transaction.js depends on '@ethereumjs/rlp'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-eth/lib/esm/index.js depends on 'setimmediate'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/web3-providers-http/lib/esm/index.js depends on 'cross-fetch'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+Warning: /Users/markus/Projects/IntelliJ/ethereum-event-scan/src/app/app.module.ts depends on 'src/app/components/settings/settings.component'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.dev/tools/cli/build#configuring-commonjs-dependencies
+
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m64[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mComponent MainComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m64[0m     MainComponent,
+[7m  [0m [91m    ~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m65[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mComponent SettingsComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m65[0m     SettingsComponent,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m66[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mComponent ModalDialogComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m66[0m     ModalDialogComponent,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m67[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mDirective JsonFormatterDirective is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m67[0m     JsonFormatterDirective,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m68[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mComponent EventsTableComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m68[0m     EventsTableComponent,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m69[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mPipe HighlightSearch is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m69[0m     HighlightSearch,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m70[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mComponent ModalDialogContentComponent is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m70[0m     ModalDialogContentComponent,
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m71[0m:[93m5[0m - [91merror[0m[90m NG6008: [0mDirective EventsListResponsiveDirective is standalone, and cannot be declared in an NgModule. Did you mean to import it instead?
+
+[7m71[0m     EventsListResponsiveDirective
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+Error: [96msrc/app/app.module.ts[0m:[93m102[0m:[93m13[0m - [91merror[0m[90m NG6004: [0mCan't be exported from this NgModule, as it must be imported first
+
+[7m102[0m   exports: [EventsListResponsiveDirective],
+[7m   [0m [91m            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+
+Production build (AOT) failed, retrying without AOT to gather errors
+One or more browsers which are configured in the project's Browserslist configuration fall outside Angular's browser support for this version.
+Unsupported browsers:
+and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, opera 122, opera 121, samsung 29, samsung 28
+An unhandled exception occurred: The 'buildOptimizer' option cannot be used without 'aot'.
+See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-lq39z6/angular-errors.log" for further details.
+Upgrade finished. Main logs:
+  /Users/markus/Projects/IntelliJ/ethereum-event-scan/upgrade-logs/upgrade-20251213-131207.log
+Build log:
+  /Users/markus/Projects/IntelliJ/ethereum-event-scan/upgrade-logs/ng-build-20251213-131231.log
+Tip: inspect /Users/markus/Projects/IntelliJ/ethereum-event-scan/upgrade-logs/ng-build-20251213-131231.log and /Users/markus/Projects/IntelliJ/ethereum-event-scan/upgrade-logs/upgrade-20251213-131207.log. Fix any template/standalone/ng module mismatches as needed.

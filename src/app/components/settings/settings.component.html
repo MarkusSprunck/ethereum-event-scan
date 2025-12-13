@@ -49,15 +49,17 @@
 
 
       <mat-form-field class="mat-form-field-full-line">
-        <label for="abi"></label><textarea (blur)="onBlurAbi()" (ngModelChange)="updateABIValue()"
+        <label for="abi"></label><textarea (blur)="onBlurAbi()" (input)="updateABIValue($any($event.target).value)"
                                            (focus)="onFocusAbi()"
-                                           [cdkAutosizeMaxRows]="noOfRowsAbi" [value]="abi"
-                                           appJsonFormatter cdkAutosizeMinRows="1" cdkTextareaAutosize
+                                           [cdkAutosizeMaxRows]="noOfRowsAbi"
+                                           cdkAutosizeMinRows="1" cdkTextareaAutosize
+                                           appJsonFormatter
                                            formControlName="abi" id="abi" matInput
                                            placeholder="Enter ABI of contract"
                                            spellcheck="false"
-                                           type="text"
                                            autocomplete="off"></textarea>
+        <mat-error *ngIf="form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('json')">Invalid JSON ABI</mat-error>
+        <mat-error *ngIf="form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('required')">ABI is required</mat-error>
       </mat-form-field>
 
     </mat-expansion-panel>

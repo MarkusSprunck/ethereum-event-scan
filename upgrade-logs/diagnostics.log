@@ -1,0 +1,179 @@
+=== ENV ===
+v24.12.0
+11.6.2
+
+=== package.json deps summary ===
+angular core: ^21.0.5
+angular material: 21.0.3
+cli: ~21.0.3
+typescript: ~5.9.3
+web3: ^4.16.0
+
+=== npm ls (top-level) ===
+ethereum-event-scan@3.0.0 /Users/markus/Projects/IntelliJ/ethereum-event-scan
+├── @angular/cli@21.0.3
+├── @angular/core@21.0.5
+├── @angular/material@21.0.3
+└── web3@4.16.0
+
+
+=== ls node_modules/@angular (top) ===
+drwxr-xr-x markus staff 480 B  Sat Dec 13 12:42:56 2025 .
+drwxr-xr-x markus staff  20 KB Sat Dec 13 12:42:56 2025 ..
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 animations
+drwxr-xr-x markus staff 384 B  Sat Dec 13 12:42:51 2025 build
+drwxr-xr-x markus staff 480 B  Sat Dec 13 12:42:50 2025 cdk
+drwxr-xr-x markus staff 256 B  Sat Dec 13 12:42:50 2025 cli
+drwxr-xr-x markus staff 256 B  Sat Dec 13 12:42:52 2025 common
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 compiler
+drwxr-xr-x markus staff 288 B  Sat Dec 13 12:42:53 2025 compiler-cli
+drwxr-xr-x markus staff 320 B  Sat Dec 13 12:42:50 2025 core
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 forms
+drwxr-xr-x markus staff 1.4 KB Sat Dec 13 12:42:51 2025 material
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 platform-browser
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 platform-browser-dynamic
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:49 2025 router
+
+=== ls node_modules/@angular/core ===
+drwxr-xr-x markus staff 320 B  Sat Dec 13 12:42:50 2025 .
+drwxr-xr-x markus staff 480 B  Sat Dec 13 12:42:56 2025 ..
+.rwxr-xr-x markus staff 476 B  Sat Dec 13 12:42:49 2025 event-dispatch-contract.min.js
+drwxr-xr-x markus staff 960 B  Sat Dec 13 12:42:50 2025 fesm2022
+.rwxr-xr-x markus staff 1.1 KB Sat Dec 13 12:42:49 2025 LICENSE
+.rwxr-xr-x markus staff 2.4 KB Sat Dec 13 12:42:49 2025 package.json
+.rwxr-xr-x markus staff 290 B  Sat Dec 13 12:42:50 2025 README.md
+drwxr-xr-x markus staff  96 B  Sat Dec 13 12:42:50 2025 resources
+drwxr-xr-x markus staff 224 B  Sat Dec 13 12:42:50 2025 schematics
+drwxr-xr-x markus staff 480 B  Sat Dec 13 12:42:50 2025 types
+
+=== cat node_modules/@angular/core/package.json (if exists) ===
+{
+  name: '@angular/core',
+  version: '21.0.5',
+  description: 'Angular - the core framework',
+  author: 'angular',
+  license: 'MIT',
+  engines: { node: '^20.19.0 || ^22.12.0 || >=24.0.0' },
+  exports: {
+    './schematics/*': { default: './schematics/*.js' },
+    './event-dispatch-contract.min.js': { default: './event-dispatch-contract.min.js' },
+    './package.json': { default: './package.json' },
+    '.': { types: './types/core.d.ts', default: './fesm2022/core.mjs' },
+    './primitives/di': {
+      types: './types/primitives-di.d.ts',
+      default: './fesm2022/primitives-di.mjs'
+    },
+    './primitives/event-dispatch': {
+      types: './types/primitives-event-dispatch.d.ts',
+      default: './fesm2022/primitives-event-dispatch.mjs'
+    },
+    './primitives/signals': {
+      types: './types/primitives-signals.d.ts',
+      default: './fesm2022/primitives-signals.mjs'
+    },
+    './rxjs-interop': {
+      types: './types/rxjs-interop.d.ts',
+      default: './fesm2022/rxjs-interop.mjs'
+    },
+    './testing': {
+      types: './types/testing.d.ts',
+      default: './fesm2022/testing.mjs'
+    }
+  },
+  dependencies: { tslib: '^2.3.0' },
+  peerDependencies: {
+    '@angular/compiler': '21.0.5',
+    rxjs: '^6.5.3 || ^7.4.0',
+    'zone.js': '~0.15.0 || ~0.16.0'
+  },
+  peerDependenciesMeta: {
+    '@angular/compiler': { optional: true },
+    'zone.js': { optional: true }
+  },
+  repository: {
+    type: 'git',
+    url: 'https://github.com/angular/angular.git',
+    directory: 'packages/core'
+  },
+  'ng-update': {
+    migrations: './schematics/migrations.json',
+    packageGroup: [
+      '@angular/core',
+      '@angular/bazel',
+      '@angular/common',
+      '@angular/compiler',
+      '@angular/compiler-cli',
+      '@angular/animations',
+      '@angular/elements',
+      '@angular/platform-browser',
+      '@angular/platform-browser-dynamic',
+      '@angular/forms',
+      '@angular/platform-server',
+      '@angular/upgrade',
+      '@angular/router',
+      '@angular/language-service',
+      '@angular/localize',
+      '@angular/service-worker'
+    ]
+  },
+  angular: {
+    bestPractices: { format: 'markdown', path: './resources/best-practices.md' }
+  },
+  schematics: './schematics/collection.json',
+  sideEffects: false,
+  module: './fesm2022/core.mjs',
+  typings: './types/core.d.ts',
+  type: 'module'
+}
+
+=== ls node_modules/@angular/material ===
+drwxr-xr-x markus staff 1.4 KB Sat Dec 13 12:42:51 2025 .
+drwxr-xr-x markus staff 480 B  Sat Dec 13 12:42:56 2025 ..
+.rwxr-xr-x markus staff 9.4 KB Sat Dec 13 12:42:50 2025 _index.scss
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 autocomplete
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 badge
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 bottom-sheet
+drwxr-xr-x markus staff 352 B  Sat Dec 13 12:42:50 2025 button
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 button-toggle
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 card
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 checkbox
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 chips
+drwxr-xr-x markus staff 544 B  Sat Dec 13 12:42:51 2025 core
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 datepicker
+drwxr-xr-x markus staff 192 B  Sat Dec 13 12:42:50 2025 dialog
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 divider
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 expansion
+drwxr-xr-x markus staff 6.1 KB Sat Dec 13 12:42:50 2025 fesm2022
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 form-field
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 grid-list
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 icon
+drwxr-xr-x markus staff  96 B  Sat Dec 13 12:42:50 2025 input
+.rwxr-xr-x markus staff 1.0 KB Sat Dec 13 12:42:48 2025 LICENSE
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:50 2025 list
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 menu
+.rwxr-xr-x markus staff  11 KB Sat Dec 13 12:42:48 2025 package.json
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 paginator
+drwxr-xr-x markus staff 320 B  Sat Dec 13 12:42:48 2025 prebuilt-themes
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 progress-bar
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 progress-spinner
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 radio
+.rwxr-xr-x markus staff 205 B  Sat Dec 13 12:42:50 2025 README.md
+drwxr-xr-x markus staff 256 B  Sat Dec 13 12:42:48 2025 schematics
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 select
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 sidenav
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 slide-toggle
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 slider
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 snack-bar
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 sort
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 stepper
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 table
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 tabs
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 timepicker
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 toolbar
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 tooltip
+drwxr-xr-x markus staff 160 B  Sat Dec 13 12:42:51 2025 tree
+drwxr-xr-x markus staff 3.3 KB Sat Dec 13 12:42:51 2025 types
+
+=== resolve attempts ===
+/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/@angular/core/fesm2022/core.mjs
+/Users/markus/Projects/IntelliJ/ethereum-event-scan/node_modules/@angular/material/fesm2022/material.mjs

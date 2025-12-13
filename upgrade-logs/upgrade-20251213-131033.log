@@ -1,0 +1,39 @@
+Starting upgrade at Sat Dec 13 13:10:33 CET 2025
+Checking environment
+v24.12.0
+11.6.2
+Running npm-check-updates (ncu) to update package.json versions
+Upgrading /Users/markus/Projects/IntelliJ/ethereum-event-scan/package.json
+
+
+All dependencies match the latest package versions :)
+Installing updated packages (npm install)
+
+added 10 packages, removed 12 packages, changed 5 packages, and audited 1063 packages in 3s
+
+201 packages are looking for funding
+  run `npm fund` for details
+
+3 vulnerabilities (2 low, 1 moderate)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+Patching /Users/markus/Projects/IntelliJ/ethereum-event-scan/tsconfig.json
+<anonymous_script>:1
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+^
+
+SyntaxError: Unexpected token '/', "/* To lear"... is not valid JSON
+    at JSON.parse (<anonymous>)
+    at [eval]:4:22
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+    at evalTypeScript (node:internal/process/execution:295:3)
+    at node:internal/main/eval_string:71:3
+
+Node.js v24.12.0

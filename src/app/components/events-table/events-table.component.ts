@@ -1,16 +1,40 @@
 import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
-import {ModalDialogComponent} from '../modal-dialog/modal-dialog.component';
 import {Reader} from '../../services/reader.service';
 import {EventData} from '../../models/event';
 import {UtilsService} from '../../services/utils.service';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
+import {MatSortModule} from '@angular/material/sort';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {EventsListResponsiveDirective} from './directives/events-list-responsive.directive';
+import {HighlightSearch} from './pipes/highlight-search.pipe';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-events-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatExpansionModule,
+    MatProgressBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    EventsListResponsiveDirective,
+    HighlightSearch
+  ],
   templateUrl: './events-table.component.html',
   styleUrls: ['./events-table.component.scss']
 })
@@ -19,7 +43,7 @@ export class EventsTableComponent implements OnInit {
   public formSearch: FormGroup;
 
   // @ts-ignore
-  listData: MatTableDataSource<EthEvent, MatTableDataSourcePaginator>;
+  listData!: MatTableDataSource<any>;
 
   displayedColumns: string[] = ['image', 'name', 'time', 'miner', 'block', 'trxHash', 'value'];
 
@@ -36,7 +60,10 @@ export class EventsTableComponent implements OnInit {
   constructor(private fb: FormBuilder,
               public eventReader: Reader,
               private route: ActivatedRoute,
-              public detailsDialog: ModalDialogComponent) {
+              private dialog: MatDialog) {
+
+    // ensure definite assignment for strict checks
+    this.formSearch = this.fb.group({searchKey: ['']});
 
     this.route.queryParams.subscribe(params => {
       if (params['searchKey']) {
@@ -48,10 +75,6 @@ export class EventsTableComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.formSearch = this.fb.group({
-      searchKey: [''],
-    });
 
     this.eventReader.setUpdateCallback(() => {
 
@@ -70,9 +93,11 @@ export class EventsTableComponent implements OnInit {
       // @ts-ignore
       this.listData.paginator = this.paginator;
       this.listData.filter = this.searchKey;
-      this.listData.filterPredicate = (data, filter) => {
-        return this.displayedColumns.some(ele => {
-          return data[ele].toLowerCase().indexOf(filter) !== -1;
+      this.listData.filterPredicate = (data: any, filter: string) => {
+        return this.displayedColumns.some((ele: string) => {
+          const v = data[ele];
+          if (v === undefined || v === null) return false;
+          return String(v).toLowerCase().indexOf(filter) !== -1;
         });
       };
     });
@@ -125,5 +150,18 @@ export class EventsTableComponent implements OnInit {
 
   showSpinner() {
     return this.eventReader.runningJobs > 0;
+  }
+
+  public openDetailsDialog(event: any, blockNumber: string, trxNumber: string) {
+    if (event) { event.preventDefault(); }
+
+    console.debug('EventsTable.openDetailsDialog called with', {blockNumber, trxNumber, reader: this.eventReader});
+
+    this.dialog.open((require('../modal-dialog/modal-dialog.component') as any).ModalDialogComponent, {
+      data: { blockNumber, trxNumber, reader: this.eventReader },
+      width: '50rem',
+      height: '50rem',
+      maxWidth: '100vw'
+    });
   }
 }

@@ -36,9 +36,12 @@ export class UtilsService {
   /**
    * Creates a human readable time format
    */
-  static convertTimestamp(time: number) {
-    const d = new Date(time * 1000);
+  static convertTimestamp(time: number | string | bigint) {
+    // Ensure we convert BigInt or string to a Number safely
+    const tNum = (typeof time === 'bigint') ? Number(time) : Number(time);
+    const d = new Date(tNum * 1000);
     const yy = d.getFullYear();
+
     const MM = ('0' + (d.getMonth() + 1)).slice(-2);
     const dd = ('0' + d.getDate()).slice(-2);
     const hh = ('0' + d.getHours()).slice(-2);
@@ -70,9 +73,21 @@ export class UtilsService {
   }
 
   static updateURLWithCompressedAbi(newValue: string) {
-    const zippedString = zlib.gzip(newValue, {to: 'string'});
-    const zippedStringBase64 = btoa(zippedString)
-    this.updateURLParameter('abi', zippedStringBase64);
+    // Create a Uint8Array from gzip output (pako.gzip returns Uint8Array by default)
+    const compressed: Uint8Array = (zlib as any).gzip(newValue);
+
+    // Convert Uint8Array to binary string in manageable chunks to avoid stack/arg limits
+    let binary = '';
+    const chunkSize = 0x8000; // 32KB
+    for (let i = 0; i < compressed.length; i += chunkSize) {
+      const slice = compressed.subarray(i, i + chunkSize);
+      binary += String.fromCharCode.apply(null, Array.from(slice));
+    }
+
+    const zippedStringBase64 = btoa(binary);
+    // make URL-safe base64 (replace +/ with -_ and remove padding) to avoid '+' being decoded as space in query params
+    const urlSafe = zippedStringBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    this.updateURLParameter('abi', urlSafe);
   }
 
   static updateURLParameter(key: string, newValue: string) {

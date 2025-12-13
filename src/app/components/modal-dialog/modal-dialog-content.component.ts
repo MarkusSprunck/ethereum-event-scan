@@ -1,13 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ChangeDetectorRef} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {UtilsService} from '../../services/utils.service';
 import {DialogData} from './modal-dialog.component';
+import {MatListModule} from '@angular/material/list';
 
 @Component({
   selector: 'app-inner-component',
+  standalone: true,
+  imports: [CommonModule, MatListModule],
   templateUrl: './modal-dialog-content.component.html',
   styleUrls: ['./modal-dialog-content.component.scss']
 })
 export class ModalDialogContentComponent implements OnInit {
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   @Input()
   inputData: DialogData | undefined;
@@ -28,22 +34,30 @@ export class ModalDialogContentComponent implements OnInit {
 
   ngOnInit() {
 
+    console.debug('ModalDialogContentComponent ngOnInit, inputData=', this.inputData);
+
     // @ts-ignore
-    if (this.inputData.trxNumber != null && this.inputData.trxNumber.length > 0) {
+    if (this.inputData && this.inputData.trxNumber != null && this.inputData.trxNumber.length > 0) {
 
       // @ts-ignore
       this.renderTransaction(this.inputData.trxNumber);
     } else {
 
       // @ts-ignore
-      this.renderBlock(this.inputData.blockNumber);
+      this.renderBlock(this.inputData ? this.inputData.blockNumber : '');
     }
   }
 
   public renderTransaction(trxNumber: string) {
+    console.debug('renderTransaction called with', trxNumber);
     this.currentTrxNumber = trxNumber;
     this.currentBlockNumber = '';
     this.transactions = [];
+
+    if (!this.inputData || !this.inputData.reader || !this.inputData.reader.entity || !this.inputData.reader.entity.web3) {
+      console.warn('No reader/web3 available for renderTransaction');
+      return;
+    }
 
     // @ts-ignore
     this.inputData.reader.entity.web3.eth.getTransaction(this.currentTrxNumber).then((trx: any) => {
@@ -52,26 +66,36 @@ export class ModalDialogContentComponent implements OnInit {
       this.inputData.reader.entity.web3.eth.getTransactionReceipt(this.currentTrxNumber).then((receipt: any) => {
         this.current = '' + trx.blockNumber;
         this.details = this.printTrx(trx, receipt);
-      });
-    });
+        this.cdr.detectChanges();
+      }).catch((err: any) => { console.error('getTransactionReceipt failed', err); });
+    }).catch((err: any) => { console.error('getTransaction failed', err); });
   }
 
   public renderBlock(blockNumber: string) {
+    console.debug('renderBlock called with', blockNumber);
     this.currentTrxNumber = '';
     this.currentBlockNumber = blockNumber;
     this.transactions = [];
 
+    if (!this.inputData || !this.inputData.reader || !this.inputData.reader.entity || !this.inputData.reader.entity.web3) {
+      console.warn('No reader/web3 available for renderBlock');
+      return;
+    }
+
+    // Use Promise-based API instead of callback (second parameter must be boolean in web3 v4)
     // @ts-ignore
-    this.inputData.reader.entity.web3.eth.getBlock(this.currentBlockNumber,
-      (error: Error, block: any) => {
-
+    this.inputData.reader.entity.web3.eth.getBlock(this.currentBlockNumber)
+      .then((block: any) => {
         // @ts-ignore
-        this.child = (this.inputData.reader.getCurrentBlockNumber() > +this.currentBlockNumber) ? '' + (+this.currentBlockNumber + 1) : 'n.a.';
+        this.child = (this.inputData && this.inputData.reader.getCurrentBlockNumber() > +this.currentBlockNumber) ? '' + (+this.currentBlockNumber + 1) : 'n.a.';
         this.current = (this.currentBlockNumber);
-
         this.parent = (+this.currentBlockNumber > 0) ? '' + (+this.currentBlockNumber - 1) : '0';
         this.details = this.printBlock(block);
         this.transactions = block.transactions;
+        this.cdr.detectChanges();
+      })
+      .catch((err: any) => {
+        console.error('Error fetching block:', err);
       });
   }
 
