@@ -1,5 +1,0 @@
-One or more browsers which are configured in the project's Browserslist configuration fall outside Angular's browser support for this version.
-Unsupported browsers:
-and_qq 14.9, and_uc 15.5, android 142, chrome 109, ios_saf 26.1, op_mob 80, opera 122, opera 121, samsung 29, samsung 28
-An unhandled exception occurred: The 'buildOptimizer' option cannot be used without 'aot'.
-See "/private/var/folders/21/bjywjj2j1k34ctd61czlz_gc0000gn/T/ng-lq39z6/angular-errors.log" for further details.

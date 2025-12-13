@@ -1,5 +1,0 @@
-
-# RUN: npx --yes -p @angular/cli@17 ng update @angular/material@17 @angular/cdk@17
-Error: Repository is not clean. Please commit or stash any changes before updating.
-[ERROR] command failed: npx --yes -p @angular/cli@17 ng update @angular/material@17 @angular/cdk@17
-Continuing despite error (continue-on-error=true)
