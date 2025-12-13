@@ -1,17 +1,6 @@
-module.exports = function (config) {
-    config.set({
-        basePath: '',
-        frameworks: ['jasmine', '@angular-devkit/build-angular'],
-        plugins: [
-            require('karma-jasmine'),
-            require('karma-chrome-launcher'),
-            require('@angular-devkit/build-angular/plugins/karma')
-        ],
-        client: {
-            clearContext: false
-        },
-        reporters: ['progress'],
-        singleRun: true,
-        browsers: ['ChromeHeadless']
-    });
-};
+// Karma removed. Tests now run with Jest.
+// This file is intentionally left minimal to avoid build errors from external tooling
+// that may still reference karma.conf.js. You can safely delete this file once
+// your CI and local workflows are fully migrated to Jest.
+module.exports = function() { console.warn('Karma removed. Use Jest for tests.'); };
+
