@@ -13,3 +13,51 @@ getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
+
+// --- Test harness improvements for cleaner CI output ---
+// Mock location.reload so tests that call it don't trigger jsdom navigation errors
+try {
+  // Ensure we can overwrite reload
+  if (typeof window !== 'undefined' && window && window.location) {
+    try { window.location.reload = () => {}; } catch (e) {
+      // fallback: redefine location property
+      const loc = window.location;
+      Object.defineProperty(window, 'location', { configurable: true, enumerable: true, writable: true, value: loc });
+      window.location.reload = () => {};
+    }
+  }
+} catch (e) {
+  // ignore if not possible
+}
+
+// Silence debug logs from library internals that are noisy during tests
+console.debug = (..._args: any[]) => { /* noop for CI */ };
+
+// Preserve originals
+const _origWarn = console.warn.bind(console);
+const _origError = console.error.bind(console);
+
+// Filter known, non-actionable messages so CI output stays clean
+console.warn = (...args: any[]) => {
+  try {
+    const str = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+    if (str.includes('Web3 provider not initialized') || str.includes('base64->bin failed') || str.includes('Web3 not available for getCachedTimestamp')) {
+      return;
+    }
+  } catch (e) {
+    // ignore
+  }
+  _origWarn(...args);
+};
+
+console.error = (...args: any[]) => {
+  try {
+    const str = args.map(a => (typeof a === 'string' ? a : (a && a.message) || JSON.stringify(a))).join(' ');
+    if (str.includes('Not implemented: navigation') || str.includes('Failed to decode base64 and not hex')) {
+      return;
+    }
+  } catch (e) {
+    // ignore
+  }
+  _origError(...args);
+};

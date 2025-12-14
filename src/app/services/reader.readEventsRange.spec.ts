@@ -2,10 +2,7 @@ import { Reader } from './reader.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProviderService } from './provider.service';
 import { EventData } from '../models/event';
-
-function makeRoute(params: any) {
-  return { queryParams: { subscribe: (fn: any) => fn(params) } } as any as ActivatedRoute;
-}
+import { makeRoute } from '../../test-helpers';
 
 describe('Reader.readEventsRange behavior', () => {
   it('splits large ranges via isBlockLimitExceeded', async () => {
@@ -23,7 +20,7 @@ describe('Reader.readEventsRange behavior', () => {
     (r as any).readEventsRange(0, 200001, r as any);
 
     // wait for microtasks so promises resolve
-    await new Promise((res) => setImmediate(res));
+    await new Promise((res) => setTimeout(res, 0));
 
     // initial call + at least two recursive calls expected
     expect(spy).toHaveBeenCalled();
@@ -46,7 +43,7 @@ describe('Reader.readEventsRange behavior', () => {
     // call with small range so no pre-split
     (r as any).readEventsRange(1, 2, r as any);
     // wait for async promise microtasks
-    await new Promise((res) => setImmediate(res));
+    await new Promise((res) => setTimeout(res, 0));
 
     expect(r.runningJobs).toBe(0);
     expect(consoleErrorSpy).toHaveBeenCalled();

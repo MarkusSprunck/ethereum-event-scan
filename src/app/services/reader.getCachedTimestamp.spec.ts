@@ -1,13 +1,10 @@
 import { Reader } from './reader.service';
 import { ActivatedRoute } from '@angular/router';
+import { makeRoute } from '../../test-helpers';
 const Utils = require('./utils.service').UtilsService;
 
-function makeRoute(params: any) {
-  return { queryParams: { subscribe: (fn: any) => fn(params) } } as any as ActivatedRoute;
-}
-
 // helper to wait a microtask
-const tick = () => new Promise((res) => Promise.resolve().then(res));
+const tick = () => new Promise((res) => setTimeout(res, 0));
 
 describe('Reader.getCachedTimestamp with web3', () => {
   it('loads block via web3 and updates timestampCache and minerCache', async () => {

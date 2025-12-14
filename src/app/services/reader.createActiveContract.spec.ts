@@ -1,23 +1,16 @@
 import { Reader } from './reader.service';
-import { ActivatedRoute } from '@angular/router';
 import { ProviderService } from './provider.service';
-
-function makeRoute(params: any) {
-  return { queryParams: { subscribe: (fn: any) => fn(params) } } as any as ActivatedRoute;
-}
+import { makeRoute, mockAtobWithGzipHeader, restoreAtob } from '../../test-helpers';
 
 describe('Reader.createActiveContract decoding branches', () => {
   let origAtob: any;
-  let pako: any;
 
   beforeEach(() => {
     origAtob = (global as any).atob;
-    // ensure fresh pako module to mock
-    pako = require('pako');
   });
 
   afterEach(() => {
-    (global as any).atob = origAtob;
+    restoreAtob(origAtob);
     jest.resetModules();
     jest.clearAllMocks();
   });
@@ -26,10 +19,8 @@ describe('Reader.createActiveContract decoding branches', () => {
     const entity = new ProviderService();
     const r = new Reader(makeRoute({}), entity as any);
 
-    // mock atob to return binary string with gzip header 0x1f 0x8b
-    const bin = String.fromCharCode(0x1f, 0x8b, 0x00, 0x00);
-    (global as any).atob = jest.fn().mockReturnValue(bin);
-
+    // mock atob to simulate a gzip header in decoded base64
+    mockAtobWithGzipHeader();
     // mock pako.ungzip to return JSON string
     const p = require('pako');
     jest.spyOn(p, 'ungzip').mockReturnValue('[{"type":"event"}]');
@@ -51,10 +42,8 @@ describe('Reader.createActiveContract decoding branches', () => {
     const entity = new ProviderService();
     const r = new Reader(makeRoute({}), entity as any);
 
-    // atob returns binary starting with 0x78 0x01
-    const bin = String.fromCharCode(0x78, 0x01, 0x00);
-    (global as any).atob = jest.fn().mockReturnValue(bin);
-
+    // atob returns binary starting with 0x78 0x01 (zlib)
+    (global as any).atob = jest.fn().mockReturnValue(String.fromCharCode(0x78, 0x01, 0x00));
     const p = require('pako');
     jest.spyOn(p, 'inflate').mockReturnValue('[{"type":"event"}]');
 
@@ -89,10 +78,10 @@ describe('Reader.createActiveContract decoding branches', () => {
     const entity = new ProviderService();
     const r = new Reader(makeRoute({}), entity as any);
 
+    // force atob to throw to simulate bad base64
     (global as any).atob = jest.fn().mockImplementation(() => { throw new Error('bad'); });
     r.abiBase64Data = 'not-decodable';
     r.createActiveContract();
     expect(r.abi === '' || r.abi === undefined).toBeTruthy();
   });
 });
-

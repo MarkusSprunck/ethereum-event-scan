@@ -2,14 +2,11 @@ import { Reader } from './reader.service';
 import { ActivatedRoute } from '@angular/router';
 import { ProviderService } from './provider.service';
 import { EventData } from '../models/event';
+import { makeRoute } from '../../test-helpers';
 
 // Mock pako and blockies to avoid side effects
 jest.mock('pako', () => ({ ungzip: (a: any) => a, inflate: (a: any) => a, inflateRaw: (a: any) => a }));
 jest.mock('blockies', () => (opts: any) => ({ toDataURL: () => 'data:' + opts.seed }));
-
-function makeRoute(params: any) {
-  return { queryParams: { subscribe: (fn: any) => fn(params) } } as any as ActivatedRoute;
-}
 
 describe('Reader service (unit)', () => {
   it('createActiveContract handles empty abiBase64Data gracefully', () => {
@@ -52,11 +49,10 @@ describe('Reader service (unit)', () => {
     // call readEventsRange via public method getPastEvents flow
     r.readEventsRange(1, 1, r as any);
     // wait for promise microtasks
-    await new Promise((res) => setImmediate(res));
+    await new Promise((res) => setTimeout(res, 0));
     expect(r.callbackUpdateUI).toHaveBeenCalled();
     // EventData should have been set
     expect(EventData.size).toBeGreaterThanOrEqual(1);
     EventData.clear();
   });
 });
-

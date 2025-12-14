@@ -459,7 +459,7 @@ export class Reader {
     return (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX);
   }
 
-  private readEventsRange(start: number, end: number, that: this) {
+  readEventsRange(start: number, end: number, that: this) {
 
     if (that.isBlockLimitExceeded(start, end)) {
       const middle = Math.round((start + end) / 2);
