@@ -1,14 +1,24 @@
 import { ModalDialogContentComponent } from './modal-dialog-content.component';
 import { ChangeDetectorRef } from '@angular/core';
+import { UtilsService } from '../../services/utils.service';
 
-class CdrStub { detectChanges() {} }
+// simplified ChangeDetectorRef stub using jest.fn for easier assertions if needed
+const cdrStub: Partial<ChangeDetectorRef> = { detectChanges: jest.fn() };
+
+// helper to wait for pending promises / microtasks
+function flushPromises(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
 
 describe('ModalDialogContentComponent full flows', () => {
   let comp: ModalDialogContentComponent;
   let cdr: ChangeDetectorRef;
 
   beforeEach(() => {
-    cdr = new CdrStub() as any as ChangeDetectorRef;
+    // stub external UtilsService function used by component
+    (UtilsService as any).patchMinerAccountClique = jest.fn();
+
+    cdr = cdrStub as ChangeDetectorRef;
     comp = new ModalDialogContentComponent(cdr);
   });
 
@@ -22,7 +32,7 @@ describe('ModalDialogContentComponent full flows', () => {
       extraData: 'ed',
       size: 100,
       gasUsed: 200,
-      transactions: ['tx1','tx2']
+      transactions: ['tx1', 'tx2']
     };
 
     const fakeReader = {
@@ -33,8 +43,8 @@ describe('ModalDialogContentComponent full flows', () => {
     comp.inputData = { blockNumber: '5', trxNumber: '', reader: fakeReader } as any;
 
     comp.ngOnInit();
-    // wait async
-    await new Promise(r => setTimeout(r, 0));
+    // wait for async microtasks to complete
+    await flushPromises();
 
     expect(comp.currentBlockNumber).toBe('5');
     expect(comp.transactions).toEqual(fakeBlock.transactions);
@@ -69,11 +79,10 @@ describe('ModalDialogContentComponent full flows', () => {
 
     comp.inputData = { blockNumber: '', trxNumber: '0x1', reader: fakeReader } as any;
     comp.ngOnInit();
-    await new Promise(r => setTimeout(r, 0));
+    await flushPromises();
 
     expect(comp.currentTrxNumber).toBe('0x1');
     expect(comp.details).toContain('Index');
     expect(comp.current).toBe(String(fakeTrx.blockNumber));
   });
 });
-
