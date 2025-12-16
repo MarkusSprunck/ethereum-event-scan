@@ -1,7 +1,7 @@
 {
   "name": "ethereum-event-scan",
   "private": true,
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Lightweight ethereum event explorer for smart contracts",
   "main": "src/server.js",
   "repository": {
