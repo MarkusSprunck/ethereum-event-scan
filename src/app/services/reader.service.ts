@@ -217,11 +217,11 @@ export class Reader {
           const b0 = arr[0] || 0;
           const b1 = arr[1] || 0;
           const headerHex = (b0.toString(16).padStart(2,'0') + ' ' + b1.toString(16).padStart(2,'0'));
-          console.debug('ABI decoded header bytes:', headerHex, 'len=', arr.length);
+
           // gzip header 0x1f 0x8b
           if (b0 === 0x1f && b1 === 0x8b) {
             try {
-              this.abi = pako.ungzip(arr, { to: 'string' });
+              this.abi = JSON.stringify(JSON.parse(pako.ungzip(arr, { to: 'string' })));
             } catch (e) {
               // log sample bytes and decodedData preview for debugging
               const sampleHex = Array.from(arr.slice(0,16)).map(x=>x.toString(16).padStart(2,'0')).join(' ');
@@ -527,7 +527,7 @@ export class Reader {
       // Finish job
       this.runningJobs -= 1;
 
-      console.error( 'Error in allEvents: ' + errors.message)
+      console.warn( 'Error in allEvents: ' + errors)
       if (errors.message === 'Returned error: query returned more than 10000 results'
           && (end > start)
           && ((end - start) > LIMIT_BLOCK_MIN)

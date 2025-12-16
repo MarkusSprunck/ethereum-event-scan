@@ -11,14 +11,14 @@
 
       <mat-form-field>
         <label for="startBlock"></label>
-        <input (ngModelChange)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock"
+        <input (input)="updateStartValue()" (keyup.enter)="reloadPage()" [value]="startBlock"
                formControlName="startBlock"
                id="startBlock" matInput placeholder="Enter start block number" type="text" autocomplete="off">
       </mat-form-field>
 
       <mat-form-field>
         <label for="endBlock"></label>
-        <input (ngModelChange)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock"
+        <input (input)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock"
                formControlName="endBlock"
                id="endBlock"
                matInput
@@ -28,7 +28,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <label for="provider"></label><input (ngModelChange)="updateProviderValue()" (keyup.enter)="reloadPage()"
+        <label for="provider"></label><input (input)="updateProviderValue()" (keyup.enter)="reloadPage()"
                                              [value]="provider" formControlName="provider" id="provider"
                                              matInput
                                              placeholder="Enter web3 provider URL"
@@ -38,7 +38,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <label for="contract"></label><input (ngModelChange)="updateContractValue()" (keyup.enter)="reloadPage()"
+        <label for="contract"></label><input (input)="updateContractValue()" (keyup.enter)="reloadPage()"
                                              [value]="contract" formControlName="contract" id="contract"
                                              matInput
                                              placeholder="Enter contract address"

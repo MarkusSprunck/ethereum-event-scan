@@ -5,9 +5,8 @@ import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
 import {Reader} from '../../services/reader.service';
 import {EventData} from '../../models/event';
-import {UtilsService} from '../../services/utils.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -60,7 +59,8 @@ export class EventsTableComponent implements OnInit {
   constructor(private fb: FormBuilder,
               public eventReader: Reader,
               private route: ActivatedRoute,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private router: Router) {
 
     // ensure definite assignment for strict checks
     this.formSearch = this.fb.group({searchKey: ['']});
@@ -108,7 +108,7 @@ export class EventsTableComponent implements OnInit {
 
     const val = this.formSearch.get('searchKey');
     if (val) {
-      UtilsService.updateURLParameter('searchKey', val.value);
+      this.router.navigate([], { relativeTo: this.route, queryParams: { searchKey: val.value }, queryParamsHandling: 'merge' });
       this.searchKey = val.value;
       this.applyFilter();
     }

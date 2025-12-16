@@ -15,9 +15,6 @@ describe('ModalDialogContentComponent full flows', () => {
   let cdr: ChangeDetectorRef;
 
   beforeEach(() => {
-    // stub external UtilsService function used by component
-    (UtilsService as any).patchMinerAccountClique = jest.fn();
-
     cdr = cdrStub as ChangeDetectorRef;
     comp = new ModalDialogContentComponent(cdr);
   });

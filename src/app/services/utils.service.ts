@@ -72,27 +72,58 @@ export class UtilsService {
   }
 
   static updateURLWithCompressedAbi(newValue: string) {
-    // Create a Uint8Array from gzip output (pako.gzip returns Uint8Array by default)
-    const compressed: Uint8Array = (zlib as any).gzip(newValue);
+    const urlSafe = this.compressAbiToUrlSafe(newValue);
+    this.updateURLParameter('abi', urlSafe, true);
+  }
 
-    // Convert Uint8Array to binary string in manageable chunks to avoid stack/arg limits
+  static updateURLParameter(key: string, newValue: string, appendToEnd = false) {
+    try {
+      const href = new URL(window.location.href);
+      if (appendToEnd && href.searchParams.has(key)) {
+        href.searchParams.delete(key);
+      }
+      href.searchParams.set(key, newValue);
+      const params = Array.from(href.searchParams.entries());
+
+      const order = ['start', 'end', 'provider', 'contract', 'refresh', 'searchKey', 'abi'];
+      const orderedParams = params.sort((a, b) => {
+        const indexA = order.indexOf(a[0]);
+        const indexB = order.indexOf(b[0]);
+        return (indexA === -1 ? Infinity : indexA) - (indexB === -1 ? Infinity : indexB);
+      });
+      console.info('orderedParams', orderedParams);
+
+      href.search = new URLSearchParams(orderedParams).toString();
+      const newUrl = href.pathname + href.search + href.hash;
+      console.info('newUrl', newUrl);
+      window.history.replaceState({}, '', newUrl);
+
+    } catch (e) {
+        console.warn('error', e);
+    }
+  }
+
+  /**
+   * Compress and create a URL-safe string for ABI; returns the string but does not mutate the URL.
+   */
+  static compressAbiToUrlSafe(newValue: string): string {
+    const compressed = zlib.gzip(newValue) as Uint8Array;
     let binary = '';
-    const chunkSize = 0x8000; // 32KB
+    const chunkSize = 0x8000;
     for (let i = 0; i < compressed.length; i += chunkSize) {
       const slice = compressed.subarray(i, i + chunkSize);
       binary += String.fromCharCode.apply(null, Array.from(slice));
     }
-
     const zippedStringBase64 = btoa(binary);
-    // make URL-safe base64 (replace +/ with -_ and remove padding) to avoid '+' being decoded as space in query params
-    const urlSafe = zippedStringBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-    this.updateURLParameter('abi', urlSafe);
+    return zippedStringBase64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 
-  static updateURLParameter(key: string, newValue: string) {
-    const href = new URL(window.location.href);
-    href.searchParams.set(key, newValue);
-    window.history.pushState('', '', href.search);
+  /** Reload the page after a short delay so history.replaceState has applied. */
+  static reloadAfterUpdate(ms: number = 50) {
+    try {
+      if (typeof window === 'undefined' || !window || !window.location) { return; }
+      setTimeout(() => { try { window.location.reload(); } catch (e) { /* swallow errors in tests */ } }, ms);
+    } catch (e) { /* ignore */ }
   }
 
   static fetchABIFromVerifiedContract(contract: string, callback: any) {

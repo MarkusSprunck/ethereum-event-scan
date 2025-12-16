@@ -37,6 +37,7 @@ import {TextFieldModule} from '@angular/cdk/text-field';
 import {Reader} from '../../services/reader.service';
 import stringify from 'json-stringify-pretty-compact';
 import { JsonFormatterDirective } from './directives/json-formatter.directive';
+import {Router, ActivatedRoute} from '@angular/router';
 
 interface AbiEntry {
    anonymous?: boolean;
@@ -49,8 +50,8 @@ export class AbiErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: AbstractControl | null): boolean {
     if (!control) return false;
     const isInvalid = control.invalid;
-    const isTouchedOrDirty = !!(control.touched || control.dirty);
-    const isPending = !!control.pending;
+    const isTouchedOrDirty = (control.touched || control.dirty);
+    const isPending = control.pending;
     return isInvalid && isTouchedOrDirty && !isPending;
   }
 }
@@ -65,7 +66,6 @@ export class AbiErrorStateMatcher implements ErrorStateMatcher {
 export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public form: FormGroup;
-  public abiErrorStateMatcher = new AbiErrorStateMatcher();
   private _lastSeenReaderAbi = '';
 
   @Input() public lastBlock = 0;
@@ -82,7 +82,9 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
 
   constructor(private fb: FormBuilder,
               private reader: Reader,
-              private cdr: ChangeDetectorRef) {
+              private cdr: ChangeDetectorRef,
+              private router: Router,
+              private route: ActivatedRoute) {
     this.form = this.fb.group({
       provider: [this.provider || '', [Validators.required], this.isProviderConnected.bind(this)],
       contract: [this.contract || '', [Validators.required], this.isContractOk.bind(this)],
@@ -90,7 +92,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
       startBlock: [this.startBlock || '0', [Validators.required], this.isStartBlockOk.bind(this)],
       lastBlock: [this.lastBlock || ''],
       endBlock: [this.endBlock || 'latest', [Validators.required], this.isEndBlockOk.bind(this)]
-    }, { updateOn: 'blur' });
+    });
   }
 
   panelMessage() {
@@ -172,85 +174,110 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
-  updateStartValue() {
-    const val = this.form.get('startBlock');
-    if (val) {
-      const result: string = (val.value.length === 0) ? '0' : val.value;
-      UtilsService.updateURLParameter('start', result);
-      this.startBlock = result;
+  updateStartValue(value?: string) {
+    // Prefer explicit value (from input event). Fallback to form control value.
+    const result: string = (typeof value === 'string') ? ((value.length === 0) ? '0' : value) : ((this.form.get('startBlock')?.value || '0'));
+    if (this.router && this.route) {
+      this.router.navigate([], { relativeTo: this.route, queryParams: { start: result }, queryParamsHandling: 'merge' });
     }
+
+    UtilsService.updateURLParameter('start', result);
+    this.startBlock = result;
   }
 
   updateProviderValue() {
     const val = this.form.get('provider');
-    if (val) {
-      UtilsService.updateURLParameter('provider', val.value);
-      this.provider = val.value.trim();
-
-      this.form.controls['provider'].clearValidators();
-      this.loadContractData();
+    const v = (val && val.value) ? val.value : this.provider;
+    if (this.router && this.route) {
+      this.router.navigate([], { relativeTo: this.route, queryParams: { provider: v }, queryParamsHandling: 'merge' });
     }
+
+    UtilsService.updateURLParameter('provider', v);
+    this.provider = (typeof v === 'string') ? v.trim() : v;
+
+    this.form.controls['provider'].clearValidators();
+    this.loadContractData();
   }
 
   updateEndValue() {
     const val = this.form.get('endBlock');
-    if (val) {
-      UtilsService.updateURLParameter('end', val.value);
-      this.endBlock = val.value;
-      this.loadContractData();
+    const v = (val && val.value) ? val.value : this.endBlock;
+    if (this.router && this.route) {
+      this.router.navigate([], { relativeTo: this.route, queryParams: { end: v }, queryParamsHandling: 'merge' });
     }
+
+    UtilsService.updateURLParameter('end', v);
+    this.endBlock = v;
+    this.loadContractData();
   }
 
   updateContractValue() {
     const val = this.form.get('contract');
-    if (val) {
-      if (this.provider.length > 0 && val.value.trim() > 0 && this.abi.length === 0) {
-        UtilsService.fetchABIFromVerifiedContract(val.value.trim(), (value: string) => {
+    const candidate = (val && val.value) ? val.value : this.contract;
+    if (candidate) {
+      if (this.provider.length > 0 && candidate.trim().length > 0 && this.abi.length === 0) {
+        UtilsService.fetchABIFromVerifiedContract(candidate.trim(), (value: string) => {
+            if (this.router && this.route) {
+              const urlSafe = UtilsService.compressAbiToUrlSafe(value);
+              this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+            } else {
+              UtilsService.updateURLWithCompressedAbi(value);
+            }
             this.form.controls['abi'].setValue(value);
-            this.updateContract(val.value);
+            this.updateContract(candidate);
           }
         );
       } else {
-        this.updateContract(val.value);
+        this.updateContract(candidate);
       }
     }
   }
 
   updateABIValue(value?: string) {
-    const controlValue = (typeof value === 'string') ? value : (this.form.get('abi') ? this.form.get('abi')!.value : '');
-    if (controlValue !== undefined) {
-      if (this.provider.length > 0 && this.contract.trim().length > 0 && controlValue.trim().length === 0) {
+     const controlValue = (typeof value === 'string') ? value : (this.form.get('abi') ? this.form.get('abi')!.value : '');
+     if (controlValue !== undefined) {
+       if (this.provider.length > 0 && this.contract.trim().length > 0 && controlValue.trim().length === 0) {
 
-        UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (val: string) => {
-            UtilsService.updateURLWithCompressedAbi(val);
-            this.form.controls['abi'].setValue(val);
-            this.abi = val;
-            // clear errors since we just set a valid abi
-            this.form.controls['abi'].setErrors(null);
-            setInterval(this.reloadPage, 500);
-          }
-        );
-      } else {
-        try {
-          const objAbi: AbiEntry[]  = JSON.parse(controlValue);
-          const filteredData: AbiEntry[] = (objAbi.filter((abiEntry) => abiEntry.type === 'event'));
-          filteredData.forEach(function (v) {
-             delete v['anonymous'];
-          });
-          this.abi = stringify(filteredData);
+         UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (val: string) => {
+             // compress ABI and set as query param; use router if available, otherwise UtilsService helper
+             const urlSafe = UtilsService.compressAbiToUrlSafe(val);
+             if (this.router && this.route) {
+               this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+             } else {
+               UtilsService.updateURLWithCompressedAbi(val);
+             }
+             this.form.controls['abi'].setValue(val);
+             this.abi = val;
+             // clear errors since we just set a valid abi
+             this.form.controls['abi'].setErrors(null);
+           }
+         );
+       } else {
+         try {
+           const objAbi: AbiEntry[]  = JSON.parse(controlValue);
+           const filteredData: AbiEntry[] = (objAbi.filter((abiEntry) => abiEntry.type === 'event'));
+           filteredData.forEach(function (v) {
+              delete v['anonymous'];
+           });
+           this.abi = stringify(filteredData);
 
-          UtilsService.updateURLWithCompressedAbi(this.abi);
-          this.loadContractData();
-          // clear errors on successful parse
-          this.form.controls['abi'].setErrors(null);
-          setInterval(this.reloadPage, 1000);
-        } catch (e) {
-          // invalid JSON — mark control as invalid manually
-          this.form.controls['abi'].setErrors({json: true});
-        }
-      }
-    }
-  }
+           // compress ABI and set as query param
+           const urlSafe = UtilsService.compressAbiToUrlSafe(this.abi);
+           if (this.router && this.route) {
+             this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+           } else {
+             UtilsService.updateURLWithCompressedAbi(this.abi);
+           }
+             this.loadContractData();
+           // clear errors on successful parse
+           this.form.controls['abi'].setErrors(null);
+         } catch (e) {
+           // invalid JSON — mark control as invalid manually
+           this.form.controls['abi'].setErrors({json: true});
+         }
+       }
+     }
+   }
 
   onBlurAbi() {
     this.noOfRowsAbi = 1;
@@ -261,7 +288,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   reloadPage() {
-    location.reload();
+    // Centralized reload helper (keeps tests safe)
+    UtilsService.reloadAfterUpdate();
   }
 
   ngOnInit(): void {
@@ -270,7 +298,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
       this.form.patchValue({
         provider: this.provider || '',
         contract: this.contract || '',
-        abi: this.abi || '',
+        abi: this.compactAbi(this.abi || ''),
         startBlock: this.startBlock || '0',
         endBlock: this.endBlock || 'latest'
       });
@@ -291,6 +319,15 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
 
     } catch (e) {
       console.warn('Failed to patch settings form initial values', e);
+    }
+  }
+
+  private compactAbi(abi: string): string {
+    try {
+      const parsedAbi = JSON.parse(abi);
+      return stringify(parsedAbi);
+    } catch (e) {
+      return abi; // Return original ABI if parsing fails
     }
   }
 
@@ -385,7 +422,12 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private updateContract(val: string) {
-    UtilsService.updateURLParameter('contract', val.trim());
+    // update query param using router (no reload) if available, otherwise use UtilsService
+    if (this.router && this.route) {
+      this.router.navigate([], { relativeTo: this.route, queryParams: { contract: val.trim() }, queryParamsHandling: 'merge' });
+    } else {
+      UtilsService.updateURLParameter('contract', val.trim());
+    }
     this.contract = val.trim();
     this.clearTable();
 
