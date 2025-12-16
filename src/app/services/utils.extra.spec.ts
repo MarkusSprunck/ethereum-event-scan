@@ -67,7 +67,7 @@ describe('UtilsService - additional tests', () => {
         public status = 0;
         public responseText = '';
         public onreadystatechange: any = null;
-        open(method: any, url: any, async: any) { /* noop */ }
+        open(_method: any, _url: any, _async: any) { /* noop */ }
         send() {
           this.readyState = 4;
           this.status = 200;
@@ -91,4 +91,3 @@ describe('UtilsService - additional tests', () => {
     });
   });
 });
-

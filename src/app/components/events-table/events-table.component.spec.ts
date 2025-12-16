@@ -1,7 +1,7 @@
 import { EventsTableComponent } from './events-table.component';
 import { FormBuilder } from '@angular/forms';
 import { of } from 'rxjs';
-import { EventData, EthEvent } from '../../models/event';
+import { EventData } from '../../models/event';
 
 class ReaderStub {
   public runningJobs = 0;
@@ -12,6 +12,7 @@ class ReaderStub {
 
 const routeStub = { queryParams: of({}) } as any;
 const dialogStub = { open: jest.fn() } as any;
+const routerStub = { navigate: jest.fn() } as any;
 
 describe('EventsTableComponent (basic)', () => {
   let comp: EventsTableComponent;
@@ -19,7 +20,7 @@ describe('EventsTableComponent (basic)', () => {
 
   beforeEach(() => {
     reader = new ReaderStub();
-    comp = new EventsTableComponent(new FormBuilder(), reader as any, routeStub, dialogStub as any);
+    comp = new EventsTableComponent(new FormBuilder(), reader as any, routeStub, dialogStub as any, routerStub as any);
   });
 
   it('panelMessage returns No Events initially', () => {
@@ -47,4 +48,3 @@ describe('EventsTableComponent (basic)', () => {
     expect(dialogStub.open).toHaveBeenCalled();
   });
 });
-

@@ -117,7 +117,7 @@ export class ModalDialogContentComponent implements OnInit {
     let input = '\n' + trx.input;
     const width = 3;
     for (let x = 1; (width * x) <= input.length; x++) {
-      input = input.slice(0, width * x) + ' ' + input.slice(width * x);
+      input = input.slice(0, width * x) + ' ' + input.slice(width * x) ;
     }
     const contractAddress = (receipt.contractAddress === null) ? 'n.a.' : receipt.contractAddress;
     return ''

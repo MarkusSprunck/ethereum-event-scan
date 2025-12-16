@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import {CommonModule, DecimalPipe} from '@angular/common';
+import {DecimalPipe} from '@angular/common';
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -47,7 +47,7 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatSelectModule} from '@angular/material/select';
 import {MatNativeDateModule, MatOptionModule} from '@angular/material/core';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {EventsTableComponent} from './components/events-table/events-table.component';
 import {HighlightSearch} from './components/events-table/pipes/highlight-search.pipe';
 import {ModalDialogComponent} from './components/modal-dialog/modal-dialog.component';

@@ -128,7 +128,7 @@ export class Reader {
     this.startBlock = startBlock;
   }
 
-  setStartBlocktInitial(startBlock: string) {
+  setStartBlockInitial(startBlock: string) {
     this.startInitial = startBlock;
   }
 
@@ -203,7 +203,7 @@ export class Reader {
         base64 = base64.replace(/\s/g, '+');
         base64 = normalizeBase64(base64);
 
-        // Try decode base64 to Uint8Array directly
+        // Try to decode base64 to Uint8Array directly
         let arr: Uint8Array | null = null;
         try {
           arr = base64ToUint8(base64);
@@ -216,7 +216,7 @@ export class Reader {
           // quick header inspect
           const b0 = arr[0] || 0;
           const b1 = arr[1] || 0;
-          const headerHex = (b0.toString(16).padStart(2,'0') + ' ' + b1.toString(16).padStart(2,'0'));
+          // header bytes inspected for branching; no need to keep a separate variable
 
           // gzip header 0x1f 0x8b
           if (b0 === 0x1f && b1 === 0x8b) {
@@ -226,7 +226,7 @@ export class Reader {
               // log sample bytes and decodedData preview for debugging
               const sampleHex = Array.from(arr.slice(0,16)).map(x=>x.toString(16).padStart(2,'0')).join(' ');
               console.error('pako.ungzip failed on Uint8Array. sampleBytes=', sampleHex, 'error=', e);
-              // try inflate variants
+              // try to inflate variants
               try { this.abi = pako.inflate(arr, { to: 'string' }); } catch(e2) { console.error('inflate failed', e2); }
               try { this.abi = pako.inflateRaw(arr, { to: 'string' }); } catch(e3) { console.error('inflateRaw failed', e3); }
             }
@@ -507,6 +507,7 @@ export class Reader {
             }
 
             const eventId = blockNumber + '_' + eventsList[event].id
+            const img = this.imageCache.has(eventName) ? (this.imageCache.get(eventName) as string) : '';
             EventData.set(
               eventId,
               new EthEvent(
@@ -515,7 +516,7 @@ export class Reader {
                 '' + trxHash,
                 '' + UtilsService.break(trxHash, 33), '',
                 '' + values, '', '',
-                '' + this.imageCache.get(eventName)
+                img
                 )
             );
           }

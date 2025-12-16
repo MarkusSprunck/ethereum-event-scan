@@ -337,7 +337,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
       try {
         const providerControl = this.form.controls['provider'];
         if (providerControl) {
-          const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((v: any) => {
+          const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
             try {
               // updateProviderValue reads from the form; simply call it to preserve behavior
               this.updateProviderValue();

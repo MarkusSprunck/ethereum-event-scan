@@ -34,15 +34,15 @@ export class JsonFormatterDirective {
     }, 0);
   }
 
-  @HostListener('focus', ['$event'])
-  onFocus(event: Event) {
+  @HostListener('focus')
+  onFocus() {
     const current = this.getValue();
     const pretty = this.out(current);
     this.setValue(pretty);
   }
 
-  @HostListener('blur', ['$event'])
-  onBlur(event: Event) {
+  @HostListener('blur')
+  onBlur() {
     const current = this.getValue();
     const compact = this.into(current);
     this.setValue(compact);

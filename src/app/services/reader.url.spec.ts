@@ -1,5 +1,4 @@
 import { Reader } from './reader.service';
-import { ActivatedRoute } from '@angular/router';
 import { makeRoute, mockAtobWithGzipHeader, restoreAtob, normalizeUrlSafeBase64ToBuffer } from '../../test-helpers';
 
 describe('Reader URL ABI decoding (integration-style)', () => {

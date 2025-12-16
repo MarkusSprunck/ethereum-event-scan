@@ -4,17 +4,10 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
   testMatch: ['<rootDir>/src/**/*.spec.ts'],
   testEnvironment: 'jest-environment-jsdom',
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.spec.json',
-      diagnostics: false,
-      stringifyContentPathRegex: '\\.html$'
-    }
-  },
   transform: {
     '^.+\\.mjs$': 'babel-jest',
     '^.+\\.js$': 'babel-jest',
-    '^.+\\.ts$': 'ts-jest'
+    '^.+\\.ts$': ['ts-jest', { tsconfig: 'tsconfig.spec.json', diagnostics: false, stringifyContentPathRegex: '\\.html$' }]
   },
   // transform node_modules for Angular, zone.js, rxjs and json-stringify-pretty-compact packages
   transformIgnorePatterns: ['/node_modules/(?!(@angular|zone.js|rxjs|json-stringify-pretty-compact)/)'],

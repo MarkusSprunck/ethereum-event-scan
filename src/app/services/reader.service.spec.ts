@@ -1,5 +1,4 @@
 import { Reader } from './reader.service';
-import { ActivatedRoute } from '@angular/router';
 import { ProviderService } from './provider.service';
 import { EventData } from '../models/event';
 import { makeRoute } from '../../test-helpers';
@@ -40,7 +39,7 @@ describe('Reader service (unit)', () => {
     const entity = new ProviderService();
     const r = new Reader(makeRoute({}), entity as any);
     // setup contractInstance with getPastEvents returning a list with one event
-    r['contractInstance'] = { getPastEvents: (name: any, opts: any) => Promise.resolve([
+    r['contractInstance'] = { getPastEvents: (_name: any, _opts: any) => Promise.resolve([
       { returnValues: { a: '1' }, transactionHash: '0x1', event: 'E', blockNumber: 1, id: 1 }
     ]) } as any;
     r.callbackUpdateUI = jest.fn();

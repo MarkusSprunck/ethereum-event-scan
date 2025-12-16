@@ -33,7 +33,7 @@ import * as zlib from 'pako';
 export class UtilsService {
 
   /**
-   * Creates a human readable time format
+   * Creates a human-readable time format
    */
   static convertTimestamp(time: number | string | bigint) {
     // Ensure we convert BigInt or string to a Number safely
@@ -99,7 +99,7 @@ export class UtilsService {
       }
 
       // collect remaining params (excluding abi) in their existing order
-      for (const [k, v] of params) {
+      for (const [k, _v] of params) {
         if (k === 'abi') { continue; }
         if (!primaryOrder.includes(k)) {
           // only add if still present in map (not already added)
@@ -115,11 +115,12 @@ export class UtilsService {
         orderedParams.push(['abi', href.searchParams.get('abi') || '']);
       }
 
-      console.info('orderedParams', orderedParams);
+      // Reduced logging level for CI: use debug instead of info
+      console.debug('orderedParams', orderedParams);
 
       href.search = new URLSearchParams(orderedParams).toString();
       const newUrl = href.pathname + href.search + href.hash;
-      console.info('newUrl', newUrl);
+      console.debug('newUrl', newUrl);
       // Use pushState so tests that spy on history.pushState are triggered
       // and to keep consistent browser history semantics when parameters change.
       window.history.pushState({}, '', newUrl);
@@ -187,7 +188,7 @@ export class UtilsService {
   }
 
   /**
-   *  Replaces all spaces with non breaking spaces in html
+   *  Replaces all spaces with non-breaking spaces in html
    */
   static spaces(value: string) {
     return value.replace(/\s/g, '&nbsp;');

@@ -41,9 +41,9 @@ export class ModalDialogComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = false;
     dialogConfig.autoFocus = true;
-    dialogConfig.maxWidth = '100vw';
+    dialogConfig.maxWidth = '90vw';
     dialogConfig.width = '50rem';
-    dialogConfig.height = '50rem';
+    dialogConfig.height = '45rem';
     dialogConfig.minHeight = '20rem';
     dialogConfig.minWidth = ' 10rem';
     dialogConfig.data = {

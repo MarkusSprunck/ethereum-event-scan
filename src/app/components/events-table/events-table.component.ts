@@ -1,5 +1,5 @@
 import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
@@ -21,19 +21,19 @@ import {MatDialog} from '@angular/material/dialog';
 @Component({
   selector: 'app-events-list',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatExpansionModule,
-    MatProgressBarModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    EventsListResponsiveDirective,
-    HighlightSearch
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MatExpansionModule,
+        MatProgressBarModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatTableModule,
+        MatSortModule,
+        MatPaginatorModule,
+        EventsListResponsiveDirective,
+        HighlightSearch
+    ],
   templateUrl: './events-table.component.html',
   styleUrls: ['./events-table.component.scss']
 })

@@ -1,7 +1,6 @@
 import { Reader } from './reader.service';
-import { ActivatedRoute } from '@angular/router';
-import { makeRoute } from '../../test-helpers';
 const Utils = require('./utils.service').UtilsService;
+import { makeRoute } from '../../test-helpers';
 
 // helper to wait a microtask
 const tick = () => new Promise((res) => setTimeout(res, 0));

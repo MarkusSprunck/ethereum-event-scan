@@ -1,16 +1,17 @@
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
 
 class ReaderStub {}
 class CdrStub { detectChanges() {} }
+const routerStub = { navigate: jest.fn() } as any;
+const routeStub = {} as any;
 
 describe('SettingsComponent async validators', () => {
   let comp: SettingsComponent;
 
   beforeEach(() => {
     jest.useFakeTimers();
-    comp = new SettingsComponent(new FormBuilder(), new ReaderStub() as any, new CdrStub() as any);
+    comp = new SettingsComponent(new FormBuilder(), new ReaderStub() as any, new CdrStub() as any, routerStub, routeStub);
   });
 
   afterEach(() => {
@@ -80,4 +81,3 @@ describe('SettingsComponent async validators', () => {
     expect(await p3).toEqual({ isEndBlockValid: false });
   });
 });
-

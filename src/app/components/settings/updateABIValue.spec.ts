@@ -1,6 +1,5 @@
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
-import { ChangeDetectorRef } from '@angular/core';
 
 const Utils = require('../../services/utils.service').UtilsService;
 
@@ -12,6 +11,8 @@ class ReaderStub {
   entity = { setProvider: jest.fn() };
 }
 class CdrStub { detectChanges() {} }
+const routerStub = { navigate: jest.fn() } as any;
+const routeStub = {} as any;
 
 describe('SettingsComponent.updateABIValue', () => {
   let comp: SettingsComponent;
@@ -20,7 +21,8 @@ describe('SettingsComponent.updateABIValue', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     reader = new ReaderStub();
-    comp = new SettingsComponent(new FormBuilder(), reader as any, new CdrStub() as any);
+    // pass null for router/route so the component uses UtilsService.updateURLWithCompressedAbi fallback
+    comp = new SettingsComponent(new FormBuilder(), reader as any, new CdrStub() as any, null as any, null as any);
     // ensure abi control exists
     comp.form.controls['abi'].setValue('');
   });

@@ -1,5 +1,4 @@
 import { Reader } from './reader.service';
-import { ActivatedRoute } from '@angular/router';
 import { ProviderService } from './provider.service';
 import { EventData } from '../models/event';
 import { makeRoute } from '../../test-helpers';

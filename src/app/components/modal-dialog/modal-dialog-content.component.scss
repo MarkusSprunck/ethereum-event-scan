@@ -3,6 +3,8 @@ div, .mat-list-base .mat-list-item, .mat-list-item-content {
   font-weight: lighter;
   line-height: 1.1rem;
   font-size: small;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 .mat-list-base .mat-list-item, .mat-list-base .mat-list-option {
@@ -20,4 +22,14 @@ a {
   color: darkblue;
   text-decoration: underline;
   cursor: pointer;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+/* Ensure the details block (pre) wraps at spaces and doesn't overflow the modal */
+.details {
+  white-space: pre-wrap;      /* preserve newlines, allow wrapping at spaces */
+  word-break: normal;        /* prefer breaking at word boundaries */
+  overflow-wrap: break-word; /* break long tokens if needed */
+  max-width: 100%;
 }

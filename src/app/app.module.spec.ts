@@ -5,7 +5,7 @@ import * as path from 'path';
 
 // This spec avoids importing the real AppModule because it includes standalone
 // components with external templates (templateUrl/styleUrls) which require
-// resolveComponentResources() in the TestBed runtime. Instead we test the
+// resolveComponentResources() in the TestBed runtime. Instead, we test the
 // important provider behavior in isolation by registering the provider we
 // expect AppModule to provide. Additionally, we perform lightweight static
 // checks against the `app.module.ts` source to assert presence of key

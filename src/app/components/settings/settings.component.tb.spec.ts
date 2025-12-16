@@ -1,15 +1,15 @@
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
-import { Reader } from '../../services/reader.service';
-import { ChangeDetectorRef } from '@angular/core';
 
 class ReaderStub {}
 class CdrStub { detectChanges() {} }
+const routerStub = { navigate: jest.fn() } as any;
+const routeStub = {} as any;
 
 describe('SettingsComponent (unit)', () => {
   let comp: SettingsComponent;
   beforeEach(() => {
-    comp = new SettingsComponent(new FormBuilder(), new ReaderStub() as any, new CdrStub() as any);
+    comp = new SettingsComponent(new FormBuilder(), new ReaderStub() as any, new CdrStub() as any, routerStub, routeStub);
   });
 
   it('should create and have default panelMessage', () => {
