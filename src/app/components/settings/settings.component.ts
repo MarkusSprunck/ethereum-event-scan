@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, ChangeDetectorRef} from '@angular/core';
+import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import {ErrorStateMatcher} from '@angular/material/core';
@@ -38,6 +38,7 @@ import {Reader} from '../../services/reader.service';
 import stringify from 'json-stringify-pretty-compact';
 import { JsonFormatterDirective } from './directives/json-formatter.directive';
 import {Router, ActivatedRoute} from '@angular/router';
+import {Subscription, debounceTime, distinctUntilChanged} from 'rxjs';
 
 interface AbiEntry {
    anonymous?: boolean;
@@ -63,10 +64,11 @@ export class AbiErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
+export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
   public form: FormGroup;
   private _lastSeenReaderAbi = '';
+  private _subscriptions: Subscription[] = [];
 
   @Input() public lastBlock = 0;
   @Input() public startBlock = '';
@@ -317,9 +319,45 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit {
         }
       } catch (e) { /* ignore subscription errors */ }
 
+      // Subscribe to startBlock changes and update URL (debounced)
+      try {
+        const startControl = this.form.controls['startBlock'];
+        if (startControl) {
+          const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
+            try {
+              const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
+              this.updateStartValue(value);
+            } catch (e) { /* ignore */ }
+          });
+          this._subscriptions.push(sub);
+        }
+      } catch (e) { /* ignore */ }
+
+      // Subscribe to provider changes and update URL (debounced)
+      try {
+        const providerControl = this.form.controls['provider'];
+        if (providerControl) {
+          const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((v: any) => {
+            try {
+              // updateProviderValue reads from the form; simply call it to preserve behavior
+              this.updateProviderValue();
+            } catch (e) { /* ignore */ }
+          });
+          this._subscriptions.push(sub2);
+        }
+      } catch (e) { /* ignore */ }
+
     } catch (e) {
       console.warn('Failed to patch settings form initial values', e);
     }
+  }
+
+  ngOnDestroy(): void {
+    // Clean up subscriptions
+    try {
+      this._subscriptions.forEach(s => { try { s.unsubscribe(); } catch (e) { /* ignore */ } });
+      this._subscriptions = [];
+    } catch (e) { /* ignore */ }
   }
 
   private compactAbi(abi: string): string {

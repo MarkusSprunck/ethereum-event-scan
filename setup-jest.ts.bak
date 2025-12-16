@@ -1,8 +1,7 @@
-// CommonJS setup to avoid ts-jest transforming this file (works around transformer issue)
 const { polyfillEncoder } = require('jest-preset-angular/setup-env/utils');
 polyfillEncoder();
 
-// Ensure Zone global is defined
+// Ensure Zone global is defined by loading the base zone bundle
 require('zone.js');
 // Then load Zone.js testing helpers
 require('zone.js/testing');
@@ -18,24 +17,28 @@ getTestBed().initTestEnvironment(
 // --- Test harness improvements for cleaner CI output ---
 // Mock location.reload so tests that call it don't trigger jsdom navigation errors
 try {
+  // Ensure we can overwrite reload
   if (typeof window !== 'undefined' && window && window.location) {
     try { window.location.reload = () => {}; } catch (e) {
+      // fallback: redefine location property
       const loc = window.location;
       Object.defineProperty(window, 'location', { configurable: true, enumerable: true, writable: true, value: loc });
       window.location.reload = () => {};
     }
   }
-} catch (e) { /* ignore */ }
+} catch (e) {
+  // ignore if not possible
+}
 
 // Silence debug logs from library internals that are noisy during tests
-console.debug = (..._args) => { /* noop for CI */ };
+console.debug = (..._args: any[]) => { /* noop for CI */ };
 
 // Preserve originals
 const _origWarn = console.warn.bind(console);
 const _origError = console.error.bind(console);
 
 // Filter known, non-actionable messages so CI output stays clean
-console.warn = (...args) => {
+console.warn = (...args: any[]) => {
   try {
     const str = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
     if (str.includes('Web3 provider not initialized') || str.includes('base64->bin failed') || str.includes('Web3 not available for getCachedTimestamp')) {
@@ -47,7 +50,7 @@ console.warn = (...args) => {
   _origWarn(...args);
 };
 
-console.error = (...args) => {
+console.error = (...args: any[]) => {
   try {
     const str = args.map(a => (typeof a === 'string' ? a : (a && a.message) || JSON.stringify(a))).join(' ');
     if (str.includes('Not implemented: navigation') || str.includes('Failed to decode base64 and not hex')) {
@@ -58,3 +61,4 @@ console.error = (...args) => {
   }
   _origError(...args);
 };
+

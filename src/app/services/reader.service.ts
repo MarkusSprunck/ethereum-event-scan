@@ -527,7 +527,8 @@ export class Reader {
       // Finish job
       this.runningJobs -= 1;
 
-      console.warn( 'Error in allEvents: ' + errors)
+      // Log unexpected errors to console.error so tests watching for errors pick them up
+      console.error( 'Error in allEvents: ' + errors)
       if (errors.message === 'Returned error: query returned more than 10000 results'
           && (end > start)
           && ((end - start) > LIMIT_BLOCK_MIN)

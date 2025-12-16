@@ -16,6 +16,22 @@ export class JsonFormatterDirective {
     @Optional() private ngControl: NgControl
   ) {
     this.el = this.elementRef.nativeElement as HTMLInputElement;
+
+    // Trigger onBlur after page reload by dispatching a real blur event so the
+    // HostListener('blur', ...) handler is invoked exactly once and receives
+    // a genuine Event object (this matches browser behavior).
+    setTimeout(() => {
+      try {
+        const evt = new Event('blur', { bubbles: true, cancelable: false });
+        this.el.dispatchEvent(evt);
+      } catch (e) {
+        // Fallback: if dispatching an event is not possible in the environment,
+        // fall back to compacting the value directly.
+        const current = this.getValue();
+        const compact = this.into(current);
+        this.setValue(compact);
+      }
+    }, 0);
   }
 
   @HostListener('focus', ['$event'])
