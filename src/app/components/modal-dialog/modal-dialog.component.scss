@@ -9,6 +9,31 @@
   padding: 20px;
 }
 
+.modal-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* top alignment */
+  gap: 1rem;
+}
+
+.modal-title h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-close-btn {
+  display: flex;
+  align-items: flex-start;
+}
+
+.modal-separator {
+  height: 1px;
+  background-color: rgba(0,0,0,0.12);
+  margin: 0.75rem 0 1rem 0;
+  width: 100%;
+}
+
 .spacer {
   flex-grow: 0.9;
 }
@@ -18,5 +43,3 @@ div, .mat-mdc-list-base .mat-mdc-list-item, .mat-mdc-list-item-content {
   line-height: 1.0rem;
   font-size: small;
 }
-
-

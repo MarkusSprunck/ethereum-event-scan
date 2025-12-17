@@ -1,26 +1,16 @@
 <div class="fixActionRow">
-  <h2>Details</h2>
 
-  <app-inner-component [inputData]="data"></app-inner-component>
+    <div class="modal-header-row">
+        <div class="modal-title">
+            <h2>Details</h2>
+        </div>
+        <div class="modal-close-btn">
+            <button (click)="onCloseClick()" mat-button color="primary" cdkFocusInitial aria-label="Close dialog">Close</button>
+        </div>
+    </div>
 
-  <div class="spacer"></div>
+    <div class="modal-separator" role="separator" aria-hidden="true"></div>
 
-  <mat-grid-list cols="10">
-
-    <mat-grid-tile colspan="2">
-      <button (click)="onCloseClick()" mat-button cdkFocusInitial style="">Close</button>
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="1">
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="7">
-      <div>
-        Set block number {{data.blockNumber}} as <a (click)="onPinStart()">start</a>, <a (click)="onPinEnd()">end</a> or
-        <a (click)="onPinStartEnd()">both</a>
-      </div>
-    </mat-grid-tile>
-
-  </mat-grid-list>
+    <app-inner-component [inputData]="data"></app-inner-component>
 
 </div>

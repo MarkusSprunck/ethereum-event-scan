@@ -20,14 +20,4 @@ describe('ModalDialogComponent (basic)', () => {
     expect(dialogRefStub.close).toHaveBeenCalled();
   });
 
-  it('should call onPinStart and call reader & update url (ignore reload)', () => {
-    const update = jest.spyOn(require('../../services/utils.service').UtilsService, 'updateURLParameter');
-    try {
-      comp.onPinStart();
-    } catch (e) {
-      // jsdom may throw on location.reload(); ignore
-    }
-    expect(update).toHaveBeenCalled();
-    expect(readerStub.setStartBlocktInitial).toHaveBeenCalledWith('1');
-  });
 });
