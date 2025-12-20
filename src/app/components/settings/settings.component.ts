@@ -47,16 +47,6 @@ interface AbiEntry {
    type: string;
 }
 
-export class AbiErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: AbstractControl | null): boolean {
-    if (!control) return false;
-    const isInvalid = control.invalid;
-    const isTouchedOrDirty = (control.touched || control.dirty);
-    const isPending = control.pending;
-    return isInvalid && isTouchedOrDirty && !isPending;
-  }
-}
-
 @Component({
   selector: 'app-settings',
   standalone: true,

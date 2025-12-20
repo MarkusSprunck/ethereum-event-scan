@@ -48,8 +48,8 @@ describe('Reader additional unit tests', () => {
   });
 
   it('setContractAddress creates contractInstance when web3 available', () => {
-    entity.web3 = { eth: { Contract: function (json: any, addr: any) { // @ts-ignore
-                this.json = json; this.addr = addr; } } };
+    entity.web3 = { eth: { Contract: function (json: any, addr: any) {
+                (this as any).json = json; (this as any).addr = addr; } } } as any;
     r.abi = '[{"type":"event"}]';
     r.setContractAddress('0xabc');
     expect((r as any).contractInstance).not.toBeNull();

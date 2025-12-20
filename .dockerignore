@@ -1,5 +1,6 @@
 .angular/
 .idea/
+coverage/
 misc/
 node_modules/
 src/

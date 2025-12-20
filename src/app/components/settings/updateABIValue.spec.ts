@@ -36,8 +36,9 @@ describe('SettingsComponent.updateABIValue', () => {
     comp.provider = 'http://x';
     comp.contract = '0x0123456789abcdef0123456789abcdef01234567';
     // mock fetchABIFromVerifiedContract to invoke callback with ABI string
-    // @ts-ignore
-      const fetchSpy = jest.spyOn(Utils, 'fetchABIFromVerifiedContract').mockImplementation((addr: string, cb: any) => {
+
+      const fetchSpy = jest.spyOn(Utils, 'fetchABIFromVerifiedContract').mockImplementation((...args: any[]) => {
+      const cb = args[1] as Function;
       cb('[{"type":"event","name":"E","inputs":[]}]');
     });
     const updateCompressed = jest.spyOn(Utils, 'updateURLWithCompressedAbi').mockImplementation(() => {});
@@ -70,7 +71,7 @@ describe('SettingsComponent.updateABIValue', () => {
     comp.updateABIValue();
 
     // run timers for the reload scheduling
-    jest.runOnlyPendingTimers();
+    jest.advanceTimersByTime(600);
 
     // after parse, abi should be set and updateURLWithCompressedAbi called
     expect(updateCompressed).toHaveBeenCalled();

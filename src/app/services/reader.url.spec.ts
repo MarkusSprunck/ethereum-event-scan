@@ -55,8 +55,8 @@ describe('Reader URL ABI decoding (integration-style)', () => {
     jest.spyOn(pako, 'ungzip').mockReturnValue(JSON.stringify(expectedAbi));
 
     // minimal entity with web3.Contract stub so createActiveContract can instantiate
-    const entity: any = { setProvider: jest.fn(), web3: { eth: { Contract: function (json: any, addr: any) { // @ts-ignore
-                    this.json = json; this.addr = addr; } } }, currentBlock: 0, isConnectionWorking: () => false, isSyncing: () => false };
+    const entity: any = { setProvider: jest.fn(), web3: { eth: { Contract: function (json: any, addr: any) {
+                    (this as any).json = json; (this as any).addr = addr; } } }, currentBlock: 0, isConnectionWorking: () => false, isSyncing: () => false };
 
     const r = new Reader(makeRoute({ abi: decoded, contract: '0x8F477FEF656d327259a73beDFd40Ff2Da3429D10', provider: 'https://leopold-node3-rpc-stg.cert4trust.de', start: '529000' }), entity as any);
 

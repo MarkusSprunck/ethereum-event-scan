@@ -1,5 +1,5 @@
 import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
@@ -41,7 +41,6 @@ export class EventsTableComponent implements OnInit {
 
   public formSearch: FormGroup;
 
-  // @ts-ignore
   listData!: MatTableDataSource<any>;
 
   displayedColumns: string[] = ['image', 'name', 'time', 'miner', 'block', 'trxHash', 'value'];
@@ -87,10 +86,10 @@ export class EventsTableComponent implements OnInit {
 
       this.listData = new MatTableDataSource([...sortedEvents]);
 
-      // @ts-ignore
+
       this.listData.sort = this.sort;
 
-      // @ts-ignore
+
       this.listData.paginator = this.paginator;
       this.listData.filter = this.searchKey;
       this.listData.filterPredicate = (data: any, filter: string) => {
@@ -137,15 +136,19 @@ export class EventsTableComponent implements OnInit {
 
   isElementVisible(element: any) {
 
-    // @ts-ignore
-    const minID = this.paginator.pageIndex * this.paginator.pageSize
+    // guard against undefined paginator/listData (strict mode)
+    if (!this.paginator || !this.listData) {
+      return true;
+    }
 
-    // @ts-ignore
-    const maxID = (this.paginator.pageIndex + 1) * this.paginator.pageSize - 1
+    const pageIndex = this.paginator.pageIndex ?? 0;
+    const pageSize = this.paginator.pageSize ?? (this.listData.filteredData?.length ?? 0);
 
-    // @ts-ignore
-    const elementID = this.listData.filteredData.indexOf(element)
-    return (elementID >= minID) && (elementID <= maxID)
+    const minID = pageIndex * pageSize;
+    const maxID = (pageIndex + 1) * pageSize - 1;
+
+    const elementID = this.listData.filteredData.indexOf(element);
+    return (elementID >= minID) && (elementID <= maxID);
   }
 
   showSpinner() {
@@ -154,9 +157,6 @@ export class EventsTableComponent implements OnInit {
 
   public openDetailsDialog(event: any, blockNumber: string, trxNumber: string) {
     if (event) { event.preventDefault(); }
-
-    console.debug('EventsTable.openDetailsDialog called with', {blockNumber, trxNumber, reader: this.eventReader});
-
     this.dialog.open((require('../modal-dialog/modal-dialog.component') as any).ModalDialogComponent, {
       data: { blockNumber, trxNumber, reader: this.eventReader },
       width: '50rem',

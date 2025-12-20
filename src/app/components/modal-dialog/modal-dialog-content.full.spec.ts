@@ -1,6 +1,5 @@
 import { ModalDialogContentComponent } from './modal-dialog-content.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { UtilsService } from '../../services/utils.service';
 
 // simplified ChangeDetectorRef stub using jest.fn for easier assertions if needed
 const cdrStub: Partial<ChangeDetectorRef> = { detectChanges: jest.fn() };

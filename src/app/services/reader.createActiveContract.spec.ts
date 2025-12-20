@@ -26,8 +26,9 @@ describe('Reader.createActiveContract decoding branches', () => {
     jest.spyOn(p, 'ungzip').mockReturnValue('[{"type":"event"}]');
 
     // provide web3 Contract constructor stub
-    entity.web3 = { eth: { Contract: function(json: any, addr: any) { // @ts-ignore
-                this.json = json; this.addr = addr; } } } as any;
+    const web3mock: any = { eth: { Contract: function(json: any, addr: any) {
+                (this as any).json = json; (this as any).addr = addr; } } };
+    entity.web3 = web3mock as any;
 
     r.contract = '0x0123456789abcdef0123456789abcdef01234567';
     r.abiBase64Data = 'whatever';
@@ -47,8 +48,9 @@ describe('Reader.createActiveContract decoding branches', () => {
     const p = require('pako');
     jest.spyOn(p, 'inflate').mockReturnValue('[{"type":"event"}]');
 
-    entity.web3 = { eth: { Contract: function(json: any, addr: any) { // @ts-ignore
-                this.json = json; this.addr = addr; } } } as any;
+    const web3mock: any = { eth: { Contract: function(json: any, addr: any) {
+                (this as any).json = json; (this as any).addr = addr; } } };
+    entity.web3 = web3mock as any;
 
     r.contract = '0x0123456789abcdef0123456789abcdef01234567';
     r.abiBase64Data = 'anything';
@@ -66,8 +68,9 @@ describe('Reader.createActiveContract decoding branches', () => {
     r.abiBase64Data = '0x5b5d';
     r.contract = '0x0123456789abcdef0123456789abcdef01234567';
 
-    entity.web3 = { eth: { Contract: function(json: any, addr: any) { // @ts-ignore
-                this.json = json; this.addr = addr; } } } as any;
+    const web3mock: any = { eth: { Contract: function(json: any, addr: any) {
+                (this as any).json = json; (this as any).addr = addr; } } };
+    entity.web3 = web3mock as any;
 
     r.createActiveContract();
     // hex -> arr -> decodedData -> '[ ]' -> JSON parsed -> this.abi should be '[]' or similar

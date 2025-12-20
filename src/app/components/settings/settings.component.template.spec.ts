@@ -9,9 +9,9 @@ import { ChangeDetectorRef } from '@angular/core';
 class ReaderStub {
   abi = '';
   setAbi = jest.fn();
-  setStartBlock = jest.fn();
+
   setEndBlock = jest.fn();
-  setContractAddress = jest.fn();
+
   reset = jest.fn();
   entity = { setProvider: jest.fn() };
 }

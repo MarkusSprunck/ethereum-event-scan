@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2019-2022 Markus Sprunck (sprunck.markus@gmail.com)
+ * Copyright (c) 2019-2025 Markus Sprunck (sprunck.markus@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
@@ -128,11 +128,7 @@ export class Reader {
     this.startBlock = startBlock;
   }
 
-  setStartBlockInitial(startBlock: string) {
-    this.startInitial = startBlock;
-  }
-
-  setEndBlock(endBlock: string) {
+    setEndBlock(endBlock: string) {
     this.endBlock = endBlock;
   }
 
@@ -480,7 +476,7 @@ export class Reader {
       this.runningJobs -= 1;
 
       // Everything is ok so far, so proceed to parse event list
-      console.log('Load [' + start + '..' + end + '] -> number of imported events is ' + eventsList.length);
+      console.debug('Load [' + start + '..' + end + '] -> number of imported events is ' + eventsList.length);
       for (const event in eventsList) {
         if (eventsList.hasOwnProperty(event)) {
 
@@ -489,7 +485,7 @@ export class Reader {
           let values = '';
           for (const key in returnValues) {
             if (returnValues.hasOwnProperty(key)) {
-              if (isNaN(parseInt(key, 10))) {
+              if (isNaN(parseInt(key, 10)) && (key !== '__length__')) {
                 values += '<b>' + key.replace('_', '') + ':</b></br>';
                 values += ('' + returnValues[key]).replace('\n', '</br>').split(',').join('</br>') + '</br>';
               }
@@ -536,7 +532,7 @@ export class Reader {
           && ((end - start) > LIMIT_BLOCK_MAX)
       ) {
         const middle = Math.round((start + end) / 2);
-        console.log('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
+        console.debug('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
         this.readEventsRange(start, middle, that);
         this.readEventsRange(middle + 1, end, that);
       }

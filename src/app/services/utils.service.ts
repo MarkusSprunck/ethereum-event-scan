@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2019-2022 Markus Sprunck (sprunck.markus@gmail.com)
+ * Copyright (c) 2019-2025 Markus Sprunck (sprunck.markus@gmail.com)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the 'Software'), to deal
@@ -115,14 +115,8 @@ export class UtilsService {
         orderedParams.push(['abi', href.searchParams.get('abi') || '']);
       }
 
-      // Reduced logging level for CI: use debug instead of info
-      console.debug('orderedParams', orderedParams);
-
       href.search = new URLSearchParams(orderedParams).toString();
       const newUrl = href.pathname + href.search + href.hash;
-      console.debug('newUrl', newUrl);
-      // Use pushState so tests that spy on history.pushState are triggered
-      // and to keep consistent browser history semantics when parameters change.
       window.history.pushState({}, '', newUrl);
 
     } catch (e) {
@@ -156,11 +150,11 @@ export class UtilsService {
   static fetchABIFromVerifiedContract(contract: string, callback: any) {
 
     const domainURLs = [
-      'http://api.etherscan.io',
-      'http://api-kovan.etherscan.io',
-      'http://api-ropsten.etherscan.io',
-      'http://api-goerli.etherscan.io',
-      'http://api-rinkeby.etherscan.io',
+      'https://api.etherscan.io',
+      'https://api-kovan.etherscan.io',
+      'https://api-ropsten.etherscan.io',
+      'https://api-goerli.etherscan.io',
+      'https://api-rinkeby.etherscan.io',
     ];
 
     // try for all networks to load ABI from verified contract

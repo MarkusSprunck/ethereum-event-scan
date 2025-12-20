@@ -1,8 +1,8 @@
-@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css";
 
 @font-face {
   font-family: 'Lekton';
-  src: url('~src/assets/fonts/Lekton-Regular.ttf') format('truetype');
+  src: url('/assets/fonts/Lekton-Regular.ttf') format('truetype');
   font-weight: 300;
   font-style: normal;
 }

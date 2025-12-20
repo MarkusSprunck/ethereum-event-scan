@@ -71,7 +71,9 @@ export class ModalDialogContentComponent implements OnInit {
     this.transactions = [];
 
     if (!this.inputData?.reader?.entity?.web3) {
-      console.warn('No reader/web3 available for renderBlock');
+      if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+        console.warn('No reader/web3 available for renderBlock');
+      }
       return;
     }
 

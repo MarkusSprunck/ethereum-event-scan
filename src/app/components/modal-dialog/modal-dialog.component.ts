@@ -25,28 +25,7 @@ export class ModalDialogComponent {
                public dialog: MatDialog) {
    }
 
-   public openDetailsDialog(event: any, blockNumber: string, trxNumber: string, reader: Reader): void {
-
-     if (event != null) {
-       event.preventDefault();
-     }
-
-     // Open dialog with a concise config object. Keep the same sizes as before.
-     const config: MatDialogConfig = {
-       disableClose: false,
-       autoFocus: true,
-       maxWidth: '90vw',
-       width: '50rem',
-       height: '45rem',
-       minHeight: '20rem',
-       minWidth: '10rem',
-       data: { blockNumber, trxNumber, reader }
-     };
-
-     this.dialog.open(ModalDialogComponent, config);
-   }
-
-   onCloseClick(): void {
+    onCloseClick(): void {
      this.dialogRef.close();
    }
 

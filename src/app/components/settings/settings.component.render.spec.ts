@@ -9,6 +9,7 @@ class ReaderStub {
   setContractAddress = jest.fn();
   reset = jest.fn();
   entity = { setProvider: jest.fn() };
+  isConnectionWorking = () => false;
 }
 
 class CdrStub { detectChanges() {} }
@@ -34,12 +35,18 @@ describe('SettingsComponent (direct instantiation)', () => {
     expect(comp.provider).toBe('http://x');
   });
 
-  it('updateABIValue parses JSON and calls reader.setAbi', () => {
+  it('updateABIValue parses JSON and calls reader.setAbi', (done) => {
     const json = JSON.stringify([{ type: 'event', name: 'E1', inputs: [] }]);
     comp.form.controls['abi'].setValue(json);
     comp.updateABIValue();
-    expect(readerStub.setAbi).toHaveBeenCalled();
-    expect(comp.form.controls['abi'].errors).toBeNull();
+    // wait for async validators and setTimeouts to settle
+    setTimeout(() => {
+      try {
+        expect(readerStub.setAbi).toHaveBeenCalled();
+        expect(comp.form.controls['abi'].errors).toBeNull();
+        done();
+      } catch (e) { done(e); }
+    }, 600);
   });
 
   it('updateContractValue triggers fetchABI branch when provider+contract present and abi empty', () => {
@@ -47,8 +54,8 @@ describe('SettingsComponent (direct instantiation)', () => {
     comp.contract = '0x0123456789abcdef0123456789abcdef01234567';
     comp.form.controls['contract'].setValue(comp.contract);
     const Utils = require('../../services/utils.service').UtilsService;
-    // @ts-ignore
-      const fetchSpy = jest.spyOn(Utils, 'fetchABIFromVerifiedContract').mockImplementation((addr: string, cb: any) => cb('[{"type":"event","name":"E","inputs":[]}]'));
+
+      const fetchSpy = jest.spyOn(Utils, 'fetchABIFromVerifiedContract').mockImplementation((...args: any[]) => (args[1] as Function)('[{"type":"event","name":"E","inputs":[]}]'));
 
     comp.updateContractValue();
     expect(fetchSpy).toHaveBeenCalled();
