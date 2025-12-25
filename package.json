@@ -12,8 +12,9 @@
     "ng": "ng",
     "start": "ng serve --port 55226",
     "build": "ng build --configuration production --aot",
-    "test": "jest --passWithNoTests",
-    "test:watch": "jest --watch",
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage",
     "lint": "npx eslint \"src/**/*.ts\" --ext .ts"
   },
   "optionalDependencies": {
@@ -52,16 +53,12 @@
     "@typescript-eslint/eslint-plugin": "^8.49.0",
     "@typescript-eslint/parser": "^8.49.0",
     "babel-jest": "^30.2.0",
+    "babel-plugin-istanbul": "^7.0.1",
     "eslint": "^9.39.2",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "jest-preset-angular": "^16.0.0",
     "ts-jest": "^29.4.6",
     "typescript": "~5.9.3"
-  },
-  "overrides": {
-    "test-exclude": {
-      "glob": "^13.0.0"
-    }
   }
 }
