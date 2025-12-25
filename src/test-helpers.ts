@@ -1,5 +1,4 @@
 // Shared test helpers for the test suite
-import * as pako from 'pako';
 
 export function makeRoute(params: any) {
   return { queryParams: { subscribe: (fn: any) => fn(params) } } as any;

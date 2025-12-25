@@ -11,8 +11,6 @@ class ReaderStub {
   entity = { setProvider: jest.fn() };
 }
 class CdrStub { detectChanges() {} }
-const routerStub = { navigate: jest.fn() } as any;
-const routeStub = {} as any;
 
 describe('SettingsComponent.updateABIValue', () => {
   let comp: SettingsComponent;

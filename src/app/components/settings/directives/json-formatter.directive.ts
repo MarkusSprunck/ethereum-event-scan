@@ -8,7 +8,7 @@ import stringify from 'json-stringify-pretty-compact';
 })
 export class JsonFormatterDirective {
 
-  private el: HTMLInputElement;
+  private readonly el: HTMLInputElement;
 
   constructor(
     private elementRef: ElementRef,

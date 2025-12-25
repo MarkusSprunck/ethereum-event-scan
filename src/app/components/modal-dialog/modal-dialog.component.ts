@@ -1,7 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
-import {Reader} from '../../services/reader.service';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogModule} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {ModalDialogContentComponent} from './modal-dialog-content.component';
 
