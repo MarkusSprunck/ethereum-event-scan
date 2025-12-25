@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';

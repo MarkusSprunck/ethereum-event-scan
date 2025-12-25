@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
 

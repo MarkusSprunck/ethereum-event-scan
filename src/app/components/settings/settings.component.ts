@@ -169,7 +169,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     // Prefer explicit value (from input event). Fallback to form control value.
     const result: string = (typeof value === 'string') ? ((value.length === 0) ? '0' : value) : ((this.form.get('startBlock')?.value || '0'));
     if (this.router && this.route) {
-      this.router.navigate([], { relativeTo: this.route, queryParams: { start: result }, queryParamsHandling: 'merge' });
+      // noinspection JSIgnoredPromiseFromCall
+        this.router.navigate([], { relativeTo: this.route, queryParams: { start: result }, queryParamsHandling: 'merge' });
     }
 
     UtilsService.updateURLParameter('start', result);
@@ -180,7 +181,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     const val = this.form.get('provider');
     const v = (val && val.value) ? val.value : this.provider;
     if (this.router && this.route) {
-      this.router.navigate([], { relativeTo: this.route, queryParams: { provider: v }, queryParamsHandling: 'merge' });
+      // noinspection JSIgnoredPromiseFromCall
+        this.router.navigate([], { relativeTo: this.route, queryParams: { provider: v }, queryParamsHandling: 'merge' });
     }
 
     UtilsService.updateURLParameter('provider', v);
@@ -194,7 +196,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     const val = this.form.get('endBlock');
     const v = (val && val.value) ? val.value : this.endBlock;
     if (this.router && this.route) {
-      this.router.navigate([], { relativeTo: this.route, queryParams: { end: v }, queryParamsHandling: 'merge' });
+      // noinspection JSIgnoredPromiseFromCall
+        this.router.navigate([], { relativeTo: this.route, queryParams: { end: v }, queryParamsHandling: 'merge' });
     }
 
     UtilsService.updateURLParameter('end', v);
@@ -210,7 +213,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         UtilsService.fetchABIFromVerifiedContract(candidate.trim(), (value: string) => {
             if (this.router && this.route) {
               const urlSafe = UtilsService.compressAbiToUrlSafe(value);
-              this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+              // noinspection JSIgnoredPromiseFromCall
+                this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
             } else {
               UtilsService.updateURLWithCompressedAbi(value);
             }
@@ -233,7 +237,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
              // compress ABI and set as query param; use router if available, otherwise UtilsService helper
              const urlSafe = UtilsService.compressAbiToUrlSafe(val);
              if (this.router && this.route) {
-               this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+               // noinspection JSIgnoredPromiseFromCall
+                 this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
              } else {
                UtilsService.updateURLWithCompressedAbi(val);
              }
@@ -255,7 +260,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
            // compress ABI and set as query param
            const urlSafe = UtilsService.compressAbiToUrlSafe(this.abi);
            if (this.router && this.route) {
-             this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+             // noinspection JSIgnoredPromiseFromCall
+               this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
            } else {
              UtilsService.updateURLWithCompressedAbi(this.abi);
            }
@@ -451,7 +457,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   private updateContract(val: string) {
     // update query param using router (no reload) if available, otherwise use UtilsService
     if (this.router && this.route) {
-      this.router.navigate([], { relativeTo: this.route, queryParams: { contract: val.trim() }, queryParamsHandling: 'merge' });
+      // noinspection JSIgnoredPromiseFromCall
+        this.router.navigate([], { relativeTo: this.route, queryParams: { contract: val.trim() }, queryParamsHandling: 'merge' });
     } else {
       UtilsService.updateURLParameter('contract', val.trim());
     }

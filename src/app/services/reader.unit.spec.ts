@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { Reader } from './reader.service';
 import { EventData } from '../models/event';
 import { makeRoute } from '../../test-helpers';

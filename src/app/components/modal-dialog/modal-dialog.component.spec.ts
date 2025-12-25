@@ -4,7 +4,7 @@ const dialogRefStub = { close: jest.fn() } as any;
 const dialogStub = { open: jest.fn() } as any;
 
 const readerStub = {
-  setStartBlocktInitial: jest.fn(),
+  setStartBlockInitial: jest.fn(),
   setEndBlock: jest.fn()
 };
 

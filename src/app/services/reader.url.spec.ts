@@ -1,3 +1,5 @@
+// noinspection JSUnusedGlobalSymbols
+
 import { Reader } from './reader.service';
 import { makeRoute, mockAtobWithGzipHeader, restoreAtob, normalizeUrlSafeBase64ToBuffer } from '../../test-helpers';
 

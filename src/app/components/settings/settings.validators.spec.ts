@@ -1,3 +1,5 @@
+// noinspection ES6MissingAwait
+
 import { SettingsComponent } from './settings.component';
 import { FormBuilder } from '@angular/forms';
 
