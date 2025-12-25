@@ -1,7 +1,3 @@
-.mat-mdc-dialog-content {
-  padding: 20px;
-}
-
 .fixActionRow {
   height: 100%;
   display: flex;
@@ -34,12 +30,3 @@
   width: 100%;
 }
 
-.spacer {
-  flex-grow: 0.9;
-}
-
-div, .mat-mdc-list-base .mat-mdc-list-item, .mat-mdc-list-item-content {
-  font-weight: lighter;
-  line-height: 1.0rem;
-  font-size: small;
-}

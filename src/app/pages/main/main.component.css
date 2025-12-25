@@ -1,17 +1,6 @@
-.mat-toolbar-row {
-  height: 65px;
-}
-
 .title {
   margin-left: 0;
   color: white;
-}
-
-.title-sub {
-  margin-left: auto;
-  margin-right: 0;
-  font-weight: lighter;
-  font-size: smaller;
 }
 
 .footer {

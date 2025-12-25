@@ -13,139 +13,19 @@ img {
   align-content: center;
 }
 
-.mat-mdc-paginator, .mat-mdc-paginator-page-size .mat-mdc-select-trigger {
-  font-size: small;
-}
-
 .table-link :hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
-.mat-mdc-progress-bar {
-  margin-top: 0.4rem;
-}
+@media (min-width: 768px) {
 
-.mat-expansion-panel-header-title, .mat-expansion-panel-header-description {
-  flex-grow: 3 !important;
 }
 
 @media (min-width: 768px) {
-
-  th.mat-mdc-header-cell:first-of-type, td.mat-mdc-cell:first-of-type, td.mat-mdc-footer-cell:first-of-type {
-    padding-left: 0;
-  }
-
-  th.mat-mdc-header-cell:last-of-type, td.mat-mdc-cell:last-of-type, td.mat-mdc-footer-cell:last-of-type {
-    padding-right: 0;
-  }
-
-  td.mat-mdc-column-image {
-    width: 7%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-    padding-right: 6px;
-    padding-left: 6px;
-  }
-
-  td.mat-mdc-column-name {
-    width: 12%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-  }
-
-  td.mat-mdc-column-time {
-    width: 12%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-    padding-right: 6px;
-  }
-
-  td.mat-mdc-column-miner {
-    width: 8%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-    padding-right: 6px;
-  }
-
-  td.mat-mdc-column-block {
-    width: 8%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-    padding-right: 6px;
-  }
-
-  td.mat-mdc-column-trxHash {
-    width: 26%;
-    font-weight: lighter;
-    line-height: 1.1;
-    vertical-align: top;
-    padding-top: 0.4rem;
-    padding-right: 6px;
-  }
-
-  td.mat-mdc-form-field {
-    margin-top: 1.0rem;
-    margin-left: 1.5rem;
-  }
-
-  td.mat-mdc-form-field {
-    margin-top: 0;
-    margin-left: 0;
-  }
-}
-
-@media (min-width: 768px) {
-
-  td.mat-mdc-column-image {
-    font-size: small;
-  }
-
-  td.mat-mdc-column-name {
-    font-size: small;
-  }
-
-  td.mat-mdc-column-block {
-    font-size: small;
-  }
-
-  td.mat-mdc-column-trxHash {
-    font-size: small;
-  }
 
 }
 
 
 @media (max-width: 768px) {
-  .mat-mdc-table[appMatTableResponsive] {
-
-    .mat-mdc-header-row {
-      display: flex;
-      flex-wrap: wrap;
-      height: auto;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-
-    }
-
-    .mat-mdc-row {
-      height: auto;
-
-      &:last-of-type td:last-of-type {
-        border: none;
-      }
-
-    }
-  }
 }
