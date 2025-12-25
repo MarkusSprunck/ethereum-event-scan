@@ -1,12 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { importProvidersFrom } from '@angular/core';
 import { Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 
 describe('AppRoutingModule', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AppRoutingModule, RouterTestingModule]
+      imports: [AppRoutingModule],
+      providers: [importProvidersFrom(RouterModule.forRoot([]))]
     });
   });
 
@@ -20,4 +22,3 @@ describe('AppRoutingModule', () => {
     expect(router.config).toEqual([]);
   });
 });
-

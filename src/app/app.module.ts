@@ -29,7 +29,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppRoutingModule} from './app-routing.module';
 import {SettingsComponent} from './components/settings/settings.component';
 import {Reader} from './services/reader.service';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {JsonFormatterDirective} from './components/settings/directives/json-formatter.directive';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -62,7 +61,6 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
   declarations: [],
   imports: [
     BrowserModule,
-    // standalone components/directives/pipes imported here (module keeps providers if any)
     SettingsComponent,
     EventsTableComponent,
     ModalDialogComponent,
@@ -72,7 +70,6 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     HighlightSearch,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
     AppRoutingModule,
     MatFormFieldModule,
     MatIconModule,
@@ -101,10 +98,9 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
   providers: [Reader, DecimalPipe,
     {
       provide: MAT_DIALOG_DATA, useValue: {}
-    }
+    },
   ],
   schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
-  // bootstrap handled by bootstrapApplication(MainComponent) in main.ts
 })
 export class AppModule {
 }

@@ -58,7 +58,7 @@ export class UtilsService {
     }
     const left = Math.ceil(maxLength / 2);
     const right = str.length - Math.floor(maxLength / 2) + 2;
-    return str.substr(0, left) + '…' + str.substring(right);
+    return str.substring(0, left) + '…' + str.substring(right);
   }
 
   /**
@@ -68,7 +68,7 @@ export class UtilsService {
     if (str.length < maxLength * 2) {
       return str;
     }
-    return str.substr(0, maxLength) + '\n' + str.substring(maxLength);
+    return str.substring(0, maxLength) + '\n' + str.substring(maxLength);
   }
 
   static updateURLWithCompressedAbi(newValue: string) {

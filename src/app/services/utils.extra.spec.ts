@@ -14,7 +14,7 @@ describe('UtilsService - additional tests', () => {
       const s = 'abcdefghijklmnopqrstuvwxyz';
       const out = UtilsService.break(s, 5);
       expect(out).toContain('\n');
-      expect(out.startsWith(s.substr(0,5))).toBeTruthy();
+      expect(out.startsWith(s.substring(0,5))).toBeTruthy();
       expect(out.endsWith(s.substring(5))).toBeTruthy();
     });
   });

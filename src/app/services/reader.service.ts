@@ -199,7 +199,7 @@ export class Reader {
                 const hexToUint8 = (hex: string) => {
                     const len = hex.length / 2;
                     const arr = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substr(i * 2, 2), 16);
+                    for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substring(i * 2, 2), 16);
                     return arr;
                 };
 
