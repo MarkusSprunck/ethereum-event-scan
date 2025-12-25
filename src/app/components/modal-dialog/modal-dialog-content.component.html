@@ -8,9 +8,11 @@
     @if (transactions && transactions.length > 0) {
       <div>Transactions:</div>
       <ul>
-        <li *ngFor="let message of transactions">
-          <a (click)="renderTransaction(message)">{{message}}</a>
-        </li>
+        @for (message of transactions; track message) {
+          <li>
+            <a (click)="renderTransaction(message)">{{message}}</a>
+          </li>
+        }
       </ul>
     }
   </div>
