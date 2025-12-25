@@ -58,8 +58,12 @@
                                            placeholder="Enter ABI of contract"
                                            spellcheck="false"
                                            autocomplete="off"></textarea>
-        <mat-error *ngIf="form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('json')">Invalid JSON ABI</mat-error>
-        <mat-error *ngIf="form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('required')">ABI is required</mat-error>
+        @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('json')) {
+          <mat-error>Invalid JSON ABI</mat-error>
+        }
+        @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('required')) {
+          <mat-error>ABI is required</mat-error>
+        }
       </mat-form-field>
 
     </mat-expansion-panel>

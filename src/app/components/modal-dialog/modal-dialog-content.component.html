@@ -1,20 +1,25 @@
-<div *ngIf="currentBlockNumber.length > 0">
+@if (currentBlockNumber.length > 0) {
+  <div>
     <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{current}}</div>
     <div>Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(parent)">{{parent}}</a></div>
     <div>Child&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(child)">{{child}}</a></div>
     <pre class="details">{{details}}</pre>
-  <div *ngIf="transactions && transactions.length > 0">
+
+    @if (transactions && transactions.length > 0) {
       <div>Transactions:</div>
       <ul>
-      <li *ngFor="let message of transactions">
-            <a (click)="renderTransaction(message)">{{message}}</a>
-          </li>
+        <li *ngFor="let message of transactions">
+          <a (click)="renderTransaction(message)">{{message}}</a>
+        </li>
       </ul>
+    }
   </div>
-</div>
+}
 
-<div *ngIf="currentTrxNumber.length > 0">
+@if (currentTrxNumber.length > 0) {
+  <div>
     <div>Hash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{currentTrxNumber}}</div>
     <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(current)">{{current}}</a></div>
     <pre class="details">{{details}}</pre>
   </div>
+}

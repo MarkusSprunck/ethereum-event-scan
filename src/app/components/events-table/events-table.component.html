@@ -12,7 +12,9 @@
         </mat-panel-title>
 
         <mat-panel-description>
-          <mat-progress-bar *ngIf="showSpinner()" mode="indeterminate"></mat-progress-bar>
+          @if (showSpinner()) {
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+          }
         </mat-panel-description>
 
       </mat-expansion-panel-header>
@@ -76,10 +78,12 @@
           <td *matCellDef="let element" mat-cell>
             <a (click)="openDetailsDialog($event, element.block, element.trxHash)"
                class="table-link" href="" rel="nofollow">
-              <div *ngIf="!(screenWidth > 1300)"
-                   innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
-              <div *ngIf="screenWidth > 1300"
-                   innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
+              @if (!(screenWidth > 1300)) {
+                <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+              }
+              @if (screenWidth > 1300) {
+                <div innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
+              }
             </a>
           </td>
         </ng-container>
