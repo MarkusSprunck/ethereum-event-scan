@@ -34,7 +34,7 @@
         <ng-container matColumnDef="image">
           <th *matHeaderCellDef mat-header-cell></th>
           <td *matCellDef="let element" mat-cell>
-            <div><img [src]="element.image" alt=""/></div>
+            <div><img [ngSrc]="element.image" alt="" width="40" height="40"/></div>
           </td>
         </ng-container>
 
@@ -99,7 +99,7 @@
         </ng-container>
 
         <tr *matHeaderRowDef="displayedColumns;" mat-header-row></tr>
-        <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+        <tr *matRowDef="let _row; columns: displayedColumns;" mat-row></tr>
 
       </table>
 

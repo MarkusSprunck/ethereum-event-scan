@@ -1,5 +1,5 @@
 import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {MatTableDataSource} from '@angular/material/table';
 import {MatSort} from '@angular/material/sort';
 import {MatPaginator} from '@angular/material/paginator';
@@ -25,6 +25,7 @@ import {MatDialog} from '@angular/material/dialog';
     standalone: true,
     imports: [
         CommonModule,
+        NgOptimizedImage,
         ReactiveFormsModule,
         MatExpansionModule,
         MatProgressBarModule,
