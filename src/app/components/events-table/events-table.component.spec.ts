@@ -24,10 +24,12 @@
 import { EventsTableComponent } from './events-table.component';
 import { FormBuilder } from '@angular/forms';
 import { of } from 'rxjs';
-import { EventData } from '../../models/event';
+import { EventData, EthEvent } from '../../models/event';
 
 class ReaderStub {
   public runningJobs = 0;
+  public _cb: any;
+  setUpdateCallback(cb: any) { this._cb = cb; }
 }
 
 const routeStub = { queryParams: of({}) } as any;
@@ -67,4 +69,76 @@ describe('EventsTableComponent (basic)', () => {
     comp.openDetailsDialog(null, '1', '2');
     expect(dialogStub.open).toHaveBeenCalled();
   });
+
+  it('onResize updates screenWidth', () => {
+    const original = window.innerWidth;
+    try {
+      (window as any).innerWidth = 500;
+      comp.onResize();
+      expect(comp.screenWidth).toBe(500);
+    } finally {
+      (window as any).innerWidth = original;
+    }
+  });
+
+  it('isElementVisible returns true when paginator or listData undefined', () => {
+    // default state: paginator undefined
+    comp['listData'] = undefined as any;
+    expect(comp.isElementVisible({})).toBeTruthy();
+  });
+
+  it('isElementVisible computes visibility with paginator and filteredData', () => {
+    // create a fake paginator
+    comp['listData'] = { filteredData: [{id:1},{id:2},{id:3}] } as any;
+    comp['paginator'] = { pageIndex: 0, pageSize: 2 } as any;
+    // element at index 0 should be visible
+    expect(comp.isElementVisible(comp['listData'].filteredData[0])).toBeTruthy();
+    // element at index 2 should be not visible
+    expect(comp.isElementVisible(comp['listData'].filteredData[2])).toBeFalsy();
+  });
+
+  it('updateSearchValue navigates and applies filter', () => {
+    comp['listData'] = { filter: '' } as any;
+    comp.formSearch.get('searchKey')?.setValue('term');
+    comp.updateSearchValue();
+    expect(routerStub.navigate).toHaveBeenCalled();
+    expect(comp.searchKey).toBe('term');
+    expect(comp['listData'].filter).toBe('term');
+  });
+
+  it('panelMessage shows events count when EventData populated', () => {
+    EventData.clear();
+    EventData.set('1', new EthEvent('n', '1', '0x1', '', '', '', '', '', '')); // minimal event
+    comp['listData'] = { filteredData: [EventData.get('1')] } as any;
+    expect(comp.panelMessage()).toContain('Events');
+    EventData.clear();
+  });
+
+  it('ngOnInit registers update callback and populates listData on update', () => {
+    // prepare EventData with two events so sorting works
+    EventData.clear();
+    EventData.set('1', new EthEvent('A', '2', '0x1', '', '', '', '', '', ''));
+    EventData.set('2', new EthEvent('B', '1', '0x2', '', '', '', '', '', ''));
+
+    // provide stubs for sort and paginator to be assigned
+    comp['sort'] = {} as any;
+    comp['paginator'] = {} as any;
+
+    // call ngOnInit which will register the callback on reader
+    comp.ngOnInit();
+    // invoke the stored callback to simulate update
+    expect(reader._cb).toBeDefined();
+    reader._cb();
+
+    // listData should be set and filteredData should contain 2 items
+    expect(comp['listData']).toBeDefined();
+    expect(comp['listData'].filteredData.length).toBeGreaterThanOrEqual(2);
+
+    // filterPredicate should be defined and work
+    const predicate = comp['listData'].filterPredicate as any;
+    const matches = predicate({ name: 'A' }, 'a');
+    expect(typeof matches).toBe('boolean');
+    EventData.clear();
+  });
+
 });

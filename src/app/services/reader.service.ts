@@ -72,7 +72,7 @@ export class Reader {
     private minerCache = new Map<string, string>();
     private isLoading = false;
     private isEndBlockNumberSet = false;
-    private contractInstance: any = null;
+    contractInstance: any = null;
     private createContractAttempts = 0;
     private readonly maxCreateContractAttempts = 10;
 
