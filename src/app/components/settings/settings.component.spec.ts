@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
+import {SettingsComponent} from "./settings.component";
 
 // Minimal Reader stub used for unit tests
 class ReaderStub {
@@ -171,6 +172,97 @@ describe('SettingsComponent consolidated tests', () => {
       fetchSpy.mockRestore();
     });
 
-  });
-});
+    it('ngOnChanges patches form controls when inputs change (including ABI compaction)', () => {
+      // prepare input values
+      const abiJson = JSON.stringify([{ type: 'event', name: 'X', inputs: [] }]);
+      comp.provider = 'http://provider.local';
+      comp.contract = '0x0123456789abcdef0123456789abcdef01234567';
+      comp.abi = abiJson;
+      comp.startBlock = '5';
+      comp.endBlock = '10';
 
+      // call ngOnChanges with a SimpleChanges-like object
+      comp.ngOnChanges({
+        provider: { currentValue: comp.provider },
+        contract: { currentValue: comp.contract },
+        abi: { currentValue: comp.abi },
+        startBlock: { currentValue: comp.startBlock },
+        endBlock: { currentValue: comp.endBlock }
+      } as any);
+
+      expect(comp.form.controls['provider'].value).toBe('http://provider.local');
+      expect(comp.form.controls['contract'].value).toBe(comp.contract);
+      expect(comp.form.controls['startBlock'].value).toBe('5');
+      expect(comp.form.controls['endBlock'].value).toBe('10');
+
+      // ABI control should contain equivalent JSON (formatting may differ)
+      const parsedFromControl = JSON.parse(comp.form.controls['abi'].value);
+      const parsedOriginal = JSON.parse(abiJson);
+      expect(parsedFromControl).toEqual(parsedOriginal);
+    });
+
+    it('ngOnChanges patches only provided properties and preserves other values', () => {
+      // set initial values
+      comp.form.controls['provider'].setValue('initial');
+      comp.form.controls['contract'].setValue('initialC');
+
+      // change only provider via ngOnChanges
+      comp.ngOnChanges({ provider: { currentValue: 'new-provider' } } as any);
+      expect(comp.form.controls['provider'].value).toBe('new-provider');
+      expect(comp.form.controls['contract'].value).toBe('initialC');
+    });
+
+    it('isProviderConnected resolves null when component.connected is true', async () => {
+      jest.useFakeTimers();
+      comp.connected = true;
+      const control = { value: '' } as any;
+      const promise = comp.isProviderConnected(control);
+      // fast-forward the 6s timeout used in the validator
+      jest.advanceTimersByTime(6000);
+      await expect(promise).resolves.toBeNull();
+      jest.useRealTimers();
+    });
+
+    it('isProviderConnected resolves {connected:false} when component.connected is false', async () => {
+      jest.useFakeTimers();
+      comp.connected = false;
+      const control = { value: 'http://example' } as any;
+      const promise = comp.isProviderConnected(control);
+      jest.advanceTimersByTime(6000);
+      await expect(promise).resolves.toEqual({ connected: false });
+      jest.useRealTimers();
+    });
+
+    // --- ngOnChanges edge cases ---
+    it('ngOnChanges ignores abi when currentValue is undefined (does not patch)', () => {
+      comp.form.controls['abi'].setValue('initial-abi');
+      comp.ngOnChanges({ abi: { currentValue: undefined } } as any);
+      expect(comp.form.controls['abi'].value).toBe('initial-abi');
+    });
+
+    it('ngOnChanges applies empty string when abi currentValue is empty', () => {
+      comp.form.controls['abi'].setValue('non-empty');
+      comp.ngOnChanges({ abi: { currentValue: '' } } as any);
+      expect(comp.form.controls['abi'].value).toBe('');
+    });
+
+    it('ngOnChanges with malformed ABI plus updateABIValue marks control invalid', () => {
+      // set malformed ABI and patch
+      const bad = 'this-is-not-json';
+      comp.ngOnChanges({ abi: { currentValue: bad } } as any);
+      // call updateABIValue which attempts JSON.parse and should set errors
+      comp.updateABIValue();
+      expect(comp.form.controls['abi'].errors).toBeTruthy();
+      expect(comp.form.controls['abi'].errors).toHaveProperty('json', true);
+    });
+
+    it('ngOnChanges with only abi changed does not overwrite other controls', () => {
+      comp.form.controls['provider'].setValue('keep-this');
+      comp.form.controls['contract'].setValue('keep-contract');
+      comp.ngOnChanges({ abi: { currentValue: JSON.stringify([{type:'event', name:'Y', inputs:[]}]) } } as any);
+      expect(comp.form.controls['provider'].value).toBe('keep-this');
+      expect(comp.form.controls['contract'].value).toBe('keep-contract');
+    });
+
+  });
+ });

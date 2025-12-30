@@ -72,4 +72,47 @@ describe('JsonFormatterDirective (unit, direct)', () => {
     dir.onBlur(new Event('blur'));
     expect(renderer.setProperty).toHaveBeenCalled();
   });
+
+  it('constructor falls back to manual compact when dispatchEvent throws', () => {
+    jest.useFakeTimers();
+    const el: any = { nativeElement: { value: '[{"a":1}]', dispatchEvent: jest.fn(() => { throw new Error('boom'); }) } };
+    const renderer = makeRenderer();
+    const ng = makeNgControl('[{"a":1}]');
+
+    const dir: any = new JsonFormatterDirective(el, renderer as any, ng);
+    // advance the constructor's setTimeout
+    jest.advanceTimersByTime(0);
+
+    // ng.control.setValue should have been called with compacted JSON
+    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"a":1}]')) , { emitEvent: false });
+    // renderer should update DOM as well
+    expect(renderer.setProperty).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('constructor falls back to manual compact when dispatchEvent is not available', () => {
+    jest.useFakeTimers();
+    const el: any = { nativeElement: { value: '[{"b":2}]' } }; // no dispatchEvent
+    const renderer = makeRenderer();
+    const ng = makeNgControl('[{"b":2}]');
+
+    const dir: any = new JsonFormatterDirective(el, renderer as any, ng);
+    jest.advanceTimersByTime(0);
+
+    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"b":2}]')) , { emitEvent: false });
+    expect(renderer.setProperty).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('setValue continues to renderer when ngControl.setValue throws', () => {
+    const el: any = { nativeElement: { value: '[{"c":3}]' } };
+    const renderer = makeRenderer();
+    const ng: any = { control: { value: '[{"c":3}]', setValue: jest.fn(() => { throw new Error('fail-set'); }) } };
+    const dir: any = new JsonFormatterDirective(el, renderer as any, ng as any);
+
+    // call onBlur which triggers setValue flow
+    dir.onBlur(new Event('blur'));
+    // renderer should still be called despite ng.control.setValue throwing
+    expect(renderer.setProperty).toHaveBeenCalled();
+  });
 });
