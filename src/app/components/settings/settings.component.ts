@@ -38,6 +38,7 @@ import stringify from 'json-stringify-pretty-compact';
 import { JsonFormatterDirective } from './directives/json-formatter.directive';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription, debounceTime, distinctUntilChanged} from 'rxjs';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 interface AbiEntry {
    anonymous?: boolean;
@@ -58,6 +59,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
   public form: FormGroup;
   private _lastSeenReaderAbi = '';
   private _subscriptions: Subscription[] = [];
+  public highlightedAbi: SafeHtml = '';
 
   @Input() public lastBlock = 0;
   @Input() public startBlock = '';
@@ -75,7 +77,8 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
               private reader: Reader,
               private cdr: ChangeDetectorRef,
               private router: Router,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private sanitizer: DomSanitizer) {
     this.form = this.fb.group({
       provider: [this.provider || '', [Validators.required], this.isProviderConnected.bind(this)],
       contract: [this.contract || '', [Validators.required], this.isContractOk.bind(this)],
@@ -278,10 +281,69 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
 
   onBlurAbi() {
     this.noOfRowsAbi = 1;
+    // Delay to allow JsonFormatterDirective to complete formatting
+    setTimeout(() => {
+      this.updateHighlightedAbi();
+    }, 10);
   }
 
   onFocusAbi() {
     this.noOfRowsAbi = 15;
+    // Delay to allow JsonFormatterDirective to complete formatting
+    setTimeout(() => {
+      this.updateHighlightedAbi();
+    }, 10);
+  }
+
+  onScrollAbi(event: Event) {
+    const textarea = event.target as HTMLTextAreaElement;
+    const highlightDiv = textarea.parentElement?.querySelector('.json-highlight') as HTMLElement;
+    if (highlightDiv) {
+      highlightDiv.scrollTop = textarea.scrollTop;
+      highlightDiv.scrollLeft = textarea.scrollLeft;
+    }
+  }
+
+  private updateHighlightedAbi() {
+    const abiValue = this.form.get('abi')?.value || '';
+    this.highlightedAbi = this.sanitizer.bypassSecurityTrustHtml(this.highlightJson(abiValue));
+  }
+
+  private highlightJson(json: string): string {
+    if (!json || json.trim().length === 0) {
+      return '';
+    }
+
+    // Use the text as-is from the textarea (already formatted by JsonFormatterDirective)
+    // Just colorize it without re-formatting to ensure alignment
+    return this.colorizeJson(json);
+  }
+
+  private colorizeJson(text: string): string {
+    // Escape HTML special characters first
+    text = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Colorize JSON syntax
+    return text.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+      let cls = 'json-number';
+
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'json-key';
+        } else {
+          cls = 'json-string';
+        }
+      } else if (/true|false/.test(match)) {
+        cls = 'json-boolean';
+      } else if (/null/.test(match)) {
+        cls = 'json-null';
+      }
+
+      return '<span class="' + cls + '">' + match + '</span>';
+    }).replace(/([{}[\],:])/g, '<span class="json-punctuation">$1</span>');
   }
 
   reloadPage() {
@@ -310,6 +372,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
       if (abiControl && abiControl.valueChanges && typeof abiControl.valueChanges.subscribe === 'function') {
         const subAbi = abiControl.valueChanges.subscribe((v: any) => {
           this.abi = v || '';
+          this.updateHighlightedAbi();
           if (typeof document !== 'undefined') {
             try {
               const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
@@ -370,6 +433,9 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         this._subscriptions.push(subAbiUrl);
       }
     }
+
+    // Initialize highlighted ABI
+    this.updateHighlightedAbi();
   }
 
   ngOnDestroy(): void {
@@ -388,6 +454,7 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
       if (this.form && this.form.controls['abi']) {
         try {
           this.form.controls['abi'].setValue(this.abi || (this.reader && (this.reader.abi || '')) || '');
+          this.updateHighlightedAbi();
         } catch (err) {
           console.debug('SettingsComponent: failed to set ABI control value', err);
         }
@@ -411,7 +478,10 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
       if (readerAbi && readerAbi !== this._lastSeenReaderAbi) {
         this._lastSeenReaderAbi = readerAbi;
         if (this.form && this.form.controls['abi'] && this.form.controls['abi'].value !== readerAbi) {
-          try { this.form.controls['abi'].setValue(readerAbi); } catch (err) { console.debug('SettingsComponent: failed to set ABI from reader', err); }
+          try {
+            this.form.controls['abi'].setValue(readerAbi);
+            this.updateHighlightedAbi();
+          } catch (err) { console.debug('SettingsComponent: failed to set ABI from reader', err); }
           try { this.cdr.detectChanges(); } catch (err) { console.debug('SettingsComponent: detectChanges failed after reader ABI update', err); }
         }
         clearInterval(interval);

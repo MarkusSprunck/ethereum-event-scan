@@ -70,10 +70,10 @@ export class JsonFormatterDirective {
   }
 
   private setValue(v: string) {
-    // update FormControl without emitting events if control exists
+    // update FormControl WITH emitting events so the highlight updates
     if (this.ngControl && this.ngControl.control) {
       try {
-        this.ngControl.control.setValue(v, { emitEvent: false });
+        this.ngControl.control.setValue(v, { emitEvent: true });
       } catch (e) {
         // continue and attempt DOM update
       }

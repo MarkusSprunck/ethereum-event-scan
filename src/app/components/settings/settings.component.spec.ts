@@ -123,14 +123,16 @@ describe('SettingsComponent consolidated tests', () => {
     let SettingsComponentClass: any;
     let reader: ReaderStub;
     let cdrStub: any;
+    let sanitizerStub: any;
 
     beforeEach(() => {
       reader = new ReaderStub();
       cdrStub = { detectChanges: jest.fn() };
+      sanitizerStub = { bypassSecurityTrustHtml: jest.fn((html: string) => html) };
       // require SettingsComponent lazily to avoid template/style resolution during test discovery
       SettingsComponentClass = require('./settings.component').SettingsComponent;
       // instantiate SettingsComponent directly with stubs
-      comp = new SettingsComponentClass(new FormBuilder(), reader as any, cdrStub as any, null as any, null as any);
+      comp = new SettingsComponentClass(new FormBuilder(), reader as any, cdrStub as any, null as any, null as any, sanitizerStub as any);
       // initialize form
       comp.ngOnInit();
     });

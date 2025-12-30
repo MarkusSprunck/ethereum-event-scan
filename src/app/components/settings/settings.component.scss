@@ -10,3 +10,97 @@ mat-form-field {
 .mat-form-field-full-line {
   width: 99%;
 }
+
+.json-editor-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 20px;
+  display: block;
+
+  .json-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    background: transparent;
+    box-sizing: border-box;
+
+    // JSON syntax highlighting colors (using ::ng-deep to pierce encapsulation)
+    ::ng-deep .json-key {
+      color: #0451a5;
+      font-weight: 600;
+    }
+
+    ::ng-deep .json-string {
+      color: #529ce4;
+    }
+
+    ::ng-deep .json-number {
+      color: #098658;
+    }
+
+    ::ng-deep .json-boolean {
+      color: #847553;
+      font-weight: 600;
+    }
+
+    ::ng-deep .json-null {
+      color: #cc8174;
+      font-weight: 600;
+    }
+
+    ::ng-deep .json-punctuation {
+      color: #303030;
+    }
+  }
+
+  textarea.json-editor {
+    position: relative;
+    z-index: 2;
+    background: transparent !important;
+    caret-color: #000000;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 0;
+    margin: 0;
+    border: none;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: none !important;
+    box-sizing: border-box;
+    resize: none;
+
+    &::selection {
+      background: rgba(0, 123, 255, 0.3);
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+    }
+
+    &::placeholder {
+      color: rgba(0, 0, 0, 0.54);
+      -webkit-text-fill-color: rgba(0, 0, 0, 0.54);
+      opacity: 1;
+    }
+
+    &:focus {
+      outline: none;
+      color: transparent !important;
+      -webkit-text-fill-color: transparent !important;
+    }
+  }
+}
+

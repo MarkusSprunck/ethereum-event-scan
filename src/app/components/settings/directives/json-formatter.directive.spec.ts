@@ -55,7 +55,7 @@ describe('JsonFormatterDirective (unit, direct)', () => {
     dir.onBlur(new Event('blur'));
     console.debug('onBlur ng.setValue.calls', (ng.control.setValue as any).mock.calls.length);
     console.debug('onBlur renderer.setProperty.calls', (renderer.setProperty as any).mock.calls.length);
-    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"a":1}]')) , { emitEvent: false });
+    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"a":1}]')) , { emitEvent: true });
     expect(renderer.setProperty).toHaveBeenCalled();
   });
 
@@ -84,7 +84,7 @@ describe('JsonFormatterDirective (unit, direct)', () => {
     jest.advanceTimersByTime(0);
 
     // ng.control.setValue should have been called with compacted JSON
-    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"a":1}]')) , { emitEvent: false });
+    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"a":1}]')) , { emitEvent: true });
     // renderer should update DOM as well
     expect(renderer.setProperty).toHaveBeenCalled();
     jest.useRealTimers();
@@ -99,7 +99,7 @@ describe('JsonFormatterDirective (unit, direct)', () => {
     const dir: any = new JsonFormatterDirective(el, renderer as any, ng);
     jest.advanceTimersByTime(0);
 
-    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"b":2}]')) , { emitEvent: false });
+    expect(ng.control.setValue).toHaveBeenCalledWith(JSON.stringify(JSON.parse('[{"b":2}]')) , { emitEvent: true });
     expect(renderer.setProperty).toHaveBeenCalled();
     jest.useRealTimers();
   });
