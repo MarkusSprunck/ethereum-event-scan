@@ -291,68 +291,105 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
 
   ngOnInit(): void {
     // Initialize form controls from @Input properties so the template shows current values
-    try {
-      this.form.patchValue({
-        provider: this.provider || '',
-        contract: this.contract || '',
-        abi: this.compactAbi(this.abi || ''),
-        startBlock: this.startBlock || '0',
-        endBlock: this.endBlock || 'latest'
-      });
+    if (this.form) {
+      try {
+        this.form.patchValue({
+          provider: this.provider || '',
+          contract: this.contract || '',
+          abi: this.compactAbi(this.abi || ''),
+          startBlock: this.startBlock || '0',
+          endBlock: this.endBlock || 'latest'
+        });
+      } catch (err) {
+        // patchValue may throw for malformed shapes in rare cases; log and continue
+        console.warn('Failed to patch settings form initial values', err);
+      }
 
       // Keep component.abi and native textarea in sync with the form control
-      try {
-        const abiControl = this.form.controls['abi'];
-        if (abiControl) {
-          abiControl.valueChanges.subscribe((v: any) => {
+      const abiControl = this.form.controls['abi'];
+      if (abiControl && abiControl.valueChanges && typeof abiControl.valueChanges.subscribe === 'function') {
+        const subAbi = abiControl.valueChanges.subscribe((v: any) => {
+          this.abi = v || '';
+          if (typeof document !== 'undefined') {
             try {
-              this.abi = v || '';
               const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
               if (ta && ta.value !== this.abi) { ta.value = this.abi; }
-            } catch (e) { /* ignore DOM errors */ }
-          });
-        }
-      } catch (e) { /* ignore subscription errors */ }
+            } catch (domErr) {
+              console.debug('SettingsComponent: ignored DOM update error for ABI textarea', domErr);
+            }
+          }
+        });
+        this._subscriptions.push(subAbi);
+      }
 
       // Subscribe to startBlock changes and update URL (debounced)
-      try {
-        const startControl = this.form.controls['startBlock'];
-        if (startControl) {
-          const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
-            try {
-              const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
-              this.updateStartValue(value);
-            } catch (e) { /* ignore */ }
-          });
-          this._subscriptions.push(sub);
-        }
-      } catch (e) { /* ignore */ }
+      const startControl = this.form.controls['startBlock'];
+      if (startControl && startControl.valueChanges && typeof startControl.valueChanges.pipe === 'function') {
+        const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
+          const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
+          this.updateStartValue(value);
+        });
+        this._subscriptions.push(sub);
+      }
 
       // Subscribe to provider changes and update URL (debounced)
-      try {
-        const providerControl = this.form.controls['provider'];
-        if (providerControl) {
-          const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
-            try {
-              // updateProviderValue reads from the form; simply call it to preserve behavior
-              this.updateProviderValue();
-            } catch (e) { /* ignore */ }
-          });
-          this._subscriptions.push(sub2);
-        }
-      } catch (e) { /* ignore */ }
-
-    } catch (e) {
-      console.warn('Failed to patch settings form initial values', e);
+      const providerControl = this.form.controls['provider'];
+      if (providerControl && providerControl.valueChanges && typeof providerControl.valueChanges.pipe === 'function') {
+        const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
+          this.updateProviderValue();
+        });
+        this._subscriptions.push(sub2);
+      }
     }
   }
 
   ngOnDestroy(): void {
-    // Clean up subscriptions
-    try {
-      this._subscriptions.forEach(s => { try { s.unsubscribe(); } catch (e) { /* ignore */ } });
-      this._subscriptions = [];
-    } catch (e) { /* ignore */ }
+    // Clean up subscriptions, report if unsubscribe fails for diagnostics
+    this._subscriptions.forEach(s => {
+      if (s && typeof s.unsubscribe === 'function') {
+        try { s.unsubscribe(); } catch (err) { console.debug('SettingsComponent: failed to unsubscribe', err); }
+      }
+    });
+    this._subscriptions = [];
+  }
+
+  ngAfterViewInit(): void {
+    // Ensure the ABI form control reflects the current @Input value after the view initializes
+    setTimeout(() => {
+      if (this.form && this.form.controls['abi']) {
+        try {
+          this.form.controls['abi'].setValue(this.abi || (this.reader && (this.reader.abi || '')) || '');
+        } catch (err) {
+          console.debug('SettingsComponent: failed to set ABI control value', err);
+        }
+      }
+      try { this.cdr.detectChanges(); } catch (err) { console.debug('SettingsComponent: detectChanges failed', err); }
+       if (typeof document !== 'undefined') {
+        try {
+          const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
+          if (ta && this.form && this.form.controls['abi']) {
+            ta.value = this.form.controls['abi'].value || '';
+          }
+        } catch (domErr) { console.debug('SettingsComponent: DOM write to ABI textarea failed', domErr); }
+       }
+     }, 0);
+
+    // Poll reader.abi for a short period in case it is set asynchronously after component init
+    const start = Date.now();
+    const maxMs = 8000; // stop polling after 8s
+    const interval = setInterval(() => {
+      const readerAbi = (this.reader && this.reader.abi) ? this.reader.abi : '';
+      if (readerAbi && readerAbi !== this._lastSeenReaderAbi) {
+        this._lastSeenReaderAbi = readerAbi;
+        if (this.form && this.form.controls['abi'] && this.form.controls['abi'].value !== readerAbi) {
+          try { this.form.controls['abi'].setValue(readerAbi); } catch (err) { console.debug('SettingsComponent: failed to set ABI from reader', err); }
+          try { this.cdr.detectChanges(); } catch (err) { console.debug('SettingsComponent: detectChanges failed after reader ABI update', err); }
+        }
+        clearInterval(interval);
+        return;
+      }
+      if (Date.now() - start > maxMs) { clearInterval(interval); }
+    }, 250);
   }
 
   private compactAbi(abi: string): string {
@@ -390,47 +427,6 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
     }
   }
 
-  ngAfterViewInit(): void {
-    // Ensure the ABI form control reflects the current @Input value after the view initializes
-    try {
-      setTimeout(() => {
-        if (this.form && this.form.controls['abi']) {
-          this.form.controls['abi'].setValue(this.abi || (this.reader && (this.reader.abi || '')) || '');
-        }
-        this.cdr.detectChanges();
-        try {
-          const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
-          if (ta && this.form && this.form.controls['abi']) {
-            ta.value = this.form.controls['abi'].value || '';
-          }
-        } catch (e) { /* ignore DOM errors */ }
-      }, 0);
-
-      // Poll reader.abi for a short period in case it is set asynchronously after component init
-      const start = Date.now();
-      const maxMs = 8000; // stop polling after 8s
-      const interval = setInterval(() => {
-        try {
-          const readerAbi = (this.reader && this.reader.abi) ? this.reader.abi : '';
-          if (readerAbi && readerAbi !== this._lastSeenReaderAbi) {
-            this._lastSeenReaderAbi = readerAbi;
-            if (this.form && this.form.controls['abi'] && this.form.controls['abi'].value !== readerAbi) {
-              this.form.controls['abi'].setValue(readerAbi);
-              this.cdr.detectChanges();
-            }
-            clearInterval(interval);
-            return;
-          }
-          if (Date.now() - start > maxMs) { clearInterval(interval); }
-        } catch (e) {
-          clearInterval(interval);
-        }
-      }, 250);
-
-    } catch (e) {
-      console.warn('Failed to set ABI after view init', e);
-    }
-  }
 
   private loadContractData() {
     if (this.abi !== undefined) {

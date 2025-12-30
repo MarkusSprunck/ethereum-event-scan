@@ -21,12 +21,17 @@ export class JsonFormatterDirective {
     // HostListener('blur', ...) handler is invoked exactly once and receives
     // a genuine Event object (this matches browser behavior).
     setTimeout(() => {
-      try {
-        const evt = new Event('blur', { bubbles: true, cancelable: false });
-        this.el.dispatchEvent(evt);
-      } catch (e) {
-        // Fallback: if dispatching an event is not possible in the environment,
-        // fall back to compacting the value directly.
+      // dispatchEvent may not be available in some test environments, fall back to manual compact
+      if (this.el && typeof this.el.dispatchEvent === 'function') {
+        try {
+          const evt = new Event('blur', { bubbles: true, cancelable: false });
+          this.el.dispatchEvent(evt);
+        } catch (e) {
+          const current = this.getValue();
+          const compact = this.into(current);
+          this.setValue(compact);
+        }
+      } else {
         const current = this.getValue();
         const compact = this.into(current);
         this.setValue(compact);
@@ -49,24 +54,37 @@ export class JsonFormatterDirective {
   }
 
   private getValue(): string {
-    try {
-      if (this.ngControl && this.ngControl.control) {
+    // Prefer reactive form control value when available
+    if (this.ngControl && this.ngControl.control) {
+      try {
         return this.ngControl.control.value || '';
+      } catch (e) {
+        // fall through to DOM read
       }
-    } catch (e) { /* ignore */ }
+    }
     // fallback to DOM value
-    try { return (this.el as HTMLInputElement).value || ''; } catch (e) { return ''; }
+    if (this.el) {
+      return (this.el as HTMLInputElement).value || '';
+    }
+    return '';
   }
 
   private setValue(v: string) {
-    try {
-      if (this.ngControl && this.ngControl.control) {
-        // update FormControl without emitting valueChanges to avoid recursion
+    // update FormControl without emitting events if control exists
+    if (this.ngControl && this.ngControl.control) {
+      try {
         this.ngControl.control.setValue(v, { emitEvent: false });
+      } catch (e) {
+        // continue and attempt DOM update
       }
-    } catch (e) { /* ignore */ }
-    // also update DOM to keep in sync
-    try { this.renderer.setProperty(this.el, 'value', v); } catch (e) { /* ignore */ }
+    }
+    if (this.el && this.renderer) {
+      try {
+        this.renderer.setProperty(this.el, 'value', v);
+      } catch (e) {
+        // ignore renderer errors in exotic environments
+      }
+    }
   }
 
   into(input: any) {

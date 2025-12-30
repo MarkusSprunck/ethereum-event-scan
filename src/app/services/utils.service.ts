@@ -77,51 +77,50 @@ export class UtilsService {
   }
 
   static updateURLParameter(key: string, newValue: string, appendToEnd = false) {
-    try {
-      const href = new URL(window.location.href);
-      if (appendToEnd && href.searchParams.has(key)) {
-        href.searchParams.delete(key);
-      }
-      href.searchParams.set(key, newValue);
-      const params = Array.from(href.searchParams.entries());
-
-      // Desired ordering: start, end, provider (rpc), contract, abi (always at end).
-      const primaryOrder = ['start', 'end', 'provider', 'contract'];
-      const entriesMap = new Map(params);
-
-      const orderedParams: [string, string][] = [];
-      // add primary ordered params if present
-      for (const key of primaryOrder) {
-        if (entriesMap.has(key)) {
-          orderedParams.push([key, entriesMap.get(key)!]);
-          entriesMap.delete(key);
-        }
-      }
-
-      // collect remaining params (excluding abi) in their existing order
-      for (const [k, _v] of params) {
-        if (k === 'abi') { continue; }
-        if (!primaryOrder.includes(k)) {
-          // only add if still present in map (not already added)
-          if (entriesMap.has(k)) {
-            orderedParams.push([k, entriesMap.get(k)!]);
-            entriesMap.delete(k);
-          }
-        }
-      }
-
-      // finally append abi if present so it is always last
-      if (href.searchParams.has('abi')) {
-        orderedParams.push(['abi', href.searchParams.get('abi') || '']);
-      }
-
-      href.search = new URLSearchParams(orderedParams).toString();
-      const newUrl = href.pathname + href.search + href.hash;
-      window.history.pushState({}, '', newUrl);
-
-    } catch (e) {
-        console.warn('error', e);
+    // Guard for non-browser environments
+    if (typeof window === 'undefined' || !('location' in window) || !('history' in window)) {
+      return;
     }
+
+    const href = new URL(window.location.href);
+    if (appendToEnd && href.searchParams.has(key)) {
+      href.searchParams.delete(key);
+    }
+    href.searchParams.set(key, newValue);
+    const params = Array.from(href.searchParams.entries());
+
+    // Desired ordering: start, end, provider (rpc), contract, abi (always at end).
+    const primaryOrder = ['start', 'end', 'provider', 'contract'];
+    const entriesMap = new Map(params);
+
+    const orderedParams: [string, string][] = [];
+    // add primary ordered params if present
+    for (const k of primaryOrder) {
+      if (entriesMap.has(k)) {
+        orderedParams.push([k, entriesMap.get(k)!]);
+        entriesMap.delete(k);
+      }
+    }
+
+    // collect remaining params (excluding abi) in their existing order
+    for (const [k, _v] of params) {
+      if (k === 'abi') { continue; }
+      if (!primaryOrder.includes(k)) {
+        if (entriesMap.has(k)) {
+          orderedParams.push([k, entriesMap.get(k)!]);
+          entriesMap.delete(k);
+        }
+      }
+    }
+
+    // finally append abi if present so it is always last
+    if (href.searchParams.has('abi')) {
+      orderedParams.push(['abi', href.searchParams.get('abi') || '']);
+    }
+
+    href.search = new URLSearchParams(orderedParams).toString();
+    const newUrl = href.pathname + href.search + href.hash;
+    window.history.pushState({}, '', newUrl);
   }
 
   /**
@@ -141,10 +140,14 @@ export class UtilsService {
 
   /** Reload the page after a short delay so history.replaceState has applied. */
   static reloadAfterUpdate(ms: number = 50, reloadFn?: () => void) {
-    try {
-      if (typeof window === 'undefined' || !window || !window.location) { return; }
-      setTimeout(() => { try { (reloadFn ?? (() => window.location.reload()))(); } catch (e) { /* swallow errors in tests */ } }, ms);
-    } catch (e) { /* ignore */ }
+    if (typeof window === 'undefined' || !window || !window.location) { return; }
+    setTimeout(() => {
+      try {
+        (reloadFn ?? (() => window.location.reload()))();
+      } catch (e) {
+        // swallow errors in tests
+      }
+    }, ms);
   }
 
   static fetchABIFromVerifiedContract(contract: string, callback: any) {

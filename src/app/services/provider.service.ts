@@ -82,7 +82,7 @@ export class ProviderService {
     }
 
     // web3.eth.isSyncing() can return a boolean (false) or an object with currentBlock/highestBlock
-    try {
+    if (typeof this.web3.eth.isSyncing === 'function') {
       this.web3.eth.isSyncing()
         .then((sync: any) => {
           if (sync && typeof sync !== 'boolean') {
@@ -91,10 +91,8 @@ export class ProviderService {
           }
         })
         .catch(() => {
-          // ignore
+          // ignore promise rejection
         });
-    } catch (e) {
-      // ignore synchronous errors
     }
 
     return this.highestBlock > this.currentBlock;
@@ -121,7 +119,7 @@ export class ProviderService {
     }
 
     if (this.web3.eth && this.web3.eth.getBlockNumber) {
-      try {
+      if (typeof this.web3.eth.getBlockNumber === 'function') {
         this.web3.eth.getBlockNumber()
           .then((blockNumber: number) => {
             if (blockNumber || blockNumber === 0) {
@@ -132,8 +130,6 @@ export class ProviderService {
           .catch(() => {
             // ignore
           });
-      } catch (e) {
-        // ignore
       }
     }
 

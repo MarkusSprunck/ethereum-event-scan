@@ -30,7 +30,7 @@ try {
       window.location.reload = () => {};
     }
   }
-} catch (e) { /* ignore */ }
+} catch (e) { console.debug('setup-jest: failed to stub window.location.reload', e); }
 
 // Silence debug logs from library internals that are noisy during tests
 console.debug = (..._args) => { /* noop for CI */ };
@@ -48,7 +48,7 @@ console.warn = (...args) => {
       return;
     }
   } catch (e) {
-    // ignore
+    console.debug('setup-jest: console.warn filter failed to stringify args', e);
   }
   _origWarn(...args);
 };
@@ -61,7 +61,7 @@ console.error = (...args) => {
       return;
     }
   } catch (e) {
-    // ignore
+    console.debug('setup-jest: console.error filter failed to stringify args', e);
   }
   _origError(...args);
 };
