@@ -5,6 +5,7 @@ import { makeRoute } from '../../test-helpers';
 
 // Mock pako and blockies to avoid side effects
 jest.mock('pako', () => ({ ungzip: (a: any) => a, inflate: (a: any) => a, inflateRaw: (a: any) => a }));
+// Mock blockies to avoid side effects
 jest.mock('blockies', () => (opts: any) => ({ toDataURL: () => 'data:' + opts.seed }));
 
 describe('Reader service (unit)', () => {
@@ -244,6 +245,10 @@ describe('Reader service (unit)', () => {
 
   it('createActiveContract sets abi to empty when decompression fails and decodedData not JSON', async () => {
     const pako = require('pako');
+    // suppress expected error logs for this test by temporarily stubbing console.error
+    const origConsoleError = console.error;
+    console.error = jest.fn();
+
     const ungzipSpy = jest.spyOn(pako, 'ungzip').mockImplementation(() => { throw new Error('fail'); });
     const inflateSpy = jest.spyOn(pako, 'inflate').mockImplementation(() => { throw new Error('fail'); });
     const inflateRawSpy = jest.spyOn(pako, 'inflateRaw').mockImplementation(() => { throw new Error('fail'); });
@@ -263,6 +268,8 @@ describe('Reader service (unit)', () => {
     ungzipSpy.mockRestore();
     inflateSpy.mockRestore();
     inflateRawSpy.mockRestore();
+    // restore console.error
+    console.error = origConsoleError;
   });
 
   it('getCachedMiner returns cached value if present', () => {

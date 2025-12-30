@@ -43,7 +43,8 @@ const _origError = console.error.bind(console);
 console.warn = (...args) => {
   try {
     const str = args.map(a => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
-    if (str.includes('Web3 provider not initialized') || str.includes('base64->bin failed') || str.includes('Web3 not available for getCachedTimestamp')) {
+    // ignore noisy, non-actionable warnings frequently emitted by web3/tests
+    if (str.includes('Web3 provider not initialized') || str.includes('base64->bin failed') || str.includes('Web3 not available for getCachedTimestamp') || str.includes('Max attempts reached') || str.includes('No reader/web3 available')) {
       return;
     }
   } catch (e) {
@@ -55,7 +56,8 @@ console.warn = (...args) => {
 console.error = (...args) => {
   try {
     const str = args.map(a => (typeof a === 'string' ? a : (a && a.message) || JSON.stringify(a))).join(' ');
-    if (str.includes('Not implemented: navigation') || str.includes('Failed to decode base64 and not hex')) {
+    // ignore recurring, expected errors from test stubs or external services
+    if (str.includes('Not implemented: navigation') || str.includes('Failed to decode base64 and not hex') || str.includes('query returned more than 10000') || str.includes('No reader/web3 available for renderBlock')) {
       return;
     }
   } catch (e) {

@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-import { importProvidersFrom } from '@angular/core';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -7,8 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 describe('AppRoutingModule', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [AppRoutingModule],
-      providers: [importProvidersFrom(RouterModule.forRoot([]))]
+      imports: [RouterModule.forRoot([]), AppRoutingModule]
     });
   });
 

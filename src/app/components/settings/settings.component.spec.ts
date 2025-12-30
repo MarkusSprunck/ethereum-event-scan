@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
-import { SettingsComponent } from './settings.component';
 
 // Minimal Reader stub used for unit tests
 class ReaderStub {
@@ -120,14 +119,17 @@ describe('SettingsComponent consolidated tests', () => {
 
   describe('unit tests (direct instantiation)', () => {
     let comp: SettingsComponent;
+    let SettingsComponentClass: any;
     let reader: ReaderStub;
     let cdrStub: any;
 
     beforeEach(() => {
       reader = new ReaderStub();
       cdrStub = { detectChanges: jest.fn() };
+      // require SettingsComponent lazily to avoid template/style resolution during test discovery
+      SettingsComponentClass = require('./settings.component').SettingsComponent;
       // instantiate SettingsComponent directly with stubs
-      comp = new SettingsComponent(new FormBuilder(), reader as any, cdrStub as any, null as any, null as any);
+      comp = new SettingsComponentClass(new FormBuilder(), reader as any, cdrStub as any, null as any, null as any);
       // initialize form
       comp.ngOnInit();
     });
