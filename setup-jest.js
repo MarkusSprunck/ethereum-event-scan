@@ -2,10 +2,15 @@
 const { polyfillEncoder } = require('jest-preset-angular/setup-env/utils');
 polyfillEncoder();
 
-// Ensure Zone global is defined
-require('zone.js');
-// Then load Zone.js testing helpers
-require('zone.js/testing');
+// Try to load Zone.js (optional) -- wrapping in try/catch lets CI/tests run even if zone.js is removed
+try {
+  // Ensure Zone global is defined
+  require('zone.js');
+  // Then load Zone.js testing helpers
+  require('zone.js/testing');
+} catch (e) {
+  // zone.js not installed; proceed without it (Angular v21 supports zone-less operation in many cases)
+}
 
 const { getTestBed } = require('@angular/core/testing');
 const { BrowserDynamicTestingModule, platformBrowserDynamicTesting } = require('@angular/platform-browser-dynamic/testing');

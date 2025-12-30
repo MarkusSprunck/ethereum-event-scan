@@ -33,5 +33,12 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
