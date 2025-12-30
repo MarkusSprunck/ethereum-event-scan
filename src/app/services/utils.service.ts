@@ -123,6 +123,18 @@ export class UtilsService {
     window.history.pushState({}, '', newUrl);
   }
 
+  static removeURLParameter(key: string) {
+    if (typeof window === 'undefined' || !('location' in window) || !('history' in window)) {
+      return;
+    }
+    const href = new URL(window.location.href);
+    if (href.searchParams.has(key)) {
+      href.searchParams.delete(key);
+      const newUrl = href.pathname + (href.searchParams.toString() ? '?' + href.searchParams.toString() : '') + href.hash;
+      window.history.pushState({}, '', newUrl);
+    }
+  }
+
   /**
    * Compress and create a URL-safe string for ABI; returns the string but does not mutate the URL.
    */

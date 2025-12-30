@@ -8,7 +8,7 @@
 .modal-header-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* top alignment */
+  align-items: center; /* top alignment: center vertically for title and button */
   gap: 1rem;
 }
 
@@ -20,7 +20,7 @@
 
 .modal-close-btn {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .modal-separator {
@@ -30,3 +30,7 @@
   width: 100%;
 }
 
+.modal-body {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

@@ -332,13 +332,42 @@ export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDe
         this._subscriptions.push(sub);
       }
 
-      // Subscribe to provider changes and update URL (debounced)
-      const providerControl = this.form.controls['provider'];
-      if (providerControl && providerControl.valueChanges && typeof providerControl.valueChanges.pipe === 'function') {
-        const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
-          this.updateProviderValue();
+      // Subscribe to endBlock changes and update URL (debounced)
+      const endControl = this.form.controls['endBlock'];
+      if (endControl && endControl.valueChanges && typeof endControl.valueChanges.pipe === 'function') {
+        const subEnd = endControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
+          const value = (typeof v === 'string' && v.length === 0) ? 'latest' : v;
+          this.updateEndValue(); // method reads from form
         });
-        this._subscriptions.push(sub2);
+        this._subscriptions.push(subEnd);
+      }
+
+       // Subscribe to provider changes and update URL (debounced)
+       const providerControl = this.form.controls['provider'];
+       if (providerControl && providerControl.valueChanges && typeof providerControl.valueChanges.pipe === 'function') {
+         const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
+           this.updateProviderValue();
+         });
+         this._subscriptions.push(sub2);
+       }
+
+      // Subscribe to contract changes and update URL (debounced)
+      const contractControl = this.form.controls['contract'];
+      if (contractControl && contractControl.valueChanges && typeof contractControl.valueChanges.pipe === 'function') {
+        const subC = contractControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
+          this.updateContractValue();
+        });
+        this._subscriptions.push(subC);
+      }
+
+      // Subscribe to ABI changes and update compressed ABI in URL (debounced)
+      const abiControl2 = this.form.controls['abi'];
+      if (abiControl2 && abiControl2.valueChanges && typeof abiControl2.valueChanges.pipe === 'function') {
+        const subAbiUrl = abiControl2.valueChanges.pipe(debounceTime(600), distinctUntilChanged()).subscribe((v: any) => {
+          // call the update handler which compresses and updates URL
+          this.updateABIValue(v);
+        });
+        this._subscriptions.push(subAbiUrl);
       }
     }
   }
