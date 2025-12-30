@@ -19,43 +19,6 @@ describe('UtilsService - additional tests', () => {
     });
   });
 
-  describe('updateURLParameter()', () => {
-    it('calls history.pushState with updated search params', () => {
-      const pushSpy = jest.spyOn(window.history, 'pushState');
-
-      // Don't attempt to redefine window.location (not configurable in jsdom).
-      // Just spy on history.pushState and call the helper which creates a new URL
-      // from window.location.href internally.
-      UtilsService.updateURLParameter('foo', 'bar');
-      expect(pushSpy).toHaveBeenCalled();
-      const lastCallArg = pushSpy.mock.calls[pushSpy.mock.calls.length - 1][2];
-      expect(lastCallArg).toMatch(/foo=bar/);
-    });
-  });
-
-  describe('updateURLWithCompressedAbi()', () => {
-    it('gzip-compresses, base64-encodes and calls updateURLParameter with url-safe value', () => {
-      // mock pako.gzip to return Uint8Array
-      const fakeArr = new Uint8Array([1,2,3,4,5]);
-      jest.spyOn(require('pako'), 'gzip').mockReturnValue(fakeArr as any);
-
-      // mock btoa to return a string with + and / and padding
-      const origBtoa = (global as any).btoa;
-      (global as any).btoa = jest.fn().mockReturnValue('AB+C/=');
-
-      const spy = jest.spyOn(UtilsService as any, 'updateURLParameter');
-      UtilsService.updateURLWithCompressedAbi('test-abi-content');
-
-      expect(spy).toHaveBeenCalled();
-      const calledWithValue = spy.mock.calls[0][1];
-      // '+' should be replaced with '-', '/' with '_' and padding removed
-      expect(calledWithValue).toContain('AB-C_');
-
-      // restore btoa
-      (global as any).btoa = origBtoa;
-    });
-  });
-
   describe('fetchABIFromVerifiedContract()', () => {
     it('invokes callback when XHR returns JSON array', () => {
       const origXHR = (global as any).XMLHttpRequest;

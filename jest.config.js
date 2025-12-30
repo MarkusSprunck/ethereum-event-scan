@@ -15,5 +15,10 @@ module.exports = {
   // transform node_modules for Angular and rxjs packages
   transformIgnorePatterns: ['/node_modules/(?!(@angular|rxjs|json-stringify-pretty-compact)/)'],
   moduleFileExtensions: ['ts', 'js', 'mjs', 'html', 'json'],
-  collectCoverageFrom: ['src/**/*.ts', '!src/main.ts', '!src/environments/**', '!src/app/app.module.ts', '!setup-jest.js']
+  // Use V8 coverage provider to avoid babel-plugin-istanbul instrumentation issues
+  coverageProvider: 'v8',
+  coverageReporters: ['text', 'lcov'],
+  // skip collecting coverage from spec files and environment and main entry
+  collectCoverageFrom: ['src/**/*.ts', '!src/**/*.spec.ts', '!src/main.ts', '!src/environments/**', '!src/app/app.module.ts', '!setup-jest.js'],
+  coveragePathIgnorePatterns: ['/node_modules/']
 }
