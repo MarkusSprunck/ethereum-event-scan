@@ -140,10 +140,10 @@ export class UtilsService {
   }
 
   /** Reload the page after a short delay so history.replaceState has applied. */
-  static reloadAfterUpdate(ms: number = 50) {
+  static reloadAfterUpdate(ms: number = 50, reloadFn?: () => void) {
     try {
       if (typeof window === 'undefined' || !window || !window.location) { return; }
-      setTimeout(() => { try { window.location.reload(); } catch (e) { /* swallow errors in tests */ } }, ms);
+      setTimeout(() => { try { (reloadFn ?? (() => window.location.reload()))(); } catch (e) { /* swallow errors in tests */ } }, ms);
     } catch (e) { /* ignore */ }
   }
 
