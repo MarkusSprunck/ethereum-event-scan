@@ -387,7 +387,6 @@ export class Reader {
         this.contract = contact;
 
         if (this.contract.length > 0 && this.abi.length > 0) {
-            try {
                 // `abi` is typed as string in this class, drop redundant typeof check
                 if (this.entity && this.entity.web3 && this.entity.web3.eth) {
                     this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
@@ -395,10 +394,6 @@ export class Reader {
                     console.warn('Web3 provider not initialized; cannot create contract instance in setContractAddress.');
                     this.contractInstance = null;
                 }
-            } catch (e) {
-                // nothing to do
-                this.contractInstance = null;
-            }
         }
     }
 

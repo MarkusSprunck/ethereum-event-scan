@@ -114,6 +114,27 @@ describe('EventsTableComponent (basic)', () => {
     EventData.clear();
   });
 
+  it('panelMessage includes jobs running count when runningJobs >= 1 (line 130)', () => {
+    // Test the specific line: jobs = ' [' + this.eventReader.runningJobs + ' jobs running]';
+    EventData.clear();
+    comp['listData'] = { filteredData: [] } as any;
+
+    // Set runningJobs to 1 (minimum to trigger the if condition)
+    reader.runningJobs = 1;
+    let message = comp.panelMessage();
+    expect(message).toContain('[1 jobs running]');
+
+    // Set runningJobs to 3 to test with multiple jobs
+    reader.runningJobs = 3;
+    message = comp.panelMessage();
+    expect(message).toContain('[3 jobs running]');
+
+    // Verify the exact format of the jobs string
+    expect(message).toMatch(/\[3 jobs running\]/);
+
+    EventData.clear();
+  });
+
   it('ngOnInit registers update callback and populates listData on update', () => {
     // prepare EventData with two events so sorting works
     EventData.clear();
@@ -139,6 +160,108 @@ describe('EventsTableComponent (basic)', () => {
     const matches = predicate({ name: 'A' }, 'a');
     expect(typeof matches).toBe('boolean');
     EventData.clear();
+  });
+
+  it('constructor sets searchKey to empty string when queryParams has no searchKey (line 72)', () => {
+    // test the else branch in constructor subscription
+    const routeWithoutSearchKey = { queryParams: of({}) } as any;
+    const testComp = new EventsTableComponent(
+      new FormBuilder(),
+      reader as any,
+      routeWithoutSearchKey,
+      dialogStub as any,
+      routerStub as any
+    );
+    expect(testComp.searchKey).toBe('');
+  });
+
+  it('constructor sets searchKey from queryParams when present', () => {
+    const routeWithSearchKey = { queryParams: of({ searchKey: 'test-search' }) } as any;
+    const testComp = new EventsTableComponent(
+      new FormBuilder(),
+      reader as any,
+      routeWithSearchKey,
+      dialogStub as any,
+      routerStub as any
+    );
+    expect(testComp.searchKey).toBe('test-search');
+  });
+
+  it('isElementVisible uses pageSize fallback chain when pageSize is undefined (lines 130-131)', () => {
+    // setup: paginator with undefined pageSize, listData with filteredData
+    comp['listData'] = { filteredData: [{id:1},{id:2},{id:3}] } as any;
+    comp['paginator'] = { pageIndex: 0, pageSize: undefined } as any;
+
+    // This should trigger the fallback: pageSize ?? (this.listData.filteredData?.length ?? 0)
+    // Expected: pageSize should become 3 (length of filteredData)
+    const element = comp['listData'].filteredData[0];
+    const result = comp.isElementVisible(element);
+
+    // element at index 0 should be visible when pageSize falls back to filteredData.length (3)
+    expect(result).toBeTruthy();
+  });
+
+  it('isElementVisible uses pageIndex fallback when pageIndex is undefined (line 150)', () => {
+    // setup: paginator with undefined pageIndex
+    comp['listData'] = { filteredData: [{id:1},{id:2},{id:3}] } as any;
+    comp['paginator'] = { pageIndex: undefined, pageSize: 2 } as any;
+
+    // This should trigger the fallback: pageIndex ?? 0
+    // Expected: pageIndex should become 0
+    const element = comp['listData'].filteredData[0];
+    const result = comp.isElementVisible(element);
+
+    // element at index 0 should be visible when pageIndex falls back to 0
+    expect(result).toBeTruthy();
+  });
+
+  it('isElementVisible uses pageIndex fallback when pageIndex is null (line 150)', () => {
+    // setup: paginator with null pageIndex (different from undefined)
+    comp['listData'] = { filteredData: [{id:1},{id:2},{id:3}] } as any;
+    comp['paginator'] = { pageIndex: null as any, pageSize: 2 } as any;
+
+    // This should trigger the fallback: pageIndex ?? 0
+    // Expected: pageIndex should become 0
+    const element = comp['listData'].filteredData[0];
+    const result = comp.isElementVisible(element);
+
+    // element at index 0 should be visible when pageIndex falls back to 0
+    expect(result).toBeTruthy();
+  });
+
+
+  it('isElementVisible uses double fallback when both pageSize and filteredData are undefined (lines 130-131)', () => {
+    // setup: paginator with undefined pageSize, listData with empty filteredData array
+    comp['listData'] = { filteredData: [] } as any;
+    comp['paginator'] = { pageIndex: 0, pageSize: undefined } as any;
+
+    // This should trigger fallback: pageSize ?? (this.listData.filteredData?.length ?? 0)
+    // Expected: pageSize should become 0 (length of empty array)
+    const result = comp.isElementVisible({});
+
+    // With pageSize 0, maxID = -1, and indexOf({}) returns -1, so element should be invisible
+    expect(result).toBeFalsy();
+  });
+
+  it('openDetailsDialog calls preventDefault when event is provided (lines 167-168)', () => {
+    const mockEvent = { preventDefault: jest.fn() };
+    comp.openDetailsDialog(mockEvent, '123', '0xabc');
+
+    // verify preventDefault was called
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    // verify dialog.open was also called
+    expect(dialogStub.open).toHaveBeenCalled();
+  });
+
+  it('openDetailsDialog does not crash when event is null', () => {
+    // reset the spy
+    dialogStub.open.mockClear();
+
+    // This tests the if (event) branch - when event is falsy, preventDefault should not be called
+    expect(() => comp.openDetailsDialog(null, '456', '0xdef')).not.toThrow();
+
+    // verify dialog.open was still called
+    expect(dialogStub.open).toHaveBeenCalled();
   });
 
 });

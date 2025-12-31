@@ -22,9 +22,25 @@
  * SOFTWARE.
  */
 
-import {Component, Input, OnInit, OnChanges, SimpleChanges, AfterViewInit, ChangeDetectorRef, OnDestroy} from '@angular/core';
+import {
+    Component,
+    Input,
+    OnInit,
+    OnChanges,
+    SimpleChanges,
+    AfterViewInit,
+    ChangeDetectorRef,
+    OnDestroy
+} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
+import {
+    FormBuilder,
+    FormGroup,
+    Validators,
+    FormsModule,
+    ReactiveFormsModule,
+    AbstractControl
+} from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -35,533 +51,488 @@ import {MatButtonModule} from '@angular/material/button';
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {Reader} from '../../services/reader.service';
 import stringify from 'json-stringify-pretty-compact';
-import { JsonFormatterDirective } from './directives/json-formatter.directive';
+import {JsonFormatterDirective} from './directives/json-formatter.directive';
 import {Router, ActivatedRoute} from '@angular/router';
 import {Subscription, debounceTime, distinctUntilChanged} from 'rxjs';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 interface AbiEntry {
-   anonymous?: boolean;
-   inputs: any[];
-   name: string;
-   type: string;
+    anonymous?: boolean;
+    inputs: any[];
+    name: string;
+    type: string;
 }
 
 @Component({
-  selector: 'app-settings',
-  standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCheckboxModule, MatButtonModule, TextFieldModule, JsonFormatterDirective],
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    selector: 'app-settings',
+    standalone: true,
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCheckboxModule, MatButtonModule, TextFieldModule, JsonFormatterDirective],
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class SettingsComponent implements OnInit, OnChanges {
 
-  public form: FormGroup;
-  private _lastSeenReaderAbi = '';
-  private _subscriptions: Subscription[] = [];
-  public highlightedAbi: SafeHtml = '';
+    public form: FormGroup;
+    private _lastSeenReaderAbi = '';
+    private _subscriptions: Subscription[] = [];
+    public highlightedAbi: SafeHtml = '';
 
-  @Input() public lastBlock = 0;
-  @Input() public startBlock = '';
-  @Input() public endBlock = '';
-  @Input() public abi = '';
-  @Input() public contract = '';
-  @Input() public provider = '';
-  @Input() public connected = false;
+    @Input() public lastBlock = 0;
+    @Input() public startBlock = '';
+    @Input() public endBlock = '';
+    @Input() public abi = '';
+    @Input() public contract = '';
+    @Input() public provider = '';
+    @Input() public connected = false;
 
-  panelOpenState = true;
+    panelOpenState = true;
 
-  noOfRowsAbi = 1;
+    noOfRowsAbi = 1;
 
-  constructor(private fb: FormBuilder,
-              private reader: Reader,
-              private cdr: ChangeDetectorRef,
-              private router: Router,
-              private route: ActivatedRoute,
-              private sanitizer: DomSanitizer) {
-    this.form = this.fb.group({
-      provider: [this.provider || '', [Validators.required], this.isProviderConnected.bind(this)],
-      contract: [this.contract || '', [Validators.required], this.isContractOk.bind(this)],
-      abi: [this.abi || '', [Validators.required], this.isABIOk.bind(this)],
-      startBlock: [this.startBlock || '0', [Validators.required], this.isStartBlockOk.bind(this)],
-      lastBlock: [this.lastBlock || ''],
-      endBlock: [this.endBlock || 'latest', [Validators.required], this.isEndBlockOk.bind(this)]
-    });
-  }
-
-  panelMessage() {
-    return ('Last Block ' + this.lastBlock + '');
-  }
-
-  isProviderConnected(control: AbstractControl) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // use control.value if available
-        const val = (control && control.value) ? control.value : this.provider;
-        if (this.connected || (typeof val === 'string' && val.trim().length > 0 && this.connected)) {
-          resolve(null);
-        } else {
-          resolve({connected: false});
-        }
-      }, 6000);
-    });
-  }
-
-  isContractOk(control: AbstractControl) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const candidate = (control && control.value) ? control.value : this.contract;
-        const regexPattern = /0x[0-9A-Fa-f]{40}/;
-        const match = (candidate || '').match(regexPattern);
-        if (match && candidate === match[0]) {
-          resolve(null);
-        } else {
-          resolve({connected: false});
-        }
-      }, 500);
-    });
-  }
-
-  isABIOk(control: AbstractControl) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const candidate = (control && control.value) ? control.value : this.abi;
-        try {
-          JSON.parse(candidate);
-          resolve(null);
-        } catch (e) {
-          resolve({abi_ok: false});
-        }
-      }, 500);
-    });
-  }
-
-  isStartBlockOk(control: AbstractControl) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const candidate = (control && control.value) ? control.value : this.startBlock;
-        const regexPattern = /^[0-9]+$/;
-        const match = (candidate || '').match(regexPattern);
-        if (match && candidate === match[0]) {
-          resolve(null);
-        } else {
-          resolve({isEndBlockValid: false});
-        }
-      }, 500);
-    });
-  }
-
-  isEndBlockOk(control: AbstractControl) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const candidate = (control && control.value) ? control.value : this.endBlock;
-        const regexPattern = /^[0-9]+$/;
-        const match = (candidate || '').match(regexPattern);
-        if (match && candidate === match[0]) {
-          resolve(null);
-        } else if (typeof candidate === 'string' && candidate.toUpperCase() === 'LATEST') {
-          resolve(null);
-        } else {
-          resolve({isEndBlockValid: false});
-        }
-      }, 500);
-    });
-  }
-
-  updateStartValue(value?: string) {
-    // Prefer explicit value (from input event). Fallback to form control value.
-    const result: string = (typeof value === 'string') ? ((value.length === 0) ? '0' : value) : ((this.form.get('startBlock')?.value || '0'));
-    if (this.router && this.route) {
-      // noinspection JSIgnoredPromiseFromCall
-        this.router.navigate([], { relativeTo: this.route, queryParams: { start: result }, queryParamsHandling: 'merge' });
+    constructor(private fb: FormBuilder,
+                private reader: Reader,
+                private cdr: ChangeDetectorRef,
+                private router: Router,
+                private route: ActivatedRoute,
+                private sanitizer: DomSanitizer) {
+        this.form = this.fb.group({
+            provider: [this.provider || '', [Validators.required], this.isProviderConnected.bind(this)],
+            contract: [this.contract || '', [Validators.required], this.isContractOk.bind(this)],
+            abi: [this.abi || '', [Validators.required], this.isABIOk.bind(this)],
+            startBlock: [this.startBlock || '0', [Validators.required], this.isStartBlockOk.bind(this)],
+            lastBlock: [this.lastBlock || ''],
+            endBlock: [this.endBlock || 'latest', [Validators.required], this.isEndBlockOk.bind(this)]
+        });
     }
 
-    UtilsService.updateURLParameter('start', result);
-    this.startBlock = result;
-  }
-
-  updateProviderValue() {
-    const val = this.form.get('provider');
-    const v = (val && val.value) ? val.value : this.provider;
-    if (this.router && this.route) {
-      // noinspection JSIgnoredPromiseFromCall
-        this.router.navigate([], { relativeTo: this.route, queryParams: { provider: v }, queryParamsHandling: 'merge' });
+    panelMessage() {
+        return ('Last Block ' + this.lastBlock + '');
     }
 
-    UtilsService.updateURLParameter('provider', v);
-    this.provider = (typeof v === 'string') ? v.trim() : v;
-
-    this.form.controls['provider'].clearValidators();
-    this.loadContractData();
-  }
-
-  updateEndValue() {
-    const val = this.form.get('endBlock');
-    const v = (val && val.value) ? val.value : this.endBlock;
-    if (this.router && this.route) {
-      // noinspection JSIgnoredPromiseFromCall
-        this.router.navigate([], { relativeTo: this.route, queryParams: { end: v }, queryParamsHandling: 'merge' });
+    isProviderConnected(control: AbstractControl) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                if (this.connected) {
+                    resolve(null);
+                } else {
+                    resolve({connected: false});
+                }
+            }, 6000);
+        });
     }
 
-    UtilsService.updateURLParameter('end', v);
-    this.endBlock = v;
-    this.loadContractData();
-  }
+    isContractOk(control: AbstractControl) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const candidate = (control && control.value) ? control.value : this.contract;
+                const regexPattern = /0x[0-9A-Fa-f]{40}/;
+                const match = (candidate || '').match(regexPattern);
+                if (match && candidate === match[0]) {
+                    resolve(null);
+                } else {
+                    resolve({connected: false});
+                }
+            }, 500);
+        });
+    }
 
-  updateContractValue() {
-    const val = this.form.get('contract');
-    const candidate = (val && val.value) ? val.value : this.contract;
-    if (candidate) {
-      if (this.provider.length > 0 && candidate.trim().length > 0 && this.abi.length === 0) {
-        UtilsService.fetchABIFromVerifiedContract(candidate.trim(), (value: string) => {
-            if (this.router && this.route) {
-              const urlSafe = UtilsService.compressAbiToUrlSafe(value);
-              // noinspection JSIgnoredPromiseFromCall
-                this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
+    isABIOk(control: AbstractControl) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const candidate = (control && control.value) ? control.value : this.abi;
+                try {
+                    JSON.parse(candidate);
+                    resolve(null);
+                } catch (e) {
+                    resolve({abi_ok: false});
+                }
+            }, 500);
+        });
+    }
+
+    isStartBlockOk(control: AbstractControl) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const candidate = (control && control.value) ? control.value : this.startBlock;
+                const regexPattern = /^[0-9]+$/;
+                const match = (candidate || '').match(regexPattern);
+                if (match && candidate === match[0]) {
+                    resolve(null);
+                } else {
+                    resolve({isEndBlockValid: false});
+                }
+            }, 500);
+        });
+    }
+
+    isEndBlockOk(control: AbstractControl) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const candidate = (control && control.value) ? control.value : this.endBlock;
+                const regexPattern = /^[0-9]+$/;
+                const match = (candidate || '').match(regexPattern);
+                if (match && candidate === match[0]) {
+                    resolve(null);
+                } else if (typeof candidate === 'string' && candidate.toUpperCase() === 'LATEST') {
+                    resolve(null);
+                } else {
+                    resolve({isEndBlockValid: false});
+                }
+            }, 500);
+        });
+    }
+
+    updateStartValue(value?: string) {
+        // Prefer explicit value (from input event). Fallback to form control value.
+        const result: string = (typeof value === 'string') ? ((value.length === 0) ? '0' : value) : ((this.form.get('startBlock')?.value || '0'));
+        if (this.router && this.route) {
+            // noinspection JSIgnoredPromiseFromCall
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {start: result},
+                queryParamsHandling: 'merge'
+            });
+        } else {
+            UtilsService.updateURLParameter('start', result);
+        }
+        this.startBlock = result;
+    }
+
+    updateProviderValue() {
+        const val = this.form.get('provider');
+        const v = (val && val.value) ? val.value : this.provider;
+        if (this.router && this.route) {
+            // noinspection JSIgnoredPromiseFromCall
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {provider: v},
+                queryParamsHandling: 'merge'
+            });
+        } else {
+            UtilsService.updateURLParameter('provider', v);
+        }
+        this.provider = (typeof v === 'string') ? v.trim() : v;
+
+        this.form.controls['provider'].clearValidators();
+        this.loadContractData();
+    }
+
+    updateEndValue() {
+        const val = this.form.get('endBlock');
+        const v = (val && val.value) ? val.value : this.endBlock;
+        if (this.router && this.route) {
+            // noinspection JSIgnoredPromiseFromCall
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {end: v},
+                queryParamsHandling: 'merge'
+            });
+        } else {
+            UtilsService.updateURLParameter('end', v);
+        }
+        this.endBlock = v;
+        this.loadContractData();
+    }
+
+    updateContractValue() {
+        const val = this.form.get('contract');
+        const candidate = (val && val.value) ? val.value : this.contract;
+        if (candidate) {
+            if (this.provider.length > 0 && candidate.trim().length > 0 && this.abi.length === 0) {
+                UtilsService.fetchABIFromVerifiedContract(candidate.trim(), (value: string) => {
+                        if (this.router && this.route) {
+                            const urlSafe = UtilsService.compressAbiToUrlSafe(value);
+                            // noinspection JSIgnoredPromiseFromCall
+                            this.router.navigate([], {
+                                relativeTo: this.route,
+                                queryParams: {abi: urlSafe},
+                                queryParamsHandling: 'merge'
+                            });
+                        } else {
+                            UtilsService.updateURLWithCompressedAbi(value);
+                        }
+                        this.form.controls['abi'].setValue(value);
+                        this.updateContract(candidate);
+                    }
+                );
             } else {
-              UtilsService.updateURLWithCompressedAbi(value);
+                this.updateContract(candidate);
             }
-            this.form.controls['abi'].setValue(value);
-            this.updateContract(candidate);
-          }
-        );
-      } else {
-        this.updateContract(candidate);
-      }
-    }
-  }
-
-  updateABIValue(value?: string) {
-     const controlValue = (typeof value === 'string') ? value : (this.form.get('abi') ? this.form.get('abi')!.value : '');
-     if (controlValue !== undefined) {
-       if (this.provider.length > 0 && this.contract.trim().length > 0 && controlValue.trim().length === 0) {
-
-         UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (val: string) => {
-             // compress ABI and set as query param; use router if available, otherwise UtilsService helper
-             const urlSafe = UtilsService.compressAbiToUrlSafe(val);
-             if (this.router && this.route) {
-               // noinspection JSIgnoredPromiseFromCall
-                 this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
-             } else {
-               UtilsService.updateURLWithCompressedAbi(val);
-             }
-             this.form.controls['abi'].setValue(val);
-             this.abi = val;
-             // clear errors since we just set a valid abi
-             this.form.controls['abi'].setErrors(null);
-           }
-         );
-       } else {
-         try {
-           const objAbi: AbiEntry[]  = JSON.parse(controlValue);
-           const filteredData: AbiEntry[] = (objAbi.filter((abiEntry) => abiEntry.type === 'event'));
-           filteredData.forEach(function (v) {
-              delete v['anonymous'];
-           });
-           this.abi = stringify(filteredData);
-
-           // compress ABI and set as query param
-           const urlSafe = UtilsService.compressAbiToUrlSafe(this.abi);
-           if (this.router && this.route) {
-             // noinspection JSIgnoredPromiseFromCall
-               this.router.navigate([], { relativeTo: this.route, queryParams: { abi: urlSafe }, queryParamsHandling: 'merge' });
-           } else {
-             UtilsService.updateURLWithCompressedAbi(this.abi);
-           }
-             this.loadContractData();
-           // clear errors on successful parse
-           this.form.controls['abi'].setErrors(null);
-         } catch (e) {
-           // invalid JSON — mark control as invalid manually
-           this.form.controls['abi'].setErrors({json: true});
-         }
-       }
-     }
-   }
-
-  onBlurAbi() {
-    this.noOfRowsAbi = 1;
-    // Delay to allow JsonFormatterDirective to complete formatting
-    setTimeout(() => {
-      this.updateHighlightedAbi();
-    }, 10);
-  }
-
-  onFocusAbi() {
-    this.noOfRowsAbi = 15;
-    // Delay to allow JsonFormatterDirective to complete formatting
-    setTimeout(() => {
-      this.updateHighlightedAbi();
-    }, 10);
-  }
-
-  onScrollAbi(event: Event) {
-    const textarea = event.target as HTMLTextAreaElement;
-    const highlightDiv = textarea.parentElement?.querySelector('.json-highlight') as HTMLElement;
-    if (highlightDiv) {
-      highlightDiv.scrollTop = textarea.scrollTop;
-      highlightDiv.scrollLeft = textarea.scrollLeft;
-    }
-  }
-
-  private updateHighlightedAbi() {
-    const abiValue = this.form.get('abi')?.value || '';
-    this.highlightedAbi = this.sanitizer.bypassSecurityTrustHtml(this.highlightJson(abiValue));
-  }
-
-  private highlightJson(json: string): string {
-    if (!json || json.trim().length === 0) {
-      return '';
-    }
-
-    // Use the text as-is from the textarea (already formatted by JsonFormatterDirective)
-    // Just colorize it without re-formatting to ensure alignment
-    return this.colorizeJson(json);
-  }
-
-  private colorizeJson(text: string): string {
-    // Escape HTML special characters first
-    text = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
-    // Colorize JSON syntax
-    return text.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-      let cls = 'json-number';
-
-      if (/^"/.test(match)) {
-        if (/:$/.test(match)) {
-          cls = 'json-key';
-        } else {
-          cls = 'json-string';
         }
-      } else if (/true|false/.test(match)) {
-        cls = 'json-boolean';
-      } else if (/null/.test(match)) {
-        cls = 'json-null';
-      }
+    }
 
-      return '<span class="' + cls + '">' + match + '</span>';
-    }).replace(/([{}[\],:])/g, '<span class="json-punctuation">$1</span>');
-  }
+    updateABIValue(value?: string) {
+        const controlValue = (typeof value === 'string') ? value : (this.form.get('abi') ? this.form.get('abi')!.value : '');
+        if (controlValue !== undefined) {
+            if (this.provider.length > 0 && this.contract.trim().length > 0 && controlValue.trim().length === 0) {
 
-  reloadPage() {
-    // Centralized reload helper (keeps tests safe)
-    UtilsService.reloadAfterUpdate();
-  }
+                UtilsService.fetchABIFromVerifiedContract(this.contract.trim(), (val: string) => {
+                        // compress ABI and set as query param; use router if available, otherwise UtilsService helper
+                        const urlSafe = UtilsService.compressAbiToUrlSafe(val);
+                        if (this.router && this.route) {
+                            // noinspection JSIgnoredPromiseFromCall
+                            this.router.navigate([], {
+                                relativeTo: this.route,
+                                queryParams: {abi: urlSafe},
+                                queryParamsHandling: 'merge'
+                            });
+                        } else {
+                            UtilsService.updateURLWithCompressedAbi(val);
+                        }
+                        this.form.controls['abi'].setValue(val);
+                        this.abi = val;
+                        // clear errors since we just set a valid abi
+                        this.form.controls['abi'].setErrors(null);
+                    }
+                );
+            } else {
+                try {
+                    const objAbi: AbiEntry[] = JSON.parse(controlValue);
+                    const filteredData: AbiEntry[] = (objAbi.filter((abiEntry) => abiEntry.type === 'event'));
+                    filteredData.forEach(function (v) {
+                        delete v['anonymous'];
+                    });
+                    this.abi = stringify(filteredData);
 
-  ngOnInit(): void {
-    // Initialize form controls from @Input properties so the template shows current values
-    if (this.form) {
-      try {
-        this.form.patchValue({
-          provider: this.provider || '',
-          contract: this.contract || '',
-          abi: this.compactAbi(this.abi || ''),
-          startBlock: this.startBlock || '0',
-          endBlock: this.endBlock || 'latest'
-        });
-      } catch (err) {
-        // patchValue may throw for malformed shapes in rare cases; log and continue
-        console.warn('Failed to patch settings form initial values', err);
-      }
-
-      // Keep component.abi and native textarea in sync with the form control
-      const abiControl = this.form.controls['abi'];
-      if (abiControl && abiControl.valueChanges && typeof abiControl.valueChanges.subscribe === 'function') {
-        const subAbi = abiControl.valueChanges.subscribe((v: any) => {
-          this.abi = v || '';
-          this.updateHighlightedAbi();
-          if (typeof document !== 'undefined') {
-            try {
-              const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
-              if (ta && ta.value !== this.abi) { ta.value = this.abi; }
-            } catch (domErr) {
-              console.debug('SettingsComponent: ignored DOM update error for ABI textarea', domErr);
+                    // compress ABI and set as query param
+                    const urlSafe = UtilsService.compressAbiToUrlSafe(this.abi);
+                    if (this.router && this.route) {
+                        // noinspection JSIgnoredPromiseFromCall
+                        this.router.navigate([], {
+                            relativeTo: this.route,
+                            queryParams: {abi: urlSafe},
+                            queryParamsHandling: 'merge'
+                        });
+                    } else {
+                        UtilsService.updateURLWithCompressedAbi(this.abi);
+                    }
+                    this.loadContractData();
+                    // clear errors on successful parse
+                    this.form.controls['abi'].setErrors(null);
+                } catch (e) {
+                    // invalid JSON — mark control as invalid manually
+                    this.form.controls['abi'].setErrors({json: true});
+                }
             }
-          }
-        });
-        this._subscriptions.push(subAbi);
-      }
-
-      // Subscribe to startBlock changes and update URL (debounced)
-      const startControl = this.form.controls['startBlock'];
-      if (startControl && startControl.valueChanges && typeof startControl.valueChanges.pipe === 'function') {
-        const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
-          const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
-          this.updateStartValue(value);
-        });
-        this._subscriptions.push(sub);
-      }
-
-      // Subscribe to endBlock changes and update URL (debounced)
-      const endControl = this.form.controls['endBlock'];
-      if (endControl && endControl.valueChanges && typeof endControl.valueChanges.pipe === 'function') {
-        const subEnd = endControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
-          const value = (typeof v === 'string' && v.length === 0) ? 'latest' : v;
-          this.updateEndValue(); // method reads from form
-        });
-        this._subscriptions.push(subEnd);
-      }
-
-       // Subscribe to provider changes and update URL (debounced)
-       const providerControl = this.form.controls['provider'];
-       if (providerControl && providerControl.valueChanges && typeof providerControl.valueChanges.pipe === 'function') {
-         const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
-           this.updateProviderValue();
-         });
-         this._subscriptions.push(sub2);
-       }
-
-      // Subscribe to contract changes and update URL (debounced)
-      const contractControl = this.form.controls['contract'];
-      if (contractControl && contractControl.valueChanges && typeof contractControl.valueChanges.pipe === 'function') {
-        const subC = contractControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
-          this.updateContractValue();
-        });
-        this._subscriptions.push(subC);
-      }
-
-      // Subscribe to ABI changes and update compressed ABI in URL (debounced)
-      const abiControl2 = this.form.controls['abi'];
-      if (abiControl2 && abiControl2.valueChanges && typeof abiControl2.valueChanges.pipe === 'function') {
-        const subAbiUrl = abiControl2.valueChanges.pipe(debounceTime(600), distinctUntilChanged()).subscribe((v: any) => {
-          // call the update handler which compresses and updates URL
-          this.updateABIValue(v);
-        });
-        this._subscriptions.push(subAbiUrl);
-      }
+        }
     }
 
-    // Initialize highlighted ABI
-    this.updateHighlightedAbi();
-  }
-
-  ngOnDestroy(): void {
-    // Clean up subscriptions, report if unsubscribe fails for diagnostics
-    this._subscriptions.forEach(s => {
-      if (s && typeof s.unsubscribe === 'function') {
-        try { s.unsubscribe(); } catch (err) { console.debug('SettingsComponent: failed to unsubscribe', err); }
-      }
-    });
-    this._subscriptions = [];
-  }
-
-  ngAfterViewInit(): void {
-    // Ensure the ABI form control reflects the current @Input value after the view initializes
-    setTimeout(() => {
-      if (this.form && this.form.controls['abi']) {
-        try {
-          this.form.controls['abi'].setValue(this.abi || (this.reader && (this.reader.abi || '')) || '');
-          this.updateHighlightedAbi();
-        } catch (err) {
-          console.debug('SettingsComponent: failed to set ABI control value', err);
-        }
-      }
-      try { this.cdr.detectChanges(); } catch (err) { console.debug('SettingsComponent: detectChanges failed', err); }
-       if (typeof document !== 'undefined') {
-        try {
-          const ta = document.getElementById('abi') as HTMLTextAreaElement | null;
-          if (ta && this.form && this.form.controls['abi']) {
-            ta.value = this.form.controls['abi'].value || '';
-          }
-        } catch (domErr) { console.debug('SettingsComponent: DOM write to ABI textarea failed', domErr); }
-       }
-     }, 0);
-
-    // Poll reader.abi for a short period in case it is set asynchronously after component init
-    const start = Date.now();
-    const maxMs = 8000; // stop polling after 8s
-    const interval = setInterval(() => {
-      const readerAbi = (this.reader && this.reader.abi) ? this.reader.abi : '';
-      if (readerAbi && readerAbi !== this._lastSeenReaderAbi) {
-        this._lastSeenReaderAbi = readerAbi;
-        if (this.form && this.form.controls['abi'] && this.form.controls['abi'].value !== readerAbi) {
-          try {
-            this.form.controls['abi'].setValue(readerAbi);
+    onBlurAbi() {
+        this.noOfRowsAbi = 1;
+        // Delay to allow JsonFormatterDirective to complete formatting
+        setTimeout(() => {
             this.updateHighlightedAbi();
-          } catch (err) { console.debug('SettingsComponent: failed to set ABI from reader', err); }
-          try { this.cdr.detectChanges(); } catch (err) { console.debug('SettingsComponent: detectChanges failed after reader ABI update', err); }
+        }, 10);
+    }
+
+    onFocusAbi() {
+        this.noOfRowsAbi = 15;
+        // Delay to allow JsonFormatterDirective to complete formatting
+        setTimeout(() => {
+            this.updateHighlightedAbi();
+        }, 10);
+    }
+
+    onScrollAbi(event: Event) {
+        const textarea = event.target as HTMLTextAreaElement;
+        const highlightDiv = textarea.parentElement?.querySelector('.json-highlight') as HTMLElement;
+        if (highlightDiv) {
+            highlightDiv.scrollTop = textarea.scrollTop;
+            highlightDiv.scrollLeft = textarea.scrollLeft;
         }
-        clearInterval(interval);
-        return;
-      }
-      if (Date.now() - start > maxMs) { clearInterval(interval); }
-    }, 250);
-  }
+    }
 
-  private compactAbi(abi: string): string {
-    try {
-      const parsedAbi = JSON.parse(abi);
-      return stringify(parsedAbi);
-    } catch (e) {
-      return abi; // Return original ABI if parsing fails
+    private updateHighlightedAbi() {
+        const abiValue = this.form.get('abi')?.value || '';
+        this.highlightedAbi = this.sanitizer.bypassSecurityTrustHtml(this.highlightJson(abiValue));
     }
-  }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    // If any input changes after initialization, update the form controls accordingly
-    if (!this.form) {
-      return;
+    private highlightJson(json: string): string {
+        if (!json || json.trim().length === 0) {
+            return '';
+        }
+
+        // Use the text as-is from the textarea (already formatted by JsonFormatterDirective)
+        // Just colorize it without re-formatting to ensure alignment
+        return this.colorizeJson(json);
     }
-    const patch: any = {};
-    if (changes['provider'] && typeof changes['provider'].currentValue !== 'undefined') {
-      patch.provider = changes['provider'].currentValue || '';
+
+    private colorizeJson(text: string): string {
+        // Escape HTML special characters first
+        text = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        // Colorize JSON syntax
+        return text.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+            let cls = 'json-number';
+
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'json-key';
+                } else {
+                    cls = 'json-string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'json-boolean';
+            } else if (/null/.test(match)) {
+                cls = 'json-null';
+            }
+
+            return '<span class="' + cls + '">' + match + '</span>';
+        }).replace(/([{}[\],:])/g, '<span class="json-punctuation">$1</span>');
     }
-    if (changes['contract'] && typeof changes['contract'].currentValue !== 'undefined') {
-      patch.contract = changes['contract'].currentValue || '';
+
+    reloadPage() {
+        // Centralized reload helper (keeps tests safe)
+        UtilsService.reloadAfterUpdate();
     }
-    if (changes['abi'] && typeof changes['abi'].currentValue !== 'undefined') {
-      patch.abi = changes['abi'].currentValue || '';
+
+    ngOnInit(): void {
+        // Initialize form controls from @Input properties so the template shows current values
+        if (this.form) {
+            this.form.patchValue({
+                provider: this.provider || '',
+                contract: this.contract || '',
+                abi: this.compactAbi(this.abi || ''),
+                startBlock: this.startBlock || '0',
+                endBlock: this.endBlock || 'latest'
+            });
+
+            // Keep component.abi and native textarea in sync with the form control
+            const abiControl = this.form.controls['abi'];
+            if (abiControl && abiControl.valueChanges && typeof abiControl.valueChanges.subscribe === 'function') {
+                const subAbi = abiControl.valueChanges.subscribe((v: any) => {
+                    this.abi = v || '';
+                    this.updateHighlightedAbi();
+                });
+                this._subscriptions.push(subAbi);
+            }
+
+            // Subscribe to startBlock changes and update URL (debounced)
+            const startControl = this.form.controls['startBlock'];
+            if (startControl && startControl.valueChanges && typeof startControl.valueChanges.pipe === 'function') {
+                const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
+                    const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
+                    this.updateStartValue(value);
+                });
+                this._subscriptions.push(sub);
+            }
+
+            // Subscribe to endBlock changes and update URL (debounced)
+            const endControl = this.form.controls['endBlock'];
+            if (endControl && endControl.valueChanges && typeof endControl.valueChanges.pipe === 'function') {
+                const subEnd = endControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe(() => {
+                    this.updateEndValue();
+                });
+                this._subscriptions.push(subEnd);
+            }
+
+            // Subscribe to provider changes and update URL (debounced)
+            const providerControl = this.form.controls['provider'];
+            if (providerControl && providerControl.valueChanges && typeof providerControl.valueChanges.pipe === 'function') {
+                const sub2 = providerControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
+                    this.updateProviderValue();
+                });
+                this._subscriptions.push(sub2);
+            }
+
+            // Subscribe to contract changes and update URL (debounced)
+            const contractControl = this.form.controls['contract'];
+            if (contractControl && contractControl.valueChanges && typeof contractControl.valueChanges.pipe === 'function') {
+                const subC = contractControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((_v: any) => {
+                    this.updateContractValue();
+                });
+                this._subscriptions.push(subC);
+            }
+
+            // Subscribe to ABI changes and update compressed ABI in URL (debounced)
+            const abiControl2 = this.form.controls['abi'];
+            if (abiControl2 && abiControl2.valueChanges && typeof abiControl2.valueChanges.pipe === 'function') {
+                const subAbiUrl = abiControl2.valueChanges.pipe(debounceTime(600), distinctUntilChanged()).subscribe((v: any) => {
+                    // call the update handler which compresses and updates URL
+                    this.updateABIValue(v);
+                });
+                this._subscriptions.push(subAbiUrl);
+            }
+        }
+
+        // Initialize highlighted ABI
+        this.updateHighlightedAbi();
     }
-    if (changes['startBlock'] && typeof changes['startBlock'].currentValue !== 'undefined') {
-      patch.startBlock = changes['startBlock'].currentValue || '0';
+
+    private compactAbi(abi: string): string {
+        try {
+            const parsedAbi = JSON.parse(abi);
+            return stringify(parsedAbi);
+        } catch (e) {
+            return abi; // Return original ABI if parsing fails
+        }
     }
-    if (changes['endBlock'] && typeof changes['endBlock'].currentValue !== 'undefined') {
-      patch.endBlock = changes['endBlock'].currentValue || 'latest';
+
+    ngOnChanges(changes: SimpleChanges): void {
+        const patch: any = {};
+        if (changes['provider'] && typeof changes['provider'].currentValue !== 'undefined') {
+            patch.provider = changes['provider'].currentValue || '';
+        }
+        if (changes['contract'] && typeof changes['contract'].currentValue !== 'undefined') {
+            patch.contract = changes['contract'].currentValue || '';
+        }
+        if (changes['abi'] && typeof changes['abi'].currentValue !== 'undefined') {
+            patch.abi = changes['abi'].currentValue || '';
+        }
+        if (changes['startBlock'] && typeof changes['startBlock'].currentValue !== 'undefined') {
+            patch.startBlock = changes['startBlock'].currentValue || '0';
+        }
+        if (changes['endBlock'] && typeof changes['endBlock'].currentValue !== 'undefined') {
+            patch.endBlock = changes['endBlock'].currentValue || 'latest';
+        }
+        if (Object.keys(patch).length > 0) {
+            this.form.patchValue(patch);
+        }
     }
-    if (Object.keys(patch).length > 0) {
-      try { this.form.patchValue(patch); } catch (e) { console.warn('Failed to patch form on changes', e); }
-    }
-  }
 
 
-  private loadContractData() {
-    if (this.abi !== undefined) {
-      this.reader.setAbi(this.abi);
+    private loadContractData() {
+        if (this.abi !== undefined) {
+            this.reader.setAbi(this.abi);
+        }
+        if (this.startBlock !== undefined) {
+            this.reader.setStartBlock(this.startBlock);
+        }
+        if (this.endBlock !== undefined) {
+            this.reader.setEndBlock(this.endBlock);
+        }
+        if (this.contract !== undefined) {
+            this.reader.setContractAddress(this.contract);
+        }
+        if (this.provider !== undefined) {
+            this.reader.entity.setProvider(this.provider);
+        }
     }
-    if (this.startBlock !== undefined) {
-      this.reader.setStartBlock(this.startBlock);
-    }
-    if (this.endBlock !== undefined) {
-      this.reader.setEndBlock(this.endBlock);
-    }
-    if (this.contract !== undefined) {
-      this.reader.setContractAddress(this.contract);
-    }
-    if (this.provider !== undefined) {
-      this.reader.entity.setProvider(this.provider);
-    }
-  }
 
-  private clearTable() {
-    this.reader.reset();
-  }
-
-  private updateContract(val: string) {
-    // update query param using router (no reload) if available, otherwise use UtilsService
-    if (this.router && this.route) {
-      // noinspection JSIgnoredPromiseFromCall
-        this.router.navigate([], { relativeTo: this.route, queryParams: { contract: val.trim() }, queryParamsHandling: 'merge' });
-    } else {
-      UtilsService.updateURLParameter('contract', val.trim());
+    private clearTable() {
+        this.reader.reset();
     }
-    this.contract = val.trim();
-    this.clearTable();
 
-    this.form.controls['contract'].clearValidators();
-    this.form.controls['provider'].clearValidators();
-    this.loadContractData();
-  }
+    private updateContract(val: string) {
+        // update query param using router (no reload) if available, otherwise use UtilsService
+        if (this.router && this.route) {
+            // noinspection JSIgnoredPromiseFromCall
+            this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {contract: val.trim()},
+                queryParamsHandling: 'merge'
+            });
+        } else {
+            UtilsService.updateURLParameter('contract', val.trim());
+        }
+        this.contract = val.trim();
+        this.clearTable();
+
+        this.form.controls['contract'].clearValidators();
+        this.form.controls['provider'].clearValidators();
+        this.loadContractData();
+    }
 }

@@ -142,6 +142,17 @@ describe('SettingsComponent consolidated tests', () => {
       expect(typeof comp.panelMessage).toBe('function');
     });
 
+    it('panelMessage should return "Last Block " + lastBlock value', () => {
+      comp.lastBlock = 0;
+      expect(comp.panelMessage()).toBe('Last Block 0');
+
+      comp.lastBlock = 12345;
+      expect(comp.panelMessage()).toBe('Last Block 12345');
+
+      comp.lastBlock = 999999999;
+      expect(comp.panelMessage()).toBe('Last Block 999999999');
+    });
+
     it('updateStartValue should set startBlock via UtilsService behavior', () => {
       // call the public method which reads form control value
       comp.form.controls['startBlock'].setValue('123');

@@ -59,5 +59,144 @@ describe('EventsListResponsiveDirective', () => {
     // cleanup
     directive.ngOnDestroy();
   });
-});
 
+  it('should create MutationObserver for thead with callback that triggers theadChanged$ (line 50)', () => {
+    const table = document.createElement('table');
+
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const th1 = document.createElement('th');
+    th1.textContent = 'ColA';
+    headRow.appendChild(th1);
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    const rendererStub: any = { setAttribute: jest.fn() };
+    const directive: any = new EventsListResponsiveDirective({ nativeElement: table } as any, rendererStub);
+
+    // Spy on the theadObserver.observe method to verify it's called
+    const observeSpy = jest.spyOn(directive.theadObserver, 'observe');
+
+    directive.ngOnInit();
+
+    // Verify theadObserver.observe was called with correct parameters
+    expect(observeSpy).toHaveBeenCalledWith(thead, {
+      characterData: true,
+      subtree: true
+    });
+
+    // The theadObserver is created with a callback on line 50
+    // Verify that theadObserver exists and has been set up
+    expect(directive.theadObserver).toBeDefined();
+
+    directive.ngOnDestroy();
+  });
+
+  it('should create MutationObserver for tbody with callback that triggers tbodyChanged$ (line 53)', () => {
+    const table = document.createElement('table');
+
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const th1 = document.createElement('th');
+    th1.textContent = 'ColA';
+    headRow.appendChild(th1);
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    const rendererStub: any = { setAttribute: jest.fn() };
+    const directive: any = new EventsListResponsiveDirective({ nativeElement: table } as any, rendererStub);
+
+    // Spy on the tbodyObserver.observe method to verify it's called
+    const observeSpy = jest.spyOn(directive.tbodyObserver, 'observe');
+
+    directive.ngOnInit();
+
+    // Verify tbodyObserver.observe was called with correct parameters
+    expect(observeSpy).toHaveBeenCalledWith(tbody, { childList: true });
+
+    // The tbodyObserver is created with a callback on line 53
+    // Verify that tbodyObserver exists and has been set up
+    expect(directive.tbodyObserver).toBeDefined();
+
+    directive.ngOnDestroy();
+  });
+
+  it('should execute MutationObserver callbacks when observers are triggered (lines 50, 53)', () => {
+    // Mock MutationObserver to capture callbacks
+    let theadCallback: MutationCallback | null = null;
+    let tbodyCallback: MutationCallback | null = null;
+
+    const OriginalMutationObserver = global.MutationObserver;
+    let callCount = 0;
+
+    global.MutationObserver = class MockMutationObserver {
+      constructor(callback: MutationCallback) {
+        if (callCount === 0) {
+          theadCallback = callback; // First observer is thead (line 50)
+        } else if (callCount === 1) {
+          tbodyCallback = callback; // Second observer is tbody (line 53)
+        }
+        callCount++;
+      }
+      observe() {}
+      disconnect() {}
+      takeRecords() { return []; }
+    } as any;
+
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    const th1 = document.createElement('th');
+    th1.textContent = 'ColA';
+    headRow.appendChild(th1);
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    const rendererStub: any = { setAttribute: jest.fn() };
+
+    // Create directive - this will create the observers with callbacks
+    const directive: any = new EventsListResponsiveDirective({ nativeElement: table } as any, rendererStub);
+
+    // Verify callbacks were captured
+    expect(theadCallback).toBeDefined();
+    expect(tbodyCallback).toBeDefined();
+
+    // Spy on the subjects to verify callbacks work
+    const theadSpy = jest.fn();
+    const tbodySpy = jest.fn();
+    directive.theadChanged$.subscribe(theadSpy);
+    directive.tbodyChanged$.subscribe(tbodySpy);
+
+    const initialTheadCount = theadSpy.mock.calls.length;
+
+    // Execute the thead callback (line 50) manually
+    if (theadCallback) {
+      // @ts-ignore
+        theadCallback([], {} as any);
+    }
+
+    // Verify thead callback executed and triggered theadChanged$
+    expect(theadSpy.mock.calls.length).toBeGreaterThan(initialTheadCount);
+
+    // Execute the tbody callback (line 53) manually
+    if (tbodyCallback) {
+      // @ts-ignore
+        tbodyCallback([], {} as any);
+    }
+
+    // Verify tbody callback executed and triggered tbodyChanged$
+    expect(tbodySpy).toHaveBeenCalled();
+
+    // Restore original MutationObserver
+    global.MutationObserver = OriginalMutationObserver;
+  });
+});

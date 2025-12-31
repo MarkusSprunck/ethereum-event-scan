@@ -1,37 +1,18 @@
-import { ModalDialogComponent } from './modal-dialog.component';
 import { ModalDialogContentComponent } from './modal-dialog-content.component';
 import { ChangeDetectorRef } from '@angular/core';
 
-// stubs and helpers
-const dialogRefStub = { close: jest.fn() } as any;
-const dialogStub = { open: jest.fn() } as any;
-
-const readerStub = {
-  setStartBlockInitial: jest.fn(),
-  setEndBlock: jest.fn()
-};
-
 // simplified ChangeDetectorRef stub
-class CdrStub { detectChanges = jest.fn(); }
+class CdrStub {
+  detectChanges = jest.fn();
+}
 
 // helper to wait for microtasks
-function flushPromises(): Promise<void> { return new Promise(resolve => setTimeout(resolve, 0)); }
+function flushPromises(): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, 0));
+}
 
-describe('ModalDialog (merged tests)', () => {
-  describe('ModalDialogComponent (basic)', () => {
-    const comp = new ModalDialogComponent(dialogRefStub, { blockNumber: '1', trxNumber: '1', reader: readerStub } as any, dialogStub as any);
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('should close dialog', () => {
-      comp.onCloseClick();
-      expect(dialogRefStub.close).toHaveBeenCalled();
-    });
-  });
-
-  describe('ModalDialogContentComponent (unit)', () => {
+describe('ModalDialogContentComponent', () => {
+  describe('unit tests', () => {
     let originalWarn: any;
 
     beforeAll(() => {
@@ -39,7 +20,9 @@ describe('ModalDialog (merged tests)', () => {
       console.warn = jest.fn(); // suppress during these unit tests
     });
 
-    afterAll(() => { console.warn = originalWarn; });
+    afterAll(() => {
+      console.warn = originalWarn;
+    });
 
     it('should instantiate and handle missing reader gracefully', () => {
       const cdr = new CdrStub() as any as ChangeDetectorRef;
@@ -65,18 +48,42 @@ describe('ModalDialog (merged tests)', () => {
             transactions: []
           }),
           getTransaction: jest.fn().mockResolvedValue({ blockNumber: 1 }),
-          getTransactionReceipt: jest.fn().mockResolvedValue({ gasUsed: 21000, cumulativeGasUsed: 42000, contractAddress: null })
+          getTransactionReceipt: jest.fn().mockResolvedValue({
+            gasUsed: 21000,
+            cumulativeGasUsed: 42000,
+            contractAddress: null
+          })
         }
       };
       const comp = new ModalDialogContentComponent(cdr);
-      comp.inputData = { reader: { entity: { web3: mockWeb3 }, getCurrentBlockNumber: () => 1000 } } as any;
+      comp.inputData = {
+        reader: { entity: { web3: mockWeb3 }, getCurrentBlockNumber: () => 1000 }
+      } as any;
       await comp.renderBlock('123');
       expect(comp.currentBlockNumber).toBe('123');
       expect((cdr as any).detectChanges).toHaveBeenCalled();
     });
+
+    it('should log warning when renderTransaction is called without reader/web3 (line 49)', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const cdr = new CdrStub() as any as ChangeDetectorRef;
+      const comp = new ModalDialogContentComponent(cdr);
+
+      // Set up inputData without web3
+      comp.inputData = { reader: { entity: { web3: null } } } as any;
+
+      comp.renderTransaction('0x123');
+
+      expect(warnSpy).toHaveBeenCalledWith('No reader/web3 available for renderTransaction');
+      expect(comp.currentTrxNumber).toBe('0x123');
+      expect(comp.currentBlockNumber).toBe('');
+      expect(comp.transactions).toEqual([]);
+
+      warnSpy.mockRestore();
+    });
   });
 
-  describe('ModalDialogContentComponent (integration/full)', () => {
+  describe('integration tests', () => {
     let comp: ModalDialogContentComponent;
     let cdr: ChangeDetectorRef;
 
@@ -132,10 +139,14 @@ describe('ModalDialog (merged tests)', () => {
       };
 
       const fakeReader = {
-        entity: { web3: { eth: {
-          getTransaction: jest.fn().mockResolvedValue(fakeTrx),
-          getTransactionReceipt: jest.fn().mockResolvedValue(fakeReceipt)
-        } } },
+        entity: {
+          web3: {
+            eth: {
+              getTransaction: jest.fn().mockResolvedValue(fakeTrx),
+              getTransactionReceipt: jest.fn().mockResolvedValue(fakeReceipt)
+            }
+          }
+        },
         getCurrentBlockNumber: () => 20
       } as any;
 
@@ -146,6 +157,26 @@ describe('ModalDialog (merged tests)', () => {
       expect(comp.currentTrxNumber).toBe('0x1');
       expect(comp.details).toContain('Index');
       expect(comp.current).toBe(String(fakeTrx.blockNumber));
+    });
+
+    it('should log error when getBlock fails (line 92)', async () => {
+      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
+      const mockError = new Error('Block not found');
+
+      const fakeReader = {
+        entity: { web3: { eth: { getBlock: jest.fn().mockRejectedValue(mockError) } } },
+        getCurrentBlockNumber: () => 999
+      } as any;
+
+      comp.inputData = { blockNumber: '12345', trxNumber: '', reader: fakeReader } as any;
+
+      comp.renderBlock('12345');
+      await flushPromises();
+
+      expect(errorSpy).toHaveBeenCalledWith('Error fetching block:', mockError);
+      expect(comp.currentBlockNumber).toBe('12345');
+
+      errorSpy.mockRestore();
     });
   });
 });
