@@ -109,8 +109,7 @@ export class EventsTableComponent implements OnInit {
     updateSearchValue() {
         const val = this.formSearch.get('searchKey');
         if (val) {
-            // noinspection JSIgnoredPromiseFromCall
-            this.router.navigate([], {
+            void this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: {searchKey: val.value},
                 queryParamsHandling: 'merge'

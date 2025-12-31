@@ -322,6 +322,40 @@ describe('Reader additional unit tests', () => {
         expect(r.startBlock).toBe('10');
     });
 
+    it('setStartBlock updates startBlock property', () => {
+        r.startBlock = '0';
+        r.setStartBlock('12345');
+        expect(r.startBlock).toBe('12345');
+    });
+
+    it('setStartBlock handles different block number formats', () => {
+        r.setStartBlock('0');
+        expect(r.startBlock).toBe('0');
+
+        r.setStartBlock('999999');
+        expect(r.startBlock).toBe('999999');
+
+        r.setStartBlock('1');
+        expect(r.startBlock).toBe('1');
+    });
+
+    it('setEndBlock updates endBlock property', () => {
+        r.endBlock = 'latest';
+        r.setEndBlock('54321');
+        expect(r.endBlock).toBe('54321');
+    });
+
+    it('setEndBlock handles LATEST and numeric values', () => {
+        r.setEndBlock('latest');
+        expect(r.endBlock).toBe('latest');
+
+        r.setEndBlock('LATEST');
+        expect(r.endBlock).toBe('LATEST');
+
+        r.setEndBlock('100000');
+        expect(r.endBlock).toBe('100000');
+    });
+
     it('setAbi sets abi and calls createActiveContract', () => {
         const spy = jest.spyOn(r as any, 'createActiveContract');
         r.setAbi('[{"type":"event"}]');

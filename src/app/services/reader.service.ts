@@ -213,7 +213,7 @@ export class Reader {
                 try {
                     arr = base64ToUint8(base64);
                 } catch (err) {
-                    console.warn('base64->bin failed, will try alternate decode', err);
+                    // Try alternate decode paths
                 }
 
                 let decodedData: string | null = null;
@@ -228,19 +228,15 @@ export class Reader {
                         try {
                             this.abi = JSON.stringify(JSON.parse(pako.ungzip(arr, {to: 'string'})));
                         } catch (e) {
-                            // log sample bytes and decodedData preview for debugging
-                            const sampleHex = Array.from(arr.slice(0, 16)).map(x => x.toString(16).padStart(2, '0')).join(' ');
-                            console.error('pako.ungzip failed on Uint8Array. sampleBytes=', sampleHex, 'error=', e);
-                            // try to inflate variants
+                            // Try inflate variants as fallback
                             try {
                                 this.abi = pako.inflate(arr, {to: 'string'});
                             } catch (e2) {
-                                console.error('inflate failed', e2);
-                            }
-                            try {
-                                this.abi = pako.inflateRaw(arr, {to: 'string'});
-                            } catch (e3) {
-                                console.error('inflateRaw failed', e3);
+                                try {
+                                    this.abi = pako.inflateRaw(arr, {to: 'string'});
+                                } catch (e3) {
+                                    // All decompression attempts failed
+                                }
                             }
                         }
                     } else if (b0 === 0x78 && (b1 === 0x01 || b1 === 0x9c || b1 === 0xda)) {
@@ -248,7 +244,7 @@ export class Reader {
                         try {
                             this.abi = pako.inflate(arr, {to: 'string'});
                         } catch (e) {
-                            console.error('pako.inflate failed on Uint8Array:', e);
+                            // Inflate failed
                         }
                     } else {
                         // Not a known compressed header. Try to interpret as text
@@ -259,8 +255,6 @@ export class Reader {
                             decodedData = '';
                             for (let i = 0; i < arr.length; i++) decodedData += String.fromCharCode(arr[i]);
                         }
-                        // log a preview for diagnosis
-                        console.debug('decodedData preview (first 120 chars):', decodedData.substring(0, 120));
                     }
                 }
 
@@ -270,7 +264,6 @@ export class Reader {
                     if (!decodedData) {
                         try {
                             decodedData = atob(base64);
-                            console.debug('atob fallback produced preview (first 200 chars):', decodedData.substring(0, 200));
                         } catch (e) {
                             // atob may fail if base64 is not correct; try to detect hex
                             const candidate = this.abiBase64Data.replace(/^0x/, '');
@@ -278,10 +271,9 @@ export class Reader {
                                 try {
                                     arr = hexToUint8(candidate);
                                 } catch (hexErr) {
-                                    console.error('hex->uint8 failed', hexErr);
+                                    // Hex decode failed
                                 }
                             } else {
-                                console.error('Failed to decode base64 and not hex; aborting');
                                 this.abi = '';
                                 return;
                             }
@@ -319,7 +311,6 @@ export class Reader {
                                         }
                                     } catch (e) {
                                         lastErr = e;
-                                        console.error('decompression attempt failed:', e);
                                     }
                                 }
                                 if (decompressed) {
@@ -329,15 +320,12 @@ export class Reader {
                                     try {
                                         JSON.parse(decodedData);
                                         this.abi = decodedData;
-                                        console.warn('ABI not compressed, using raw decodedData.');
                                     } catch (je) {
-                                        console.error('All decompression attempts failed. Last error:', lastErr, 'decodedData preview:', decodedData.substring(0, 120));
                                         this.abi = '';
                                         return;
                                     }
                                 }
                             } else {
-                                console.error('No binary data to attempt decompression');
                                 this.abi = '';
                                 return;
                             }
@@ -345,7 +333,9 @@ export class Reader {
                     }
                 }
             } catch (error) {
-                console.error('Error decoding ABI data from Base64:', error);
+                if (typeof ngDevMode !== 'undefined' && ngDevMode) {
+                    console.error('Error decoding ABI data from Base64:', error);
+                }
                 this.abi = '';
                 return;
             }

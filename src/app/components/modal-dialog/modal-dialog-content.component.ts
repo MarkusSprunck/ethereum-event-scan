@@ -45,11 +45,6 @@ export class ModalDialogContentComponent implements OnInit {
     this.currentBlockNumber = '';
     this.transactions = [];
 
-    if (!this.inputData?.reader?.entity?.web3) {
-      console.warn('No reader/web3 available for renderTransaction');
-      return;
-    }
-
     const web3 = this.inputData!.reader.entity.web3;
 
     web3.eth.getTransaction(this.currentTrxNumber)
@@ -60,9 +55,9 @@ export class ModalDialogContentComponent implements OnInit {
             this.details = this.printTrx(trx, receipt);
             this.cdr.detectChanges();
           })
-          .catch((err: any) => { console.error('getTransactionReceipt failed', err); });
+          .catch(() => { /* Receipt fetch failed */ });
       })
-      .catch((err: any) => { console.error('getTransaction failed', err); });
+      .catch(() => { /* Transaction fetch failed */ });
   }
 
   public renderBlock(blockNumber: string) {
@@ -88,9 +83,6 @@ export class ModalDialogContentComponent implements OnInit {
         this.transactions = block.transactions;
         this.cdr.detectChanges();
       })
-      .catch((err: any) => {
-        console.error('Error fetching block:', err);
-      });
   }
 
   private printBlock(block: any) {

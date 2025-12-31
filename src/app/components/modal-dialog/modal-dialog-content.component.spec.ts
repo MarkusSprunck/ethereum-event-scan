@@ -64,23 +64,6 @@ describe('ModalDialogContentComponent', () => {
       expect((cdr as any).detectChanges).toHaveBeenCalled();
     });
 
-    it('should log warning when renderTransaction is called without reader/web3 (line 49)', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation();
-      const cdr = new CdrStub() as any as ChangeDetectorRef;
-      const comp = new ModalDialogContentComponent(cdr);
-
-      // Set up inputData without web3
-      comp.inputData = { reader: { entity: { web3: null } } } as any;
-
-      comp.renderTransaction('0x123');
-
-      expect(warnSpy).toHaveBeenCalledWith('No reader/web3 available for renderTransaction');
-      expect(comp.currentTrxNumber).toBe('0x123');
-      expect(comp.currentBlockNumber).toBe('');
-      expect(comp.transactions).toEqual([]);
-
-      warnSpy.mockRestore();
-    });
   });
 
   describe('integration tests', () => {
@@ -159,25 +142,6 @@ describe('ModalDialogContentComponent', () => {
       expect(comp.current).toBe(String(fakeTrx.blockNumber));
     });
 
-    it('should log error when getBlock fails (line 92)', async () => {
-      const errorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const mockError = new Error('Block not found');
-
-      const fakeReader = {
-        entity: { web3: { eth: { getBlock: jest.fn().mockRejectedValue(mockError) } } },
-        getCurrentBlockNumber: () => 999
-      } as any;
-
-      comp.inputData = { blockNumber: '12345', trxNumber: '', reader: fakeReader } as any;
-
-      comp.renderBlock('12345');
-      await flushPromises();
-
-      expect(errorSpy).toHaveBeenCalledWith('Error fetching block:', mockError);
-      expect(comp.currentBlockNumber).toBe('12345');
-
-      errorSpy.mockRestore();
-    });
   });
 });
 

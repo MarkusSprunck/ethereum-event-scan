@@ -89,9 +89,6 @@ export class ProviderService {
             this.currentBlock = sync.currentBlock || this.currentBlock;
             this.highestBlock = sync.highestBlock || this.highestBlock;
           }
-        })
-        .catch(() => {
-          // ignore promise rejection
         });
     }
 
@@ -127,9 +124,6 @@ export class ProviderService {
               this.highestBlock = blockNumber;
             }
           })
-          .catch(() => {
-            // ignore
-          });
       }
     }
 

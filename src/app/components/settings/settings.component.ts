@@ -106,7 +106,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
 
     panelMessage() {
-        return ('Last Block ' + this.lastBlock + '');
+        return `Last Block ${this.lastBlock}`;
     }
 
     isProviderConnected(control: AbstractControl) {
@@ -186,8 +186,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         // Prefer explicit value (from input event). Fallback to form control value.
         const result: string = (typeof value === 'string') ? ((value.length === 0) ? '0' : value) : ((this.form.get('startBlock')?.value || '0'));
         if (this.router && this.route) {
-            // noinspection JSIgnoredPromiseFromCall
-            this.router.navigate([], {
+            void this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: {start: result},
                 queryParamsHandling: 'merge'
@@ -202,8 +201,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         const val = this.form.get('provider');
         const v = (val && val.value) ? val.value : this.provider;
         if (this.router && this.route) {
-            // noinspection JSIgnoredPromiseFromCall
-            this.router.navigate([], {
+            void this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: {provider: v},
                 queryParamsHandling: 'merge'
@@ -221,8 +219,7 @@ export class SettingsComponent implements OnInit, OnChanges {
         const val = this.form.get('endBlock');
         const v = (val && val.value) ? val.value : this.endBlock;
         if (this.router && this.route) {
-            // noinspection JSIgnoredPromiseFromCall
-            this.router.navigate([], {
+            void this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: {end: v},
                 queryParamsHandling: 'merge'
@@ -242,8 +239,7 @@ export class SettingsComponent implements OnInit, OnChanges {
                 UtilsService.fetchABIFromVerifiedContract(candidate.trim(), (value: string) => {
                         if (this.router && this.route) {
                             const urlSafe = UtilsService.compressAbiToUrlSafe(value);
-                            // noinspection JSIgnoredPromiseFromCall
-                            this.router.navigate([], {
+                            void this.router.navigate([], {
                                 relativeTo: this.route,
                                 queryParams: {abi: urlSafe},
                                 queryParamsHandling: 'merge'
@@ -270,8 +266,7 @@ export class SettingsComponent implements OnInit, OnChanges {
                         // compress ABI and set as query param; use router if available, otherwise UtilsService helper
                         const urlSafe = UtilsService.compressAbiToUrlSafe(val);
                         if (this.router && this.route) {
-                            // noinspection JSIgnoredPromiseFromCall
-                            this.router.navigate([], {
+                            void this.router.navigate([], {
                                 relativeTo: this.route,
                                 queryParams: {abi: urlSafe},
                                 queryParamsHandling: 'merge'
@@ -297,8 +292,7 @@ export class SettingsComponent implements OnInit, OnChanges {
                     // compress ABI and set as query param
                     const urlSafe = UtilsService.compressAbiToUrlSafe(this.abi);
                     if (this.router && this.route) {
-                        // noinspection JSIgnoredPromiseFromCall
-                        this.router.navigate([], {
+                        void this.router.navigate([], {
                             relativeTo: this.route,
                             queryParams: {abi: urlSafe},
                             queryParamsHandling: 'merge'
@@ -519,8 +513,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     private updateContract(val: string) {
         // update query param using router (no reload) if available, otherwise use UtilsService
         if (this.router && this.route) {
-            // noinspection JSIgnoredPromiseFromCall
-            this.router.navigate([], {
+            void this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: {contract: val.trim()},
                 queryParamsHandling: 'merge'
