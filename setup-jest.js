@@ -24,13 +24,22 @@ getTestBed().initTestEnvironment(
 // Mock location.reload so tests that call it don't trigger jsdom navigation errors
 try {
   if (typeof window !== 'undefined' && window && window.location) {
-    try { window.location.reload = () => {}; } catch (e) {
-      const loc = window.location;
-      Object.defineProperty(window, 'location', { configurable: true, enumerable: true, writable: true, value: loc });
+    // Try to directly stub reload first
+    try {
       window.location.reload = () => {};
+    } catch (e) {
+      // If direct assignment fails, check if we can delete and redefine
+      try {
+        delete window.location;
+        window.location = { ...window.location, reload: () => {} };
+      } catch (e2) {
+        // If that also fails, silently skip (location is already non-configurable in this environment)
+      }
     }
   }
-} catch (e) { console.debug('setup-jest: failed to stub window.location.reload', e); }
+} catch (e) {
+  // Silently ignore - this is a non-critical test helper
+}
 
 // Silence debug logs from library internals that are noisy during tests
 console.debug = (..._args) => { /* noop for CI */ };
