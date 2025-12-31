@@ -30,16 +30,16 @@ import {SettingsComponent} from '../../components/settings/settings.component';
 import {EventsTableComponent} from '../../components/events-table/events-table.component';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, MatToolbarModule, SettingsComponent, EventsTableComponent],
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+    selector: 'app-root',
+    standalone: true,
+    imports: [CommonModule, MatToolbarModule, SettingsComponent, EventsTableComponent],
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.css']
 })
 export class MainComponent {
 
-  constructor(public control: Reader) {
-    this.control.runLoadTable();
-  }
+    constructor(public control: Reader) {
+        this.control.runLoadTable();
+    }
 
 }

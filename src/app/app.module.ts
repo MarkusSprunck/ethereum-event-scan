@@ -24,12 +24,14 @@
 
 import {DecimalPipe} from '@angular/common';
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule, NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AppRoutingModule} from './app-routing.module';
 import {SettingsComponent} from './components/settings/settings.component';
 import {Reader} from './services/reader.service';
-import {JsonFormatterDirective} from './components/settings/directives/json-formatter.directive';
+import {
+    JsonFormatterDirective
+} from './components/settings/directives/json-formatter.directive';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -50,57 +52,61 @@ import {MAT_DIALOG_DATA, MatDialogModule} from '@angular/material/dialog';
 import {EventsTableComponent} from './components/events-table/events-table.component';
 import {HighlightSearch} from './components/events-table/pipes/highlight-search.pipe';
 import {ModalDialogComponent} from './components/modal-dialog/modal-dialog.component';
-import {ModalDialogContentComponent} from './components/modal-dialog/modal-dialog-content.component';
+import {
+    ModalDialogContentComponent
+} from './components/modal-dialog/modal-dialog-content.component';
 import {MatListModule} from '@angular/material/list';
-import {EventsListResponsiveDirective} from './components/events-table/directives/events-list-responsive.directive'
+import {
+    EventsListResponsiveDirective
+} from './components/events-table/directives/events-list-responsive.directive'
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 
 @NgModule({
-  declarations: [],
-  imports: [
-    BrowserModule,
-    SettingsComponent,
-    EventsTableComponent,
-    ModalDialogComponent,
-    ModalDialogContentComponent,
-    JsonFormatterDirective,
-    EventsListResponsiveDirective,
-    HighlightSearch,
-    FormsModule,
-    ReactiveFormsModule,
-    AppRoutingModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatCheckboxModule,
-    MatToolbarModule,
-    MatGridListModule,
-    MatInputModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatExpansionModule,
-    MatOptionModule,
-    MatDialogModule,
-    MatListModule,
-    MatSlideToggleModule,
-    MatProgressBarModule
-  ],
+    declarations: [],
+    imports: [
+        BrowserModule,
+        SettingsComponent,
+        EventsTableComponent,
+        ModalDialogComponent,
+        ModalDialogContentComponent,
+        JsonFormatterDirective,
+        EventsListResponsiveDirective,
+        HighlightSearch,
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatCheckboxModule,
+        MatToolbarModule,
+        MatGridListModule,
+        MatInputModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatExpansionModule,
+        MatOptionModule,
+        MatDialogModule,
+        MatListModule,
+        MatSlideToggleModule,
+        MatProgressBarModule
+    ],
 
-  exports: [EventsListResponsiveDirective],
-  providers: [Reader, DecimalPipe,
-    {
-      provide: MAT_DIALOG_DATA, useValue: {}
-    },
-  ],
-  schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
+    exports: [EventsListResponsiveDirective],
+    providers: [Reader, DecimalPipe,
+        {
+            provide: MAT_DIALOG_DATA, useValue: {}
+        },
+    ],
+    schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {
 }

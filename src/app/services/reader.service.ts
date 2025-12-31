@@ -67,12 +67,12 @@ export class Reader {
     public abiBase64Data = '';
     public runningJobs = 0;
     public callbackUpdateUI: any;
+    contractInstance: any = null;
     private imageCache = new Map<string, string>();
     private timestampCache = new Map<string, string>();
     private minerCache = new Map<string, string>();
     private isLoading = false;
     private isEndBlockNumberSet = false;
-    contractInstance: any = null;
     private createContractAttempts = 0;
     private readonly maxCreateContractAttempts = 10;
 
@@ -377,13 +377,13 @@ export class Reader {
         this.contract = contact;
 
         if (this.contract.length > 0 && this.abi.length > 0) {
-                // `abi` is typed as string in this class, drop redundant typeof check
-                if (this.entity && this.entity.web3 && this.entity.web3.eth) {
-                    this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
-                } else {
-                    console.warn('Web3 provider not initialized; cannot create contract instance in setContractAddress.');
-                    this.contractInstance = null;
-                }
+            // `abi` is typed as string in this class, drop redundant typeof check
+            if (this.entity && this.entity.web3 && this.entity.web3.eth) {
+                this.contractInstance = new this.entity.web3.eth.Contract(JSON.parse(this.abi), this.contract);
+            } else {
+                console.warn('Web3 provider not initialized; cannot create contract instance in setContractAddress.');
+                this.contractInstance = null;
+            }
         }
     }
 
@@ -462,10 +462,6 @@ export class Reader {
             this.getCachedTimestamp(blockNumber);
         }
         return '';
-    }
-
-    private isBlockLimitExceeded(start: number, end: number) {
-        return (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX);
     }
 
     readEventsRange(start: number, end: number, that: this) {
@@ -557,5 +553,9 @@ export class Reader {
                 this.readEventsRange(middle + 1, end, that);
             }
         });
+    }
+
+    private isBlockLimitExceeded(start: number, end: number) {
+        return (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX);
     }
 }

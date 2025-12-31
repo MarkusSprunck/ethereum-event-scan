@@ -29,105 +29,105 @@ import {Injectable} from '@angular/core';
  * The class ProviderService stores the connection status.
  */
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class ProviderService {
 
-  public web3: any = null;
+    public web3: any = null;
 
-  public currentBlock = 0;
+    public currentBlock = 0;
 
-  public highestBlock = 0;
+    public highestBlock = 0;
 
-  public connected = false;
+    public connected = false;
 
-  /**
-   * Create connection to blockchain
-   */
-  setProvider(providerUrl: string) {
+    /**
+     * Create connection to blockchain
+     */
+    setProvider(providerUrl: string) {
 
-    this.connected = false;
-    this.web3 = null;
+        this.connected = false;
+        this.web3 = null;
 
-    if (providerUrl && providerUrl.startsWith('http')) {
-      this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-    } else if (providerUrl && providerUrl.startsWith('ws')) {
-      // Use Websocket provider explicitly for websocket urls
-      try {
-        this.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
-      } catch (e) {
-        // fallback to direct constructor
-        this.web3 = new Web3(providerUrl);
-      }
-    }
-
-    // Check success
-    if (this.web3 === null) {
-      this.connected = false;
-      return;
-    }
-
-    // Update status
-    this.isConnectionWorking();
-    this.isSyncing();
-  }
-
-  /**
-   * The current value is maybe not the lastBlock status of syncing
-   */
-  isSyncing() {
-
-    if (this.web3 === null || !this.web3.eth || !this.web3.eth.isSyncing) {
-      return false;
-    }
-
-    // web3.eth.isSyncing() can return a boolean (false) or an object with currentBlock/highestBlock
-    if (typeof this.web3.eth.isSyncing === 'function') {
-      this.web3.eth.isSyncing()
-        .then((sync: any) => {
-          if (sync && typeof sync !== 'boolean') {
-            this.currentBlock = sync.currentBlock || this.currentBlock;
-            this.highestBlock = sync.highestBlock || this.highestBlock;
-          }
-        });
-    }
-
-    return this.highestBlock > this.currentBlock;
-  }
-
-  /**
-   * The current value is maybe not the lastBlock status of connection
-   */
-  isConnectionWorking() {
-
-    if (this.web3 === null) {
-      this.connected = false;
-      return false;
-    }
-
-    if (this.web3.eth && this.web3.eth.net && this.web3.eth.net.isListening) {
-      this.web3.eth.net.isListening()
-        .then(() => {
-          this.connected = true;
-        })
-        .catch(() => {
-          this.connected = false;
-        });
-    }
-
-    if (this.web3.eth && this.web3.eth.getBlockNumber) {
-      if (typeof this.web3.eth.getBlockNumber === 'function') {
-        this.web3.eth.getBlockNumber()
-          .then((blockNumber: number) => {
-            if (blockNumber || blockNumber === 0) {
-              this.currentBlock = blockNumber;
-              this.highestBlock = blockNumber;
+        if (providerUrl && providerUrl.startsWith('http')) {
+            this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+        } else if (providerUrl && providerUrl.startsWith('ws')) {
+            // Use Websocket provider explicitly for websocket urls
+            try {
+                this.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
+            } catch (e) {
+                // fallback to direct constructor
+                this.web3 = new Web3(providerUrl);
             }
-          })
-      }
+        }
+
+        // Check success
+        if (this.web3 === null) {
+            this.connected = false;
+            return;
+        }
+
+        // Update status
+        this.isConnectionWorking();
+        this.isSyncing();
     }
 
-    return this.connected;
-  }
+    /**
+     * The current value is maybe not the lastBlock status of syncing
+     */
+    isSyncing() {
+
+        if (this.web3 === null || !this.web3.eth || !this.web3.eth.isSyncing) {
+            return false;
+        }
+
+        // web3.eth.isSyncing() can return a boolean (false) or an object with currentBlock/highestBlock
+        if (typeof this.web3.eth.isSyncing === 'function') {
+            this.web3.eth.isSyncing()
+                .then((sync: any) => {
+                    if (sync && typeof sync !== 'boolean') {
+                        this.currentBlock = sync.currentBlock || this.currentBlock;
+                        this.highestBlock = sync.highestBlock || this.highestBlock;
+                    }
+                });
+        }
+
+        return this.highestBlock > this.currentBlock;
+    }
+
+    /**
+     * The current value is maybe not the lastBlock status of connection
+     */
+    isConnectionWorking() {
+
+        if (this.web3 === null) {
+            this.connected = false;
+            return false;
+        }
+
+        if (this.web3.eth && this.web3.eth.net && this.web3.eth.net.isListening) {
+            this.web3.eth.net.isListening()
+                .then(() => {
+                    this.connected = true;
+                })
+                .catch(() => {
+                    this.connected = false;
+                });
+        }
+
+        if (this.web3.eth && this.web3.eth.getBlockNumber) {
+            if (typeof this.web3.eth.getBlockNumber === 'function') {
+                this.web3.eth.getBlockNumber()
+                    .then((blockNumber: number) => {
+                        if (blockNumber || blockNumber === 0) {
+                            this.currentBlock = blockNumber;
+                            this.highestBlock = blockNumber;
+                        }
+                    })
+            }
+        }
+
+        return this.connected;
+    }
 
 }

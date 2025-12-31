@@ -1,28 +1,28 @@
-import { MainComponent } from './main.component';
+import {MainComponent} from './main.component';
 
 class ReaderStub {
-  runLoadTable = jest.fn();
+    runLoadTable = jest.fn();
 }
 
 describe('MainComponent (basic)', () => {
-  let comp: MainComponent;
-  let reader: ReaderStub;
+    let comp: MainComponent;
+    let reader: ReaderStub;
 
-  beforeEach(() => {
-    reader = new ReaderStub();
-    comp = new MainComponent(reader as any);
-  });
+    beforeEach(() => {
+        reader = new ReaderStub();
+        comp = new MainComponent(reader as any);
+    });
 
-  it('should create the component', () => {
-    expect(comp).toBeTruthy();
-  });
+    it('should create the component', () => {
+        expect(comp).toBeTruthy();
+    });
 
-  it('constructor should call runLoadTable on Reader', () => {
-    expect(reader.runLoadTable).toHaveBeenCalled();
-  });
+    it('constructor should call runLoadTable on Reader', () => {
+        expect(reader.runLoadTable).toHaveBeenCalled();
+    });
 
-  it('control property should reference the provided Reader', () => {
-    expect((comp as any).control).toBe(reader as any);
-  });
+    it('control property should reference the provided Reader', () => {
+        expect((comp as any).control).toBe(reader as any);
+    });
 });
 

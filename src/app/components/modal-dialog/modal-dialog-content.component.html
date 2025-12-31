@@ -1,27 +1,32 @@
 @if (currentBlockNumber.length > 0) {
-  <div>
-    <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{current}}</div>
-    <div>Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(parent)">{{parent}}</a></div>
-    <div>Child&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(child)">{{child}}</a></div>
-    <pre class="details">{{details}}</pre>
+    <div>
+        <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ current }}</div>
+        <div>Parent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a
+                (click)="renderBlock(parent)">{{ parent }}</a></div>
+        <div>Child&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a
+                (click)="renderBlock(child)">{{ child }}</a></div>
+        <pre class="details">{{ details }}</pre>
 
-    @if (transactions && transactions.length > 0) {
-      <div>Transactions:</div>
-      <ul>
-        @for (message of transactions; track message) {
-          <li>
-            <a (click)="renderTransaction(message)">{{message}}</a>
-          </li>
+        @if (transactions && transactions.length > 0) {
+            <div>Transactions:</div>
+            <ul>
+                @for (message of transactions; track message) {
+                    <li>
+                        <a (click)="renderTransaction(message)">{{ message }}</a>
+                    </li>
+                }
+            </ul>
         }
-      </ul>
-    }
-  </div>
+    </div>
 }
 
 @if (currentTrxNumber.length > 0) {
-  <div>
-    <div>Hash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{currentTrxNumber}}</div>
-    <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a (click)="renderBlock(current)">{{current}}</a></div>
-    <pre class="details">{{details}}</pre>
-  </div>
+    <div>
+        <div>
+            Hash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ currentTrxNumber }}
+        </div>
+        <div>Current&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <a
+                (click)="renderBlock(current)">{{ current }}</a></div>
+        <pre class="details">{{ details }}</pre>
+    </div>
 }

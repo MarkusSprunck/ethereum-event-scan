@@ -23,23 +23,21 @@
  */
 
 import {
+    ChangeDetectorRef,
     Component,
     Input,
-    OnInit,
     OnChanges,
-    SimpleChanges,
-    AfterViewInit,
-    ChangeDetectorRef,
-    OnDestroy
+    OnInit,
+    SimpleChanges
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {
+    AbstractControl,
     FormBuilder,
     FormGroup,
-    Validators,
     FormsModule,
     ReactiveFormsModule,
-    AbstractControl
+    Validators
 } from '@angular/forms';
 import {UtilsService} from '../../services/utils.service';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -52,8 +50,8 @@ import {TextFieldModule} from '@angular/cdk/text-field';
 import {Reader} from '../../services/reader.service';
 import stringify from 'json-stringify-pretty-compact';
 import {JsonFormatterDirective} from './directives/json-formatter.directive';
-import {Router, ActivatedRoute} from '@angular/router';
-import {Subscription, debounceTime, distinctUntilChanged} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {debounceTime, distinctUntilChanged, Subscription} from 'rxjs';
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 interface AbiEntry {
@@ -73,10 +71,7 @@ interface AbiEntry {
 export class SettingsComponent implements OnInit, OnChanges {
 
     public form: FormGroup;
-    private _lastSeenReaderAbi = '';
-    private _subscriptions: Subscription[] = [];
     public highlightedAbi: SafeHtml = '';
-
     @Input() public lastBlock = 0;
     @Input() public startBlock = '';
     @Input() public endBlock = '';
@@ -84,10 +79,10 @@ export class SettingsComponent implements OnInit, OnChanges {
     @Input() public contract = '';
     @Input() public provider = '';
     @Input() public connected = false;
-
     panelOpenState = true;
-
     noOfRowsAbi = 1;
+    private _lastSeenReaderAbi = '';
+    private _subscriptions: Subscription[] = [];
 
     constructor(private fb: FormBuilder,
                 private reader: Reader,
@@ -336,48 +331,6 @@ export class SettingsComponent implements OnInit, OnChanges {
         }
     }
 
-    private updateHighlightedAbi() {
-        const abiValue = this.form.get('abi')?.value || '';
-        this.highlightedAbi = this.sanitizer.bypassSecurityTrustHtml(this.highlightJson(abiValue));
-    }
-
-    private highlightJson(json: string): string {
-        if (!json || json.trim().length === 0) {
-            return '';
-        }
-
-        // Use the text as-is from the textarea (already formatted by JsonFormatterDirective)
-        // Just colorize it without re-formatting to ensure alignment
-        return this.colorizeJson(json);
-    }
-
-    private colorizeJson(text: string): string {
-        // Escape HTML special characters first
-        text = text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-        // Colorize JSON syntax
-        return text.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
-            let cls = 'json-number';
-
-            if (/^"/.test(match)) {
-                if (/:$/.test(match)) {
-                    cls = 'json-key';
-                } else {
-                    cls = 'json-string';
-                }
-            } else if (/true|false/.test(match)) {
-                cls = 'json-boolean';
-            } else if (/null/.test(match)) {
-                cls = 'json-null';
-            }
-
-            return '<span class="' + cls + '">' + match + '</span>';
-        }).replace(/([{}[\],:])/g, '<span class="json-punctuation">$1</span>');
-    }
-
     reloadPage() {
         // Centralized reload helper (keeps tests safe)
         UtilsService.reloadAfterUpdate();
@@ -456,15 +409,6 @@ export class SettingsComponent implements OnInit, OnChanges {
         this.updateHighlightedAbi();
     }
 
-    private compactAbi(abi: string): string {
-        try {
-            const parsedAbi = JSON.parse(abi);
-            return stringify(parsedAbi);
-        } catch (e) {
-            return abi; // Return original ABI if parsing fails
-        }
-    }
-
     ngOnChanges(changes: SimpleChanges): void {
         const patch: any = {};
         if (changes['provider'] && typeof changes['provider'].currentValue !== 'undefined') {
@@ -487,6 +431,56 @@ export class SettingsComponent implements OnInit, OnChanges {
         }
     }
 
+    private updateHighlightedAbi() {
+        const abiValue = this.form.get('abi')?.value || '';
+        this.highlightedAbi = this.sanitizer.bypassSecurityTrustHtml(this.highlightJson(abiValue));
+    }
+
+    private highlightJson(json: string): string {
+        if (!json || json.trim().length === 0) {
+            return '';
+        }
+
+        // Use the text as-is from the textarea (already formatted by JsonFormatterDirective)
+        // Just colorize it without re-formatting to ensure alignment
+        return this.colorizeJson(json);
+    }
+
+    private colorizeJson(text: string): string {
+        // Escape HTML special characters first
+        text = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        // Colorize JSON syntax
+        return text.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, (match) => {
+            let cls = 'json-number';
+
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'json-key';
+                } else {
+                    cls = 'json-string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'json-boolean';
+            } else if (/null/.test(match)) {
+                cls = 'json-null';
+            }
+
+            return '<span class="' + cls + '">' + match + '</span>';
+        }).replace(/([{}[\],:])/g, '<span class="json-punctuation">$1</span>');
+    }
+
+    private compactAbi(abi: string): string {
+        try {
+            const parsedAbi = JSON.parse(abi);
+            return stringify(parsedAbi);
+        } catch (e) {
+            return abi; // Return original ABI if parsing fails
+        }
+    }
 
     private loadContractData() {
         if (this.abi !== undefined) {

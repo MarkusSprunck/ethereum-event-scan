@@ -1,116 +1,118 @@
 <form [formGroup]="formSearch">
 
-  <!--suppress TypeScriptUnresolvedVariable -->
-  <mat-accordion>
+    <!--suppress TypeScriptUnresolvedVariable -->
+    <mat-accordion>
 
-    <mat-expansion-panel [expanded]="panelOpenState">
+        <mat-expansion-panel [expanded]="panelOpenState">
 
-      <mat-expansion-panel-header>
+            <mat-expansion-panel-header>
 
-        <mat-panel-title>
-          <span [innerText]="panelMessage()"></span>
-        </mat-panel-title>
+                <mat-panel-title>
+                    <span [innerText]="panelMessage()"></span>
+                </mat-panel-title>
 
-        <mat-panel-description>
-          @if (showSpinner()) {
-            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-          }
-        </mat-panel-description>
+                <mat-panel-description>
+                    @if (showSpinner()) {
+                        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+                    }
+                </mat-panel-description>
 
-      </mat-expansion-panel-header>
+            </mat-expansion-panel-header>
 
-      <div class="search-div">
-        <mat-form-field color='primary' style="width: 100%;">
-          <label>
-            <input (keyup)="updateSearchValue()" [value]="searchKey"
-                   autocomplete="off" formControlName="searchKey"
-                   id="searchKey" matInput placeholder="Search">
-          </label>
-        </mat-form-field>
-      </div>
-
-
-      <table [dataSource]="listData" mat-table matSort appMatTableResponsive>
+            <div class="search-div">
+                <mat-form-field color='primary' style="width: 100%;">
+                    <label>
+                        <input (keyup)="updateSearchValue()" [value]="searchKey"
+                               autocomplete="off" formControlName="searchKey"
+                               id="searchKey" matInput placeholder="Search">
+                    </label>
+                </mat-form-field>
+            </div>
 
 
-        <ng-container matColumnDef="image">
-          <th *matHeaderCellDef mat-header-cell></th>
-          <td *matCellDef="let element" mat-cell>
-            <div><img [ngSrc]="element.image" alt="" width="40" height="40"/></div>
-          </td>
-        </ng-container>
+            <table [dataSource]="listData" appMatTableResponsive mat-table matSort>
 
 
-        <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell>Name</th>
-          <td *matCellDef="let element" mat-cell>
-            <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="image">
+                    <th *matHeaderCellDef mat-header-cell></th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div><img [ngSrc]="element.image" alt="" height="40" width="40"/>
+                        </div>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="time">
-          <th *matHeaderCellDef mat-header-cell>Time</th>
-          <td *matCellDef="let element" mat-cell>
-            <div
-              innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedTimestamp(element.block) : ''}}"></div>
-          </td>
-        </ng-container>
 
-        <ng-container matColumnDef="miner">
-          <th *matHeaderCellDef mat-header-cell>Miner</th>
-          <td *matCellDef="let element" mat-cell>
-            <div innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedMiner(element.block) : ''}}"></div>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="name">
+                    <th *matHeaderCellDef mat-header-cell>Name</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{ element.name | highlight : searchKey}}"></div>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="block">
-          <th *matHeaderCellDef mat-header-cell>Block</th>
-          <td *matCellDef="let element" mat-cell>
-            <a (click)="openDetailsDialog($event, element.block, '')"
-               class="table-link" href="" rel="nofollow">
-              <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
-            </a>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="time">
+                    <th *matHeaderCellDef mat-header-cell>Time</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div
+                                innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedTimestamp(element.block) : ''}}"></div>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="trxHash">
-          <th *matHeaderCellDef mat-header-cell>Trx</th>
-          <td *matCellDef="let element" mat-cell>
-            <a (click)="openDetailsDialog($event, element.block, element.trxHash)"
-               class="table-link" href="" rel="nofollow">
-              @if (!(screenWidth > 1300)) {
-                <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
-              }
-              @if (screenWidth > 1300) {
-                <div innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
-              }
-            </a>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="miner">
+                    <th *matHeaderCellDef mat-header-cell>Miner</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{   isElementVisible( element ) ? eventReader.getCachedMiner(element.block) : ''}}"></div>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="key">
-          <th *matHeaderCellDef mat-header-cell>Key</th>
-          <td *matCellDef="let element" mat-cell>
-            <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="block">
+                    <th *matHeaderCellDef mat-header-cell>Block</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <a (click)="openDetailsDialog($event, element.block, '')"
+                           class="table-link" href="" rel="nofollow">
+                            <div innerHTML="{{ element.block | highlight : searchKey}}"></div>
+                        </a>
+                    </td>
+                </ng-container>
 
-        <ng-container matColumnDef="value">
-          <th *matHeaderCellDef mat-header-cell>Value</th>
-          <td *matCellDef="let element" mat-cell>
-            <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
-          </td>
-        </ng-container>
+                <ng-container matColumnDef="trxHash">
+                    <th *matHeaderCellDef mat-header-cell>Trx</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <a (click)="openDetailsDialog($event, element.block, element.trxHash)"
+                           class="table-link" href="" rel="nofollow">
+                            @if (!(screenWidth > 1300)) {
+                                <div innerHTML="{{ element.trxHashShort | highlight : searchKey}}"></div>
+                            }
+                            @if (screenWidth > 1300) {
+                                <div innerHTML="{{ element.trxHash | highlight : searchKey}}"></div>
+                            }
+                        </a>
+                    </td>
+                </ng-container>
 
-        <tr *matHeaderRowDef="displayedColumns;" mat-header-row></tr>
-        <tr *matRowDef="let _row; columns: displayedColumns;" mat-row></tr>
+                <ng-container matColumnDef="key">
+                    <th *matHeaderCellDef mat-header-cell>Key</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{ element.key | highlight : searchKey}}"></div>
+                    </td>
+                </ng-container>
 
-      </table>
+                <ng-container matColumnDef="value">
+                    <th *matHeaderCellDef mat-header-cell>Value</th>
+                    <td *matCellDef="let element" mat-cell>
+                        <div innerHTML="{{ element.value | highlight : searchKey}}"></div>
+                    </td>
+                </ng-container>
 
-      <mat-paginator [pageSizeOptions]="[5, 10, 100]" [pageSize]="5" showFirstLastButtons></mat-paginator>
+                <tr *matHeaderRowDef="displayedColumns;" mat-header-row></tr>
+                <tr *matRowDef="let _row; columns: displayedColumns;" mat-row></tr>
 
-    </mat-expansion-panel>
+            </table>
 
-  </mat-accordion>
+            <mat-paginator [pageSizeOptions]="[5, 10, 100]" [pageSize]="5"
+                           showFirstLastButtons></mat-paginator>
+
+        </mat-expansion-panel>
+
+    </mat-accordion>
 
 </form>

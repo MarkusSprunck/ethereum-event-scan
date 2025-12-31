@@ -1,4 +1,4 @@
-import {Directive, ElementRef, HostListener, Renderer2, Optional} from '@angular/core';
+import {Directive, ElementRef, HostListener, Optional, Renderer2} from '@angular/core';
 import {NgControl} from '@angular/forms';
 import stringify from 'json-stringify-pretty-compact';
 
@@ -53,29 +53,6 @@ export class JsonFormatterDirective {
         this.setValue(compact);
     }
 
-    private getValue(): string {
-        // Prefer reactive form control value when available
-        if (this.ngControl && this.ngControl.control) {
-            return this.ngControl.control.value;
-        }
-        // fallback to DOM value
-       return (this.el as HTMLInputElement).value;
-    }
-
-    private setValue(v: string) {
-        // update FormControl WITH emitting events so the highlight updates
-        if (this.ngControl && this.ngControl.control) {
-            try {
-                this.ngControl.control.setValue(v, {emitEvent: true});
-            } catch (e) {
-                // Continue to update DOM even if FormControl setValue fails
-            }
-        }
-        if (this.el && this.renderer) {
-            this.renderer.setProperty(this.el, 'value', v);
-        }
-    }
-
     into(input: any) {
         try {
             return JSON.stringify(JSON.parse(input));
@@ -89,6 +66,29 @@ export class JsonFormatterDirective {
             return stringify(JSON.parse(data), {maxLength: 120, indent: 2});
         } catch (e) {
             return data;
+        }
+    }
+
+    private getValue(): string {
+        // Prefer reactive form control value when available
+        if (this.ngControl && this.ngControl.control) {
+            return this.ngControl.control.value;
+        }
+        // fallback to DOM value
+        return (this.el as HTMLInputElement).value;
+    }
+
+    private setValue(v: string) {
+        // update FormControl WITH emitting events so the highlight updates
+        if (this.ngControl && this.ngControl.control) {
+            try {
+                this.ngControl.control.setValue(v, {emitEvent: true});
+            } catch (e) {
+                // Continue to update DOM even if FormControl setValue fails
+            }
+        }
+        if (this.el && this.renderer) {
+            this.renderer.setProperty(this.el, 'value', v);
         }
     }
 

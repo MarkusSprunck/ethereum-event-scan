@@ -24,18 +24,18 @@
 
 export class EthEvent {
 
-  // noinspection JSUnusedGlobalSymbols
-  constructor(
-    public name: string,
-    public block: string,
-    public trxHash: string,
-    public trxHashShort: string,
-    public key: string,
-    public value: string,
-    public time: string,
-    public miner: string,
-    public image: string) {
-  }
+    // noinspection JSUnusedGlobalSymbols
+    constructor(
+        public name: string,
+        public block: string,
+        public trxHash: string,
+        public trxHashShort: string,
+        public key: string,
+        public value: string,
+        public time: string,
+        public miner: string,
+        public image: string) {
+    }
 
 }
 

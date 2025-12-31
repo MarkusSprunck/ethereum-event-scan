@@ -5,11 +5,13 @@
             <h2>Details</h2>
         </div>
         <div class="modal-close-btn">
-            <button (click)="onCloseClick()" mat-flat-button color="primary" cdkFocusInitial aria-label="Close dialog" class="modal-close">Close</button>
+            <button (click)="onCloseClick()" aria-label="Close dialog" cdkFocusInitial
+                    class="modal-close" color="primary" mat-flat-button>Close
+            </button>
         </div>
     </div>
 
-    <div class="modal-separator" role="separator" aria-hidden="true"></div>
+    <div aria-hidden="true" class="modal-separator" role="separator"></div>
 
     <app-inner-component [inputData]="data"></app-inner-component>
 

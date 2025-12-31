@@ -1,80 +1,89 @@
 <form [formGroup]="form">
 
-  <mat-accordion>
+    <mat-accordion>
 
-    <mat-expansion-panel [expanded]="panelOpenState">
+        <mat-expansion-panel [expanded]="panelOpenState">
 
-      <mat-expansion-panel-header>
-        <mat-panel-title><span [innerText]="panelMessage()"></span></mat-panel-title>
-        <mat-panel-description></mat-panel-description>
-      </mat-expansion-panel-header>
+            <mat-expansion-panel-header>
+                <mat-panel-title><span [innerText]="panelMessage()"></span>
+                </mat-panel-title>
+                <mat-panel-description></mat-panel-description>
+            </mat-expansion-panel-header>
 
-      <mat-form-field>
-        <label for="startBlock"></label>
-        <input (keyup.enter)="reloadPage()" [value]="startBlock"
-               formControlName="startBlock"
-               id="startBlock" matInput placeholder="Enter start block number" type="text" autocomplete="off">
-      </mat-form-field>
+            <mat-form-field>
+                <label for="startBlock"></label>
+                <input (keyup.enter)="reloadPage()" [value]="startBlock"
+                       autocomplete="off"
+                       formControlName="startBlock" id="startBlock" matInput
+                       placeholder="Enter start block number" type="text">
+            </mat-form-field>
 
-      <mat-form-field>
-        <label for="endBlock"></label>
-        <input (input)="updateEndValue()" (keyup.enter)="reloadPage()" [value]="endBlock"
-               formControlName="endBlock"
-               id="endBlock"
-               matInput
-               placeholder="Enter end block number or string latest"
-               type="text"
-               autocomplete="off">
-      </mat-form-field>
+            <mat-form-field>
+                <label for="endBlock"></label>
+                <input (input)="updateEndValue()" (keyup.enter)="reloadPage()"
+                       [value]="endBlock"
+                       autocomplete="off"
+                       formControlName="endBlock"
+                       id="endBlock"
+                       matInput
+                       placeholder="Enter end block number or string latest"
+                       type="text">
+            </mat-form-field>
 
-      <mat-form-field>
-        <label for="provider"></label><input (keyup.enter)="reloadPage()"
-                                             [value]="provider" formControlName="provider" id="provider"
-                                             matInput
-                                             placeholder="Enter web3 provider URL"
-                                             spellcheck="false"
-                                             type="text"
-                                             autocomplete="off">
-      </mat-form-field>
+            <mat-form-field>
+                <label for="provider"></label><input (keyup.enter)="reloadPage()"
+                                                     [value]="provider"
+                                                     autocomplete="off"
+                                                     formControlName="provider"
+                                                     id="provider"
+                                                     matInput
+                                                     placeholder="Enter web3 provider URL"
+                                                     spellcheck="false"
+                                                     type="text">
+            </mat-form-field>
 
-      <mat-form-field>
-        <label for="contract"></label><input (input)="updateContractValue()" (keyup.enter)="reloadPage()"
-                                             [value]="contract" formControlName="contract" id="contract"
-                                             matInput
-                                             placeholder="Enter contract address"
-                                             spellcheck="false"
-                                             type="text"
-                                             autocomplete="off">
-      </mat-form-field>
+            <mat-form-field>
+                <label for="contract"></label><input (input)="updateContractValue()"
+                                                     (keyup.enter)="reloadPage()"
+                                                     [value]="contract"
+                                                     autocomplete="off"
+                                                     formControlName="contract"
+                                                     id="contract"
+                                                     matInput
+                                                     placeholder="Enter contract address"
+                                                     spellcheck="false"
+                                                     type="text">
+            </mat-form-field>
 
 
-      <mat-form-field class="mat-form-field-full-line">
-        <label for="abi"></label>
-        <div class="json-editor-wrapper">
-          <div class="json-highlight" [innerHTML]="highlightedAbi"></div>
-          <textarea (blur)="onBlurAbi()" (input)="updateABIValue($any($event.target).value)"
-                    (focus)="onFocusAbi()"
-                    (scroll)="onScrollAbi($event)"
-                    [cdkAutosizeMaxRows]="noOfRowsAbi"
-                    cdkAutosizeMinRows="1" cdkTextareaAutosize
-                    appJsonFormatter
-                    formControlName="abi" id="abi" matInput
-                    placeholder="Enter ABI of contract"
-                    spellcheck="false"
-                    autocomplete="off"
-                    class="json-editor"></textarea>
-        </div>
-        @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('json')) {
-          <mat-error>Invalid JSON ABI</mat-error>
-        }
-        @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('required')) {
-          <mat-error>ABI is required</mat-error>
-        }
-      </mat-form-field>
+            <mat-form-field class="mat-form-field-full-line">
+                <label for="abi"></label>
+                <div class="json-editor-wrapper">
+                    <div [innerHTML]="highlightedAbi" class="json-highlight"></div>
+                    <textarea (blur)="onBlurAbi()"
+                              (focus)="onFocusAbi()"
+                              (input)="updateABIValue($any($event.target).value)"
+                              (scroll)="onScrollAbi($event)"
+                              [cdkAutosizeMaxRows]="noOfRowsAbi"
+                              appJsonFormatter autocomplete="off"
+                              cdkAutosizeMinRows="1"
+                              cdkTextareaAutosize class="json-editor" formControlName="abi"
+                              id="abi"
+                              matInput
+                              placeholder="Enter ABI of contract"
+                              spellcheck="false"></textarea>
+                </div>
+                @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('json')) {
+                    <mat-error>Invalid JSON ABI</mat-error>
+                }
+                @if (form.controls['abi'] && form.controls['abi'].invalid && (form.controls['abi'].touched || form.controls['abi'].dirty) && !form.controls['abi'].pending && form.controls['abi'].hasError('required')) {
+                    <mat-error>ABI is required</mat-error>
+                }
+            </mat-form-field>
 
-    </mat-expansion-panel>
+        </mat-expansion-panel>
 
-  </mat-accordion>
+    </mat-accordion>
 
 </form>
 
