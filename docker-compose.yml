@@ -1,8 +1,6 @@
-version: '3.7'
-
 services:
   ethereum-event-scan:
-    image: sprunck/ethereum-event-scan:3.0.1
+    image: sprunck/ethereum-event-scan:main
     container_name: ethereum-event-scan
     ports:
       - '55226:80'

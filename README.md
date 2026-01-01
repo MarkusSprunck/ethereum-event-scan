@@ -17,7 +17,7 @@ may use Ethereum-Event-Scan.
 Start directly with docker-cli:
 
 ```shell
-$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:latest  
+$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:main  
 ```
 
 or 
@@ -25,11 +25,9 @@ or
 use docker-compose.yml:
 
 ```
-version: '3.7'
-
 services:
   ethereum-event-scan:
-    image: sprunck/ethereum-event-scan:latest
+    image: sprunck/ethereum-event-scan:main
     container_name: ethereum-event-scan
     ports:
       - '55226:80'
@@ -48,7 +46,7 @@ $ ./build.sh
 ```
 
 ```shell
-$ docker-compose up -d
+$ docker compose up -d
 ```
 
 ## Links
