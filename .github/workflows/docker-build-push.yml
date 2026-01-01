@@ -7,7 +7,7 @@ on:
       - master
       - 'release/**'
     tags:
-      - '*.*.*'
+      - 'v*.*.*'
   pull_request:
     branches:
       - main
@@ -64,6 +64,5 @@ jobs:
           provenance: mode=max
 
       - name: Output image digest
-        if: steps.push.outputs.digest != ''
+        if: ${{ steps.push.outputs.digest != '' }}
         run: echo "Image digest: ${{ steps.push.outputs.digest }}"
-
