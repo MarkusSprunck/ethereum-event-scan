@@ -1,7 +1,11 @@
 FROM nginxinc/nginx-unprivileged:stable-alpine-slim
 
 USER root
-RUN apk update && apk upgrade --no-cache
+# nginx/musl fixes are not yet in the stable Alpine branch -> take them from edge/main
+RUN apk upgrade --no-cache && \
+    apk add --no-cache --upgrade \
+      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
+      nginx musl musl-utils
 USER 101
 
 COPY nginx.conf /etc/nginx/nginx.conf
