@@ -1,5 +1,6 @@
 module.exports = {
   // using ts-jest for TS & babel-jest for ESM .mjs/.js files from Angular
+  globalSetup: '<rootDir>/jest-global-setup.js',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.js'],
   testMatch: ['<rootDir>/src/**/*.spec.ts'],
   testEnvironment: 'jest-environment-jsdom',
