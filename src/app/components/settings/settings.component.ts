@@ -331,6 +331,13 @@ export class SettingsComponent implements OnInit, OnChanges {
         }
     }
 
+    /** Applies start/end block to the URL and reloads; triggered by Enter only. */
+    applyBlockRange() {
+        this.updateStartValue();
+        this.updateEndValue();
+        this.reloadPage();
+    }
+
     reloadPage() {
         // Centralized reload helper (keeps tests safe)
         UtilsService.reloadAfterUpdate();
@@ -357,24 +364,7 @@ export class SettingsComponent implements OnInit, OnChanges {
                 this._subscriptions.push(subAbi);
             }
 
-            // Subscribe to startBlock changes and update URL (debounced)
-            const startControl = this.form.controls['startBlock'];
-            if (startControl && startControl.valueChanges && typeof startControl.valueChanges.pipe === 'function') {
-                const sub = startControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe((v: any) => {
-                    const value = (typeof v === 'string' && v.length === 0) ? '0' : v;
-                    this.updateStartValue(value);
-                });
-                this._subscriptions.push(sub);
-            }
-
-            // Subscribe to endBlock changes and update URL (debounced)
-            const endControl = this.form.controls['endBlock'];
-            if (endControl && endControl.valueChanges && typeof endControl.valueChanges.pipe === 'function') {
-                const subEnd = endControl.valueChanges.pipe(debounceTime(200), distinctUntilChanged()).subscribe(() => {
-                    this.updateEndValue();
-                });
-                this._subscriptions.push(subEnd);
-            }
+            // startBlock/endBlock are applied only on Enter (see applyBlockRange)
 
             // Subscribe to provider changes and update URL (debounced)
             const providerControl = this.form.controls['provider'];

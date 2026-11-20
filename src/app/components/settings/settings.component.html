@@ -12,7 +12,7 @@
 
             <mat-form-field>
                 <label for="startBlock"></label>
-                <input (keyup.enter)="reloadPage()" [value]="startBlock"
+                <input (keyup.enter)="applyBlockRange()" [value]="startBlock"
                        autocomplete="off"
                        formControlName="startBlock" id="startBlock" matInput
                        placeholder="Enter start block number" type="text">
@@ -20,7 +20,7 @@
 
             <mat-form-field>
                 <label for="endBlock"></label>
-                <input (input)="updateEndValue()" (keyup.enter)="reloadPage()"
+                <input (keyup.enter)="applyBlockRange()"
                        [value]="endBlock"
                        autocomplete="off"
                        formControlName="endBlock"

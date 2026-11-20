@@ -30,11 +30,17 @@ import {Pipe, PipeTransform} from '@angular/core';
 
 export class HighlightSearch implements PipeTransform {
 
-    transform(value: any, args: any): any {
+    transform(value: any, args: any): string {
+        const text = String(value ?? '');
         if (!args) {
-            return value;
+            return text;
         }
-        const regExp = new RegExp(args, 'gi');
-        return value.replace(regExp, '<mark>$&</mark>');
+        const regExp = new RegExp(String(args).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+        // Only highlight text outside of HTML tags; the markup itself is escaped at its source
+        // and additionally sanitized by Angular when bound to innerHTML.
+        return text
+            .split(/(<[^>]*>)/)
+            .map(part => part.startsWith('<') ? part : part.replace(regExp, '<mark>$&</mark>'))
+            .join('');
     }
 }

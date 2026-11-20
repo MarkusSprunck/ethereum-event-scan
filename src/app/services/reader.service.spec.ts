@@ -271,7 +271,7 @@ describe('Reader service (unit)', () => {
             transactionHash: '0x1',
             event: 'TestEvent',
             blockNumber: 10,
-            id: 5
+            logIndex: 5
         };
         const entity: any = {
             isConnectionWorking: () => true,
@@ -285,11 +285,25 @@ describe('Reader service (unit)', () => {
         r.readEventsRange(10, 10, r as any);
         await new Promise((res) => setTimeout(res, 0));
         expect(r.callbackUpdateUI).toHaveBeenCalled();
-        // EventData should contain the id based on blockNumber and id
-        const expectedId = '10_5';
-        expect((require('../models/event').EventData.get(expectedId))).toBeDefined();
-        // cleanup
-        require('../models/event').EventData.clear();
+        const EventData = require('../models/event').EventData;
+        expect(EventData.get('10_0x1_5')).toBeDefined();
+        EventData.clear();
+    });
+
+    it('readEventsRange keeps all events of the same block', async () => {
+        const mk = (logIndex: number) => ({
+            returnValues: {a: '1'}, transactionHash: '0x1', event: 'E', blockNumber: 7, logIndex
+        });
+        const entity: any = {isConnectionWorking: () => true, web3: null, isSyncing: () => true, setProvider: jest.fn()};
+        const r = new Reader(makeRoute({}), entity as any);
+        r['contractInstance'] = {getPastEvents: () => Promise.resolve([mk(0), mk(1), mk(2)])} as any;
+        r.callbackUpdateUI = jest.fn();
+        const EventData = require('../models/event').EventData;
+        EventData.clear();
+        r.readEventsRange(7, 7, r as any);
+        await new Promise((res) => setTimeout(res, 0));
+        expect(EventData.size).toBe(3);
+        EventData.clear();
     });
 
     it('createActiveContract sets abi to empty when decompression fails and decodedData not JSON', async () => {

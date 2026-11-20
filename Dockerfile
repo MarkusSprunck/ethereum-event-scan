@@ -1,15 +1,12 @@
-FROM nginx:stable-alpine-slim
+FROM nginxinc/nginx-unprivileged:stable-alpine-slim
 
-# Update all
-RUN apk update && apk upgrade
-
-# force upgrade from edge/main because fixes are not yet in Alpine
-RUN apk add --upgrade \
-    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
-    libexpat \
-    'busybox>=1.37.0-r31'
+USER root
+RUN apk update && apk upgrade --no-cache
+USER 101
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY secure_headers.conf /etc/nginx/secure_headers.conf
-COPY dist/ethereum-event-scan ./usr/share/nginx/html
-RUN  cp /usr/share/nginx/html/index.html /usr/share/nginx/html/main.html
+COPY --chown=101:101 dist/ethereum-event-scan /usr/share/nginx/html
+COPY --chown=101:101 dist/ethereum-event-scan/index.html /usr/share/nginx/html/main.html
+
+EXPOSE 8080

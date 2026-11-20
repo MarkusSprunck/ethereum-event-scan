@@ -13,5 +13,9 @@ describe('HighlightSearch Pipe', () => {
         expect(res).toContain('<mark>Hello</mark>');
         expect(res).toContain('<mark>hello</mark>');
     });
-});
 
+    it('should not throw on regex special characters and should escape HTML', () => {
+        expect(pipe.transform('a(b)', '(')).toBe('a<mark>(</mark>b)');
+        expect(pipe.transform('<b>abc</b>', 'b')).toBe('<b><mark>b</mark>c</b>'.replace('<mark>b</mark>c', 'a<mark>b</mark>c'));
+    });
+});

@@ -3,4 +3,4 @@ services:
     image: sprunck/ethereum-event-scan:main
     container_name: ethereum-event-scan
     ports:
-      - '55226:80'
+      - '55226:8080'

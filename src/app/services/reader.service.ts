@@ -29,6 +29,14 @@ import {ActivatedRoute} from '@angular/router';
 import {EthEvent, EventData} from '../models/event';
 
 const pako = require('pako');
+
+function escapeHtml(text: string): string {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Upper bound for the encoded ABI taken from the URL (protects against oversized/compression-bomb input)
+const MAX_ABI_INPUT_LENGTH = 200_000;
 const blockies = require('blockies');
 
 
@@ -175,6 +183,10 @@ export class Reader {
      *
      */
     createActiveContract() {
+        if (this.abiBase64Data.length > MAX_ABI_INPUT_LENGTH) {
+            console.error('ABI parameter exceeds the maximum allowed length');
+            return;
+        }
         if (this.abiBase64Data.length > 0) {
             try {
                 // normalize URL-safe base64 variants
@@ -199,7 +211,7 @@ export class Reader {
                 const hexToUint8 = (hex: string) => {
                     const len = hex.length / 2;
                     const arr = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substring(i * 2, 2), 16);
+                    for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
                     return arr;
                 };
 
@@ -498,8 +510,9 @@ export class Reader {
                     for (const key in returnValues) {
                         if (returnValues.hasOwnProperty(key)) {
                             if (isNaN(parseInt(key, 10)) && (key !== '__length__')) {
-                                values += '<b>' + key.replace('_', '') + ':</b></br>';
-                                values += ('' + returnValues[key]).replace('\n', '</br>').split(',').join('</br>') + '</br>';
+                                // chain data is untrusted: escape before adding markup
+                                values += '<b>' + escapeHtml(key.replace('_', '')) + ':</b></br>';
+                                values += escapeHtml('' + returnValues[key]).replace('\n', '</br>').split(',').join('</br>') + '</br>';
                             }
                         }
                     }
@@ -518,7 +531,8 @@ export class Reader {
                             }).toDataURL());
                         }
 
-                        const eventId = blockNumber + '_' + eventsList[event].id
+                        // web3 v4 events have no 'id'; transactionHash + logIndex identifies a log uniquely
+                        const eventId = blockNumber + '_' + trxHash + '_' + eventsList[event].logIndex
                         const img = this.imageCache.has(eventName) ? (this.imageCache.get(eventName) as string) : '';
                         EventData.set(
                             eventId,

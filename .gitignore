@@ -6,3 +6,5 @@ qodana.yaml
 /.idea
 /.angular/
 /coverage/
+jest-*.json
+*.iml
