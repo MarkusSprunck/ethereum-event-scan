@@ -1,16 +1,15 @@
-FROM nginxinc/nginx-unprivileged:stable-alpine-slim
+FROM nginx:stable-alpine-slim
 
-USER root
-# nginx/musl fixes are not yet in the stable Alpine branch -> take them from edge/main
-RUN apk upgrade --no-cache && \
-    apk add --no-cache --upgrade \
-      --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
-      nginx musl musl-utils
-USER 101
+# Update all
+RUN apk update && apk upgrade
+
+# force upgrade from edge/main because fixes are not yet in Alpine
+RUN apk add --upgrade \
+    --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
+    libexpat \
+    'busybox>=1.37.0-r31'
 
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY secure_headers.conf /etc/nginx/secure_headers.conf
-COPY --chown=101:101 dist/ethereum-event-scan /usr/share/nginx/html
-COPY --chown=101:101 dist/ethereum-event-scan/index.html /usr/share/nginx/html/main.html
-
-EXPOSE 8080
+COPY dist/ethereum-event-scan ./usr/share/nginx/html
+RUN  cp /usr/share/nginx/html/index.html /usr/share/nginx/html/main.html
