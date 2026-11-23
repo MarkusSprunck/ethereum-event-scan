@@ -17,7 +17,7 @@ may use Ethereum-Event-Scan.
 Start directly with docker-cli:
 
 ```shell
-$ docker run -dit -p 55226:80 --name ethereum-event-scan sprunck/ethereum-event-scan:main  
+$ docker run -dit -p 55226:8080 --name ethereum-event-scan sprunck/ethereum-event-scan:main  
 ```
 
 or 
