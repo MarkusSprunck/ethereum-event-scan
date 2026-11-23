@@ -16,7 +16,6 @@
     "target": "ES2022",
     "module": "ES2022",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "useDefineForClassFields": false,
     "lib": [

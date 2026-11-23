@@ -7,11 +7,11 @@
 
 # Browserslist configuration for production
 # Explicit modern browser targets to match Angular supported browsers
-Chrome >= 114
-Firefox >= 115
-Edge >= 114
-Safari >= 16.4
-iOS >= 16.4
+Chrome >= 119
+Firefox >= 119
+Edge >= 119
+Safari >= 17
+iOS >= 17
 not dead
 not op_mini allr
 
