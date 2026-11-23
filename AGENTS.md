@@ -19,6 +19,7 @@ Angular 22 single-page app that scans Ethereum smart-contract events via web3.js
 - All data from the URL or the blockchain is untrusted. Never use `bypassSecurityTrust*` without escaping first; the `highlight` pipe HTML-escapes and must remain the only path to `innerHTML` for event data.
 - Never build `RegExp` from user input without escaping.
 - Keep limits on decoded/decompressed ABI input.
+- Always use self-hosted resources (fonts, icons, scripts, styles); no external CDNs (CSP allows only `'self'`).
 - Don't commit secrets, test output (`jest-*.json`) or IDE files.
 - Add/adjust a Jest spec next to the source file (`*.spec.ts`) for every behavior change; all tests must pass.
 - Keep `npm audit --omit=dev` clean; use `overrides` in `package.json` only when no upstream fix exists, and verify web3 still works.
