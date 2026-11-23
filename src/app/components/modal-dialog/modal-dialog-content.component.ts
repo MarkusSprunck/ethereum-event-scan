@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {UtilsService} from '../../services/utils.service';
 import {DialogData} from './modal-dialog.component';
@@ -8,6 +8,7 @@ import {DialogData} from './modal-dialog.component';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './modal-dialog-content.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./modal-dialog-content.component.scss']
 })
 export class ModalDialogContentComponent implements OnInit {

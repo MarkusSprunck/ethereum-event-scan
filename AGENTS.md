@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Angular 21 single-page app that scans Ethereum smart-contract events via web3.js. Configuration (provider, contract, ABI, block range) lives in the URL query string; there is no backend.
+Angular 22 single-page app that scans Ethereum smart-contract events via web3.js. Configuration (provider, contract, ABI, block range) lives in the URL query string; there is no backend.
 
 ## Commands
 - `npm ci` – install; `npm start` – dev server on port 55226

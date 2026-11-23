@@ -23,12 +23,13 @@
  */
 
 import {
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnChanges,
-    OnInit,
-    SimpleChanges
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {
@@ -66,6 +67,7 @@ interface AbiEntry {
     standalone: true,
     imports: [CommonModule, FormsModule, ReactiveFormsModule, MatExpansionModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCheckboxModule, MatButtonModule, TextFieldModule, JsonFormatterDirective],
     templateUrl: './settings.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent implements OnInit, OnChanges {

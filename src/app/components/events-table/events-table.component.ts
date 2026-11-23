@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, HostListener, Input, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {CommonModule, NgOptimizedImage} from '@angular/common';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -35,6 +35,7 @@ import {MatDialog} from '@angular/material/dialog';
         HighlightSearch
     ],
     templateUrl: './events-table.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./events-table.component.scss']
 })
 export class EventsTableComponent implements OnInit {

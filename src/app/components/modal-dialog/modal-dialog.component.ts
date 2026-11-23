@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ChangeDetectionStrategy} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {
     MAT_DIALOG_DATA,
@@ -20,6 +20,7 @@ export interface DialogData {
     standalone: true,
     imports: [CommonModule, MatDialogModule, MatButtonModule, ModalDialogContentComponent],
     templateUrl: './modal-dialog.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./modal-dialog.component.scss']
 })
 export class ModalDialogComponent {

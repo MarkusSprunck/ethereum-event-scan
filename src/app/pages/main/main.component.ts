@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {Reader} from '../../services/reader.service';
 import {CommonModule} from '@angular/common';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -34,6 +34,7 @@ import {EventsTableComponent} from '../../components/events-table/events-table.c
     standalone: true,
     imports: [CommonModule, MatToolbarModule, SettingsComponent, EventsTableComponent],
     templateUrl: './main.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./main.component.css']
 })
 export class MainComponent {

@@ -13,11 +13,11 @@ try {
 }
 
 const { getTestBed } = require('@angular/core/testing');
-const { BrowserDynamicTestingModule, platformBrowserDynamicTesting } = require('@angular/platform-browser-dynamic/testing');
+const { BrowserTestingModule, platformBrowserTesting } = require('@angular/platform-browser/testing');
 
 getTestBed().initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
+  BrowserTestingModule,
+  platformBrowserTesting()
 );
 
 // --- Test harness improvements for cleaner CI output ---
