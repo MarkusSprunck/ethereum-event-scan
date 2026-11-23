@@ -333,11 +333,24 @@ export class SettingsComponent implements OnInit, OnChanges {
         }
     }
 
-    /** Applies start/end block to the URL and reloads; triggered by Enter only. */
+    /** Writes start/end block to the URL and reloads the page; triggered by Enter only. */
     applyBlockRange() {
-        this.updateStartValue();
-        this.updateEndValue();
-        this.reloadPage();
+        const start = this.form.get('startBlock')?.value || '0';
+        const end = this.form.get('endBlock')?.value || 'latest';
+        this.startBlock = start;
+        this.endBlock = end;
+        if (this.router && this.route) {
+            // a single navigation: two concurrent ones would cancel each other
+            void this.router.navigate([], {
+                relativeTo: this.route,
+                queryParams: {start, end},
+                queryParamsHandling: 'merge'
+            }).then(() => this.reloadPage());
+        } else {
+            UtilsService.updateURLParameter('start', start);
+            UtilsService.updateURLParameter('end', end);
+            this.reloadPage();
+        }
     }
 
     reloadPage() {

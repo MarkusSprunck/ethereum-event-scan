@@ -166,6 +166,20 @@ describe('SettingsComponent consolidated tests', () => {
             expect(comp.panelMessage()).toBe('Last Block 999999999');
         });
 
+        it('applyBlockRange navigates once with start and end, then reloads', async () => {
+            const router: any = {navigate: jest.fn().mockResolvedValue(true)};
+            const c = new SettingsComponentClass(new FormBuilder(), reader as any, cdrStub as any, router, {} as any, sanitizerStub as any);
+            c.ngOnInit();
+            const reloadSpy = jest.spyOn(c, 'reloadPage').mockImplementation(() => {});
+            c.form.controls['startBlock'].setValue('1000');
+            c.applyBlockRange();
+            expect(router.navigate).toHaveBeenCalledTimes(1);
+            expect(router.navigate.mock.calls[0][1].queryParams).toEqual({start: '1000', end: 'latest'});
+            await Promise.resolve();
+            await Promise.resolve();
+            expect(reloadSpy).toHaveBeenCalledTimes(1);
+        });
+
         it('updateStartValue should set startBlock via UtilsService behavior', () => {
             // call the public method which reads form control value
             comp.form.controls['startBlock'].setValue('123');
