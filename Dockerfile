@@ -7,6 +7,8 @@ RUN apk update && apk upgrade
 RUN apk add --upgrade \
     --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main \
     libexpat \
+    'musl>=1.2.6-r6' \
+    'musl-utils>=1.2.6-r6' \
     'busybox>=1.37.0-r31'
 
 COPY nginx.conf /etc/nginx/nginx.conf
