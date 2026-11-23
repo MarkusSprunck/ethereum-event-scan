@@ -170,5 +170,16 @@ describe('ModalDialogContentComponent', () => {
             expect(comp.details).toContain('To            : 0xb');
             expect(comp.details).toContain('Contract      : 0xc');
         });
+
+        it('renderTransaction prints n.a. for contract creations without recipient', async () => {
+            const trx = {blockNumber: 3, transactionIndex: 0, from: '0xa', to: null, value: '0', nonce: 1, gasPrice: '1', input: '0x'};
+            comp.inputData = {
+                blockNumber: '', trxNumber: '0xhash',
+                reader: {entity: {web3: {eth: {getTransaction: jest.fn().mockResolvedValue(trx), getTransactionReceipt: jest.fn().mockResolvedValue({gasUsed: 1, cumulativeGasUsed: 2, contractAddress: null})}}}}
+            } as any;
+            comp.ngOnInit();
+            await flushPromises();
+            expect(comp.details).toContain('To            : n.a.');
+        });
     });
 });

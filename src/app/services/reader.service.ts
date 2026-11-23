@@ -431,7 +431,7 @@ export class Reader {
 
                         // web3 v4 events have no 'id'; transactionHash + logIndex identifies a log uniquely
                         const eventId = blockNumber + '_' + trxHash + '_' + eventsList[event].logIndex
-                        const img = this.imageCache.has(eventName) ? (this.imageCache.get(eventName) as string) : '';
+                        const img = this.imageCache.get(eventName) as string;
                         EventData.set(
                             eventId,
                             new EthEvent(

@@ -128,5 +128,43 @@ describe('ProviderService', () => {
         expect(svc.web3).not.toBeNull();
         ws.mockRestore();
     });
+
+    it('isConnectionWorking takes block numbers from a syncing node', async () => {
+        const svc = new PS();
+        svc.web3 = {
+            eth: {
+                net: {isListening: () => Promise.resolve(true)},
+                getBlockNumber: () => Promise.resolve(10),
+                isSyncing: () => Promise.resolve({currentBlock: 20, highestBlock: 0})
+            }
+        } as any;
+        svc.isConnectionWorking();
+        svc.isSyncing();
+        await new Promise((r) => setTimeout(r, 0));
+        expect(svc.currentBlock).toBe(20);
+    });
+
+    it('isSyncing works for web3 objects without isSyncing', () => {
+        const svc = new PS();
+        svc.web3 = {eth: {}} as any;
+        expect(svc.isSyncing()).toBe(false);
+    });
+
+    it('keeps previous block numbers when the syncing result has none', async () => {
+        const svc = new PS();
+        svc.currentBlock = 7;
+        svc.highestBlock = 9;
+        svc.web3 = {eth: {isSyncing: () => Promise.resolve({currentBlock: 0, highestBlock: 0})}} as any;
+        svc.isSyncing();
+        await new Promise((r) => setTimeout(r, 0));
+        expect(svc.currentBlock).toBe(7);
+        expect(svc.highestBlock).toBe(9);
+    });
+
+    it('ignores a non-function isSyncing', () => {
+        const svc = new PS();
+        svc.web3 = {eth: {isSyncing: true}} as any;
+        expect(svc.isSyncing()).toBe(false);
+    });
 });
 

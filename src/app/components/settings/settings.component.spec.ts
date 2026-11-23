@@ -599,5 +599,73 @@ describe('SettingsComponent behavior (direct instantiation)', () => {
             expect(contract).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe('fallbacks to component state', () => {
+        const run = async (fn: (c: any) => Promise<any>, control: any) => {
+            jest.useFakeTimers();
+            const p = fn(control);
+            jest.advanceTimersByTime(7000);
+            return p;
+        };
+
+        it('validators use the component value when the control is empty or missing', async () => {
+            comp.contract = ADDRESS;
+            comp.abi = '[]';
+            comp.startBlock = '5';
+            comp.endBlock = '9';
+            for (const control of [{value: ''}, null]) {
+                expect(await run(c => comp.isContractOk(c), control)).toBeNull();
+                expect(await run(c => comp.isABIOk(c), control)).toBeNull();
+                expect(await run(c => comp.isStartBlockOk(c), control)).toBeNull();
+                expect(await run(c => comp.isEndBlockOk(c), control)).toBeNull();
+            }
+            comp.contract = undefined;
+            comp.startBlock = undefined;
+            comp.endBlock = undefined;
+            expect(await run(c => comp.isContractOk(c), {value: ''})).toEqual({connected: false});
+            expect(await run(c => comp.isStartBlockOk(c), {value: ''})).toEqual({isEndBlockValid: false});
+            expect(await run(c => comp.isEndBlockOk(c), {value: ''})).toEqual({isEndBlockValid: false});
+        });
+
+        it('update handlers fall back to component values or defaults', () => {
+            jest.useFakeTimers();
+            comp.provider = 'http://node';
+            comp.endBlock = '77';
+            comp.form.controls['provider'].setValue('', {emitEvent: false});
+            comp.form.controls['endBlock'].setValue('', {emitEvent: false});
+            comp.form.controls['startBlock'].setValue('', {emitEvent: false});
+            comp.updateProviderValue();
+            expect(urlSpy).toHaveBeenCalledWith('provider', 'http://node');
+            comp.updateEndValue();
+            expect(urlSpy).toHaveBeenCalledWith('end', '77');
+            comp.updateStartValue();
+            expect(urlSpy).toHaveBeenCalledWith('start', '0');
+            comp.updateStartValue('');
+            expect(urlSpy).toHaveBeenLastCalledWith('start', '0');
+            comp.applyBlockRange();
+            expect(comp.startBlock).toBe('0');
+            expect(comp.endBlock).toBe('latest');
+        });
+
+        it('updateProviderValue stores non-string values untouched', () => {
+            comp.form.controls['provider'].setValue(5 as any, {emitEvent: false});
+            comp.updateProviderValue();
+            expect(comp.provider).toBe(5);
+        });
+
+        it('updateABIValue reads the control when called without a value', () => {
+            comp.form.controls['abi'].setValue('[]', {emitEvent: false});
+            comp.provider = '';
+            expect(() => comp.updateABIValue()).not.toThrow();
+        });
+
+        it('ngOnChanges falls back to defaults for empty input values', () => {
+            comp.ngOnChanges({
+                provider: {currentValue: null}, contract: {currentValue: null}, abi: {currentValue: null},
+                startBlock: {currentValue: null}, endBlock: {currentValue: null}
+            } as any);
+            expect(comp.form.value).toEqual(expect.objectContaining({provider: '', contract: '', startBlock: '0', endBlock: 'latest'}));
+        });
+    });
 });
 

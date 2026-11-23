@@ -255,7 +255,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
 
     updateABIValue(value?: string) {
-        const controlValue = (typeof value === 'string') ? value : (this.form.get('abi') ? this.form.get('abi')!.value : '');
+        const controlValue = (typeof value === 'string') ? value : this.form.controls['abi'].value;
         if (controlValue !== undefined) {
             if (this.provider.length > 0 && this.contract.trim().length > 0 && controlValue.trim().length === 0) {
 

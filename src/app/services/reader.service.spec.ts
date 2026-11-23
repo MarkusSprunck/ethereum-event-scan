@@ -653,6 +653,11 @@ describe('Reader service (additional coverage)', () => {
 
         jest.spyOn(pako, 'ungzip').mockImplementation(() => '[ ]');
         expect(decode(enc([0x1f, 0x8b, 1, 2]))).toBe('[]');
+        jest.spyOn(pako, 'inflate').mockImplementation(() => '[2]');
+        expect(decode(enc([0x78, 0x01, 1]))).toBe('[2]');
+        expect(decode(enc([0x78, 0xda, 1]))).toBe('[2]');
+        expect(decode(enc([0x78]))).toBe('[ ]');
+        (pako.inflate as jest.Mock).mockRestore();
 
         (pako.ungzip as jest.Mock).mockImplementation(() => { throw new Error('x'); });
         jest.spyOn(pako, 'inflate').mockImplementation(() => { throw new Error('x'); });
