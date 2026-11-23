@@ -267,4 +267,10 @@ describe('EventsTableComponent (basic)', () => {
         expect(dialogStub.open).toHaveBeenCalled();
     });
 
+    it('isElementVisible falls back to defaults for an empty paginator', () => {
+        comp['listData'] = {filteredData: []} as any;
+        comp['paginator'] = {} as any;
+        expect(comp.isElementVisible({id: 1})).toBe(false);
+    });
 });
+

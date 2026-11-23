@@ -113,6 +113,19 @@ describe('UtilsService - consolidated', () => {
             }
         });
 
+        it('updateURLParameter keeps an empty abi value', () => {
+            const originalHref: string = window.location.href;
+            try {
+                window.history.pushState({}, '', '/?start=1');
+                const spy = jest.spyOn(window.history, 'pushState');
+                UtilsService.updateURLParameter('abi', '', true);
+                expect(spy.mock.calls[0][2] as string).toContain('abi=');
+            } finally {
+                jest.restoreAllMocks();
+                window.history.pushState({}, '', originalHref);
+            }
+        });
+
         it('updateURLWithCompressedAbi delegates to compress and updateURLParameter', () => {
             const spyCompress = jest.spyOn(UtilsService, 'compressAbiToUrlSafe').mockReturnValue('CMP');
             const spyUpdate = jest.spyOn(UtilsService, 'updateURLParameter').mockImplementation(() => {

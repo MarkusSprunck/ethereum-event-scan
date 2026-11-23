@@ -522,4 +522,82 @@ describe('SettingsComponent behavior (direct instantiation)', () => {
             expect(spy).toHaveBeenCalled();
         });
     });
+
+    describe('ABI fetch, focus handling and debounced inputs', () => {
+        const {UtilsService} = require('../../services/utils.service');
+
+        beforeEach(() => {
+            jest.spyOn(UtilsService, 'fetchABIFromVerifiedContract').mockImplementation((_a: any, cb: any) => cb('[]'));
+        });
+
+        it('updateContractValue fetches the ABI and stores it via the router', () => {
+            const c = create(true);
+            c.provider = 'http://node';
+            c.abi = '';
+            c.form.controls['contract'].setValue(ADDRESS);
+            c.updateContractValue();
+            expect(router.navigate.mock.calls[0][1].queryParams.abi).toBeTruthy();
+        });
+
+        it('updateContractValue fetches the ABI and stores it in the URL without router', () => {
+            comp.provider = 'http://node';
+            comp.abi = '';
+            comp.form.controls['contract'].setValue(ADDRESS);
+            comp.updateContractValue();
+            expect(UtilsService.updateURLWithCompressedAbi).toHaveBeenCalledWith('[]');
+        });
+
+        it('updateABIValue fetches the ABI when the field is emptied (router and no router)', () => {
+            const c = create(true);
+            c.provider = 'http://node';
+            c.contract = ADDRESS;
+            c.updateABIValue('');
+            expect(router.navigate.mock.calls[0][1].queryParams.abi).toBeTruthy();
+
+            comp.provider = 'http://node';
+            comp.contract = ADDRESS;
+            comp.updateABIValue('');
+            expect(UtilsService.updateURLWithCompressedAbi).toHaveBeenCalledWith('[]');
+        });
+
+        it('updates the contract query param via router for a contract with an ABI', () => {
+            const c = create(true);
+            c.abi = '[]';
+            c.form.controls['contract'].setValue(' ' + ADDRESS + ' ');
+            c.updateContractValue();
+            expect(router.navigate.mock.calls[0][1].queryParams).toEqual({contract: ADDRESS});
+        });
+
+        it('onFocusAbi and onBlurAbi resize the textarea and re-highlight', () => {
+            jest.useFakeTimers();
+            const spy = jest.spyOn(comp, 'updateHighlightedAbi');
+            comp.onFocusAbi();
+            expect(comp.noOfRowsAbi).toBe(15);
+            comp.onBlurAbi();
+            expect(comp.noOfRowsAbi).toBe(1);
+            jest.advanceTimersByTime(20);
+            expect(spy).toHaveBeenCalledTimes(2);
+        });
+
+        it('highlights booleans and null values in the ABI', () => {
+            comp.form.controls['abi'].setValue('{"a": true, "b": null, "c": 1, "d": "x"}');
+            const html = comp.highlightedAbi;
+            expect(html).toContain('json-boolean');
+            expect(html).toContain('json-null');
+            expect(html).toContain('json-number');
+            expect(html).toContain('json-key');
+        });
+
+        it('applies provider and contract input changes after the debounce', () => {
+            jest.useFakeTimers();
+            const provider = jest.spyOn(comp, 'updateProviderValue').mockImplementation(() => {});
+            const contract = jest.spyOn(comp, 'updateContractValue').mockImplementation(() => {});
+            comp.form.controls['provider'].setValue('http://other');
+            comp.form.controls['contract'].setValue(ADDRESS);
+            jest.advanceTimersByTime(400);
+            expect(provider).toHaveBeenCalledTimes(1);
+            expect(contract).toHaveBeenCalledTimes(1);
+        });
+    });
 });
+

@@ -617,5 +617,72 @@ describe('Reader service (additional coverage)', () => {
         expect(calls[0].fromBlock).toBe(0);
         expect(Math.max(...calls.map(c => c.toBlock))).toBe(250_000);
     });
-});
 
+    it('splits a range again when the query returns too many results', async () => {
+        const r = newReader();
+        const ranges: number[][] = [];
+        r['contractInstance'] = {
+            getPastEvents: (_: any, o: any) => {
+                ranges.push([o.fromBlock, o.toBlock]);
+                return (o.toBlock - o.fromBlock) > 5000
+                    ? Promise.reject(new Error('Returned error: query returned more than 10000 results'))
+                    : Promise.resolve([]);
+            }
+        } as any;
+        r.callbackUpdateUI = jest.fn();
+        r.readEventsRange(0, 20_000, r as any);
+        await new Promise((res) => setTimeout(res, 20));
+        expect(ranges[0]).toEqual([0, 20_000]);
+        expect(ranges.length).toBeGreaterThan(2);
+        expect(ranges.every(([a, b]) => b - a <= 20_000)).toBe(true);
+    });
+
+    it('does not split small ranges on too many results', async () => {
+        const r = newReader();
+        const getPastEvents = jest.fn().mockRejectedValue(new Error('Returned error: query returned more than 10000 results'));
+        r['contractInstance'] = {getPastEvents} as any;
+        r.readEventsRange(0, 500, r as any);
+        await new Promise((res) => setTimeout(res, 10));
+        expect(getPastEvents).toHaveBeenCalledTimes(1);
+    });
+
+    it('decodes gzip, zlib, raw deflate and rejects garbage ABIs', () => {
+        const pako = require('pako');
+        const enc = (bytes: number[]) => Buffer.from(bytes).toString('base64');
+        const decode = (b64: string) => { const r = newReader(); r.abiBase64Data = b64; r.createActiveContract(); return r.abi; };
+
+        jest.spyOn(pako, 'ungzip').mockImplementation(() => '[ ]');
+        expect(decode(enc([0x1f, 0x8b, 1, 2]))).toBe('[]');
+
+        (pako.ungzip as jest.Mock).mockImplementation(() => { throw new Error('x'); });
+        jest.spyOn(pako, 'inflate').mockImplementation(() => { throw new Error('x'); });
+        jest.spyOn(pako, 'inflateRaw').mockImplementation(() => '[1]');
+        expect(decode(enc([0x1f, 0x8b, 1, 2]))).toBe('[1]');
+        expect(decode(enc([1, 2, 3, 4]))).toBe('[1]');
+
+        (pako.inflateRaw as jest.Mock).mockImplementation(() => { throw new Error('x'); });
+        expect(decode(enc([1, 2, 3, 4]))).toBe('');
+        expect(decode(Buffer.from('{"a":1}').toString('base64'))).toBe('{"a":1}');
+        expect(decode(Buffer.from('"s"').toString('base64'))).toBe('"s"');
+        expect(decode('!!!')).toBe('');
+        expect(decode(' ')).toBe('');
+    });
+
+    it('does not throw when contract creation fails', () => {
+        const r = newReader();
+        r.entity = {web3: {eth: {Contract: jest.fn(() => { throw new Error('bad'); })}}} as any;
+        r.contract = '0x1';
+        r.abi = '[]';
+        r.createActiveContract();
+        expect(r['contractInstance']).toBeNull();
+    });
+
+    it('reads a fixed range when an end block is set', () => {
+        const r = newReader({start: '3', end: '9'});
+        const spy = jest.spyOn(r, 'readEventsRange').mockImplementation(() => {});
+        r.entity = {isConnectionWorking: () => true, isSyncing: () => true, web3: {}} as any;
+        r['contractInstance'] = {} as any;
+        r.getPastEvents();
+        expect(spy).toHaveBeenCalledWith(3, 9, r);
+    });
+});

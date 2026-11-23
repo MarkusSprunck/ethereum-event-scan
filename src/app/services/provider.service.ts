@@ -52,13 +52,7 @@ export class ProviderService {
         if (providerUrl && providerUrl.startsWith('http')) {
             this.web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
         } else if (providerUrl && providerUrl.startsWith('ws')) {
-            // Use Websocket provider explicitly for websocket urls
-            try {
-                this.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
-            } catch (e) {
-                // fallback to direct constructor
-                this.web3 = new Web3(providerUrl);
-            }
+            this.web3 = new Web3(new Web3.providers.WebsocketProvider(providerUrl));
         }
 
         // Check success

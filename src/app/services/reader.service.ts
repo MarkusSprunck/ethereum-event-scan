@@ -175,6 +175,60 @@ export class Reader {
     }
 
     /**
+     * Decodes a (URL-safe) base64 ABI that is either plain JSON, gzip, zlib or raw deflate
+     * compressed. Returns an empty string if the data cannot be decoded.
+     */
+    private static decodeAbi(input: string): string {
+        let base64 = input.trim().replace(/\s/g, '+').replace(/-/g, '+').replace(/_/g, '/');
+        while (base64.length % 4 !== 0) {
+            base64 += '=';
+        }
+
+        let text: string;
+        try {
+            text = atob(base64);
+        } catch (e) {
+            return '';
+        }
+        if (text.length === 0) {
+            return '';
+        }
+        if (text.startsWith('{') || text.startsWith('[')) {
+            return text;
+        }
+
+        const arr = Uint8Array.from(text, c => c.charCodeAt(0) & 0xff);
+        if (arr[0] === 0x1f && arr[1] === 0x8b) {
+            try {
+                return JSON.stringify(JSON.parse(pako.ungzip(arr, {to: 'string'})));
+            } catch (e) {
+                // fall through to the generic attempts
+            }
+        }
+        const isZlib = arr[0] === 0x78 && (arr[1] === 0x01 || arr[1] === 0x9c || arr[1] === 0xda);
+        const methods = isZlib
+            ? [pako.inflate, pako.ungzip, pako.inflateRaw]
+            : [pako.ungzip, pako.inflate, pako.inflateRaw];
+        for (const method of methods) {
+            try {
+                const out = method(arr, {to: 'string'});
+                if (out && out.length > 0) {
+                    return out;
+                }
+            } catch (e) {
+                // try next method
+            }
+        }
+
+        try {
+            JSON.parse(text);
+            return text;
+        } catch (e) {
+            return '';
+        }
+    }
+
+    /**
      * Creates the active contract based on the ABI and contract address
      *
      * The decoding of base64 is implemented here due historical reasons. The base64
@@ -188,169 +242,12 @@ export class Reader {
             return;
         }
         if (this.abiBase64Data.length > 0) {
-            try {
-                // normalize URL-safe base64 variants
-                const normalizeBase64 = (s: string) => {
-                    let r = s.replace(/-/g, '+').replace(/_/g, '/');
-                    while (r.length % 4 !== 0) {
-                        r += '=';
-                    }
-                    return r;
-                };
-
-                const isHex = (s: string) => /^[0-9a-fA-F]+$/.test(s);
-
-                const base64ToUint8 = (b64: string) => {
-                    const bin = atob(b64);
-                    const len = bin.length;
-                    const arr = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) arr[i] = bin.charCodeAt(i) & 0xff;
-                    return arr;
-                };
-
-                const hexToUint8 = (hex: string) => {
-                    const len = hex.length / 2;
-                    const arr = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) arr[i] = parseInt(hex.substring(i * 2, i * 2 + 2), 16);
-                    return arr;
-                };
-
-                let base64 = this.abiBase64Data.trim();
-                // Replace spaces (may appear if '+' was turned into space in URL) back to '+'
-                base64 = base64.replace(/\s/g, '+');
-                base64 = normalizeBase64(base64);
-
-                // Try to decode base64 to Uint8Array directly
-                let arr: Uint8Array | null = null;
-                try {
-                    arr = base64ToUint8(base64);
-                } catch (err) {
-                    // Try alternate decode paths
-                }
-
-                let decodedData: string | null = null;
-                if (arr) {
-                    // quick header inspect
-                    const b0 = arr[0] || 0;
-                    const b1 = arr[1] || 0;
-                    // header bytes inspected for branching; no need to keep a separate variable
-
-                    // gzip header 0x1f 0x8b
-                    if (b0 === 0x1f && b1 === 0x8b) {
-                        try {
-                            this.abi = JSON.stringify(JSON.parse(pako.ungzip(arr, {to: 'string'})));
-                        } catch (e) {
-                            // Try inflate variants as fallback
-                            try {
-                                this.abi = pako.inflate(arr, {to: 'string'});
-                            } catch (e2) {
-                                try {
-                                    this.abi = pako.inflateRaw(arr, {to: 'string'});
-                                } catch (e3) {
-                                    // All decompression attempts failed
-                                }
-                            }
-                        }
-                    } else if (b0 === 0x78 && (b1 === 0x01 || b1 === 0x9c || b1 === 0xda)) {
-                        // zlib header
-                        try {
-                            this.abi = pako.inflate(arr, {to: 'string'});
-                        } catch (e) {
-                            // Inflate failed
-                        }
-                    } else {
-                        // Not a known compressed header. Try to interpret as text
-                        try {
-                            decodedData = String.fromCharCode.apply(null, Array.from(arr));
-                        } catch (e) {
-                            // fallback building string slowly
-                            decodedData = '';
-                            for (let i = 0; i < arr.length; i++) decodedData += String.fromCharCode(arr[i]);
-                        }
-                    }
-                }
-
-                // If we didn't set this.abi yet, try other fallbacks
-                if (!this.abi || this.abi.length === 0) {
-                    // If decodedData not ready, attempt atob fallback
-                    if (!decodedData) {
-                        try {
-                            decodedData = atob(base64);
-                        } catch (e) {
-                            // atob may fail if base64 is not correct; try to detect hex
-                            const candidate = this.abiBase64Data.replace(/^0x/, '');
-                            if (isHex(candidate) && candidate.length % 2 === 0) {
-                                try {
-                                    arr = hexToUint8(candidate);
-                                } catch (hexErr) {
-                                    // Hex decode failed
-                                }
-                            } else {
-                                this.abi = '';
-                                return;
-                            }
-                        }
-                    }
-
-                    if (decodedData && decodedData.length > 0 && (!this.abi || this.abi.length === 0)) {
-                        // If decodedData looks like JSON -> use directly
-                        const firstChar = decodedData.charAt(0);
-                        if (firstChar === '{' || firstChar === '[') {
-                            this.abi = decodedData;
-                        } else {
-                            // If arr available, try decompression attempts in order
-                            if (!arr && decodedData) {
-                                // create arr from decodedData
-                                const tmp = new Uint8Array(decodedData.length);
-                                for (let i = 0; i < decodedData.length; i++) tmp[i] = decodedData.charCodeAt(i) & 0xff;
-                                arr = tmp;
-                            }
-
-                            if (arr) {
-                                let decompressed: string | null = null;
-                                const methods = [
-                                    (a: Uint8Array) => pako.ungzip(a, {to: 'string'}),
-                                    (a: Uint8Array) => pako.inflate(a, {to: 'string'}),
-                                    (a: Uint8Array) => pako.inflateRaw(a, {to: 'string'})
-                                ];
-                                let lastErr: any = null;
-                                for (const m of methods) {
-                                    try {
-                                        const out = m(arr);
-                                        if (out && out.length > 0) {
-                                            decompressed = out;
-                                            break;
-                                        }
-                                    } catch (e) {
-                                        lastErr = e;
-                                    }
-                                }
-                                if (decompressed) {
-                                    this.abi = decompressed;
-                                } else {
-                                    // try treat decodedData as raw string JSON
-                                    try {
-                                        JSON.parse(decodedData);
-                                        this.abi = decodedData;
-                                    } catch (je) {
-                                        this.abi = '';
-                                        return;
-                                    }
-                                }
-                            } else {
-                                this.abi = '';
-                                return;
-                            }
-                        }
-                    }
-                }
-            } catch (error) {
-                if (typeof ngDevMode !== 'undefined' && ngDevMode) {
-                    console.error('Error decoding ABI data from Base64:', error);
-                }
+            const decoded = Reader.decodeAbi(this.abiBase64Data);
+            if (!decoded) {
                 this.abi = '';
                 return;
             }
+            this.abi = decoded;
         }
 
         if (
@@ -560,7 +457,6 @@ export class Reader {
             if (errors.message === 'Returned error: query returned more than 10000 results'
                 && (end > start)
                 && ((end - start) > LIMIT_BLOCK_MIN)
-                && ((end - start) > LIMIT_BLOCK_MAX)
             ) {
                 const middle = Math.round((start + end) / 2);
                 console.debug('Event limit exceeded [' + start + '..' + end + '] ->  [' + start + '..' + middle + '] ' + 'and [' + (middle + 1) + '..' + end + ']');
@@ -571,6 +467,6 @@ export class Reader {
     }
 
     private isBlockLimitExceeded(start: number, end: number) {
-        return (end > start) && ((end - start) > LIMIT_BLOCK_MIN) && ((end - start) > LIMIT_BLOCK_MAX);
+        return (end > start) && ((end - start) > LIMIT_BLOCK_MAX);
     }
 }

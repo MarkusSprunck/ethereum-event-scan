@@ -117,4 +117,16 @@ describe('ProviderService', () => {
         svc.highestBlock = 10;
         expect(svc.isSyncing()).toBe(true);
     });
+
+    it('ws url creates a websocket provider', () => {
+        const Web3 = require('web3').Web3;
+        const ws = jest.spyOn(Web3.providers, 'WebsocketProvider')
+            .mockImplementation(() => new Web3.providers.HttpProvider('http://localhost:1'));
+        const svc = new PS();
+        svc.setProvider('ws://localhost:1');
+        expect(ws).toHaveBeenCalledWith('ws://localhost:1');
+        expect(svc.web3).not.toBeNull();
+        ws.mockRestore();
+    });
 });
+

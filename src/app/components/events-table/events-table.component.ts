@@ -146,7 +146,7 @@ export class EventsTableComponent implements OnInit {
         }
 
         const pageIndex = this.paginator.pageIndex ?? 0;
-        const pageSize = this.paginator.pageSize ?? (this.listData.filteredData?.length ?? 0);
+        const pageSize = this.paginator.pageSize ?? this.listData.filteredData.length;
 
         const minID = pageIndex * pageSize;
         const maxID = (pageIndex + 1) * pageSize - 1;
