@@ -62,4 +62,59 @@ describe('ProviderService', () => {
         expect(svc.highestBlock).toBe(20);
         expect(svc.currentBlock).toBe(10);
     });
+
+    it('setProvider with http url creates an http web3 instance', () => {
+        const svc = new PS();
+        jest.spyOn(svc, 'isConnectionWorking').mockReturnValue(false);
+        jest.spyOn(svc, 'isSyncing').mockReturnValue(false);
+        svc.setProvider('http://localhost:8545');
+        expect(svc.web3).not.toBeNull();
+        expect(svc.isConnectionWorking).toHaveBeenCalled();
+    });
+
+    it('setProvider rejects unsupported schemes and resets state', () => {
+        const svc = new PS();
+        svc.connected = true;
+        svc.setProvider('file:///etc/passwd');
+        expect(svc.web3).toBeNull();
+        expect(svc.connected).toBe(false);
+        svc.setProvider('');
+        expect(svc.web3).toBeNull();
+    });
+
+    it('isConnectionWorking returns false without web3 and marks disconnected on errors', async () => {
+        const svc = new PS();
+        svc.connected = true;
+        expect(svc.isConnectionWorking()).toBe(false);
+        expect(svc.connected).toBe(false);
+
+        svc.web3 = {
+            eth: {
+                net: {isListening: () => Promise.reject(new Error('down'))},
+                getBlockNumber: () => Promise.reject(new Error('down'))
+            }
+        } as any;
+        svc.connected = true;
+        svc.isConnectionWorking();
+        await new Promise((r) => setTimeout(r, 0));
+        expect(svc.connected).toBe(false);
+    });
+
+    it('isConnectionWorking accepts block number 0', async () => {
+        const svc = new PS();
+        svc.web3 = {eth: {getBlockNumber: () => Promise.resolve(0)}} as any;
+        svc.currentBlock = 5;
+        svc.isConnectionWorking();
+        await new Promise((r) => setTimeout(r, 0));
+        expect(svc.currentBlock).toBe(0);
+    });
+
+    it('isSyncing is false without web3 and true while behind', () => {
+        const svc = new PS();
+        expect(svc.isSyncing()).toBe(false);
+        svc.web3 = {eth: {isSyncing: () => Promise.resolve(false)}} as any;
+        svc.currentBlock = 1;
+        svc.highestBlock = 10;
+        expect(svc.isSyncing()).toBe(true);
+    });
 });

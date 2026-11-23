@@ -124,6 +124,9 @@ export class ProviderService {
                             this.highestBlock = blockNumber;
                         }
                     })
+                    .catch(() => {
+                        this.connected = false;
+                    });
             }
         }
 

@@ -457,6 +457,7 @@ export class Reader {
                     }).catch((err: any) => {
                     console.error('Error loading block data for timestamp cache:', err);
                     this.timestampCache.set(blockNumber, 'n.a.');
+                    this.minerCache.set(blockNumber, 'n.a.');
                 });
             } else {
                 console.warn('Web3 not available for getCachedTimestamp');

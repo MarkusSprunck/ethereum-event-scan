@@ -316,3 +316,210 @@ describe('SettingsComponent consolidated tests', () => {
 
     });
 });
+
+describe('SettingsComponent behavior (direct instantiation)', () => {
+    const ADDRESS = '0x0123456789abcdef0123456789abcdef01234567';
+    let reader: ReaderStub;
+    let router: any;
+    let comp: any;
+    let urlSpy: jest.SpyInstance;
+
+    const create = (withRouter: boolean) => {
+        const SettingsComponentClass = require('./settings.component').SettingsComponent;
+        const c = new SettingsComponentClass(
+            new FormBuilder(), reader as any, {detectChanges: jest.fn()} as any,
+            withRouter ? router : null, withRouter ? {} : null,
+            {bypassSecurityTrustHtml: jest.fn((h: string) => h)} as any);
+        c.ngOnInit();
+        return c;
+    };
+
+    beforeEach(() => {
+        reader = new ReaderStub();
+        router = {navigate: jest.fn().mockResolvedValue(true)};
+        const {UtilsService} = require('../../services/utils.service');
+        urlSpy = jest.spyOn(UtilsService, 'updateURLParameter').mockImplementation(() => {});
+        jest.spyOn(UtilsService, 'updateURLWithCompressedAbi').mockImplementation(() => {});
+        comp = create(false);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+        jest.useRealTimers();
+    });
+
+    describe('validators', () => {
+        const run = async (fn: (c: any) => Promise<any>, value: string) => {
+            jest.useFakeTimers();
+            const p = fn({value});
+            jest.advanceTimersByTime(7000);
+            return p;
+        };
+
+        it('isStartBlockOk accepts digits only', async () => {
+            expect(await run(c => comp.isStartBlockOk(c), '1000')).toBeNull();
+            expect(await run(c => comp.isStartBlockOk(c), 'abc')).toEqual({isEndBlockValid: false});
+        });
+
+        it('isEndBlockOk accepts digits and "latest"', async () => {
+            expect(await run(c => comp.isEndBlockOk(c), '12')).toBeNull();
+            expect(await run(c => comp.isEndBlockOk(c), 'Latest')).toBeNull();
+            expect(await run(c => comp.isEndBlockOk(c), 'x')).toEqual({isEndBlockValid: false});
+        });
+
+        it('isContractOk accepts a 20 byte hex address only', async () => {
+            expect(await run(c => comp.isContractOk(c), ADDRESS)).toBeNull();
+            expect(await run(c => comp.isContractOk(c), '0x123')).toEqual({connected: false});
+        });
+
+        it('isABIOk accepts valid JSON only', async () => {
+            expect(await run(c => comp.isABIOk(c), '[]')).toBeNull();
+            expect(await run(c => comp.isABIOk(c), '{bad')).toEqual({abi_ok: false});
+        });
+
+        it('isProviderConnected reflects the connected flag', async () => {
+            comp.connected = true;
+            expect(await run(c => comp.isProviderConnected(c), 'x')).toBeNull();
+            comp.connected = false;
+            expect(await run(c => comp.isProviderConnected(c), 'x')).toEqual({connected: false});
+        });
+    });
+
+    describe('URL updates without router', () => {
+        it('updateStartValue falls back to UtilsService and maps empty to 0', () => {
+            comp.updateStartValue('');
+            expect(urlSpy).toHaveBeenCalledWith('start', '0');
+            expect(comp.startBlock).toBe('0');
+        });
+
+        it('updateProviderValue trims the value and updates reader provider', () => {
+            comp.form.controls['provider'].setValue('  http://node  ');
+            comp.updateProviderValue();
+            expect(urlSpy).toHaveBeenCalledWith('provider', '  http://node  ');
+            expect(comp.provider).toBe('http://node');
+            expect(reader.entity.setProvider).toHaveBeenCalledWith('http://node');
+        });
+
+        it('updateEndValue updates reader end block', () => {
+            comp.form.controls['endBlock'].setValue('500');
+            comp.updateEndValue();
+            expect(urlSpy).toHaveBeenCalledWith('end', '500');
+            expect(reader.setEndBlock).toHaveBeenCalledWith('500');
+        });
+
+        it('applyBlockRange writes start and end and reloads', () => {
+            const reload = jest.spyOn(comp, 'reloadPage').mockImplementation(() => {});
+            comp.form.controls['startBlock'].setValue('7');
+            comp.form.controls['endBlock'].setValue('9');
+            comp.applyBlockRange();
+            expect(urlSpy).toHaveBeenCalledWith('start', '7');
+            expect(urlSpy).toHaveBeenCalledWith('end', '9');
+            expect(reload).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('URL updates with router', () => {
+        beforeEach(() => {
+            comp = create(true);
+        });
+
+        it('updateProviderValue, updateEndValue and updateStartValue navigate with merge', () => {
+            comp.form.controls['provider'].setValue('http://n');
+            comp.updateProviderValue();
+            comp.form.controls['endBlock'].setValue('5');
+            comp.updateEndValue();
+            comp.updateStartValue('3');
+            const params = router.navigate.mock.calls.map((c: any[]) => c[1].queryParams);
+            expect(params).toEqual([{provider: 'http://n'}, {end: '5'}, {start: '3'}]);
+            expect(router.navigate.mock.calls[0][1].queryParamsHandling).toBe('merge');
+        });
+    });
+
+    describe('contract and ABI handling', () => {
+        it('updateContractValue stores the trimmed address and clears the table', () => {
+            comp.provider = '';
+            comp.form.controls['contract'].setValue(` ${ADDRESS} `);
+            comp.updateContractValue();
+            expect(comp.contract).toBe(ADDRESS);
+            expect(reader.reset).toHaveBeenCalled();
+            expect(reader.setContractAddress).toHaveBeenCalledWith(ADDRESS);
+        });
+
+        it('updateContractValue fetches the ABI from a verified contract when provider is set and ABI empty', () => {
+            const {UtilsService} = require('../../services/utils.service');
+            jest.spyOn(UtilsService, 'fetchABIFromVerifiedContract').mockImplementation((_a: any, cb: any) => cb('[{"type":"event"}]'));
+            comp.provider = 'http://node';
+            comp.abi = '';
+            comp.form.controls['contract'].setValue(ADDRESS);
+            comp.updateContractValue();
+            expect(comp.form.controls['abi'].value).toBe('[{"type":"event"}]');
+            expect(comp.contract).toBe(ADDRESS);
+        });
+
+        it('updateContractValue does nothing for an empty value', () => {
+            comp.form.controls['contract'].setValue('');
+            comp.contract = '';
+            comp.updateContractValue();
+            expect(reader.reset).not.toHaveBeenCalled();
+        });
+
+        it('updateABIValue keeps only events and strips "anonymous"', () => {
+            comp.updateABIValue(JSON.stringify([
+                {type: 'function', name: 'f'},
+                {type: 'event', name: 'E', anonymous: false, inputs: []}
+            ]));
+            expect(comp.abi).toContain('"name": "E"');
+            expect(comp.abi).not.toContain('function');
+            expect(comp.abi).not.toContain('anonymous');
+            expect(reader.setAbi).toHaveBeenCalledWith(comp.abi);
+        });
+
+        it('updateABIValue marks invalid JSON', () => {
+            comp.updateABIValue('{oops');
+            expect(comp.form.controls['abi'].errors).toEqual({json: true});
+        });
+
+        it('updateABIValue loads the ABI from the verified contract when input is empty', () => {
+            const {UtilsService} = require('../../services/utils.service');
+            jest.spyOn(UtilsService, 'fetchABIFromVerifiedContract').mockImplementation((_a: any, cb: any) => cb('[{"type":"event"}]'));
+            comp.provider = 'http://node';
+            comp.contract = ADDRESS;
+            comp.updateABIValue('');
+            expect(comp.abi).toBe('[{"type":"event"}]');
+            expect(comp.form.controls['abi'].value).toBe('[{"type":"event"}]');
+        });
+
+        it('updateABIValue with router navigates with the compressed ABI', () => {
+            comp = create(true);
+            comp.updateABIValue('[{"type":"event","name":"E","inputs":[]}]');
+            expect(router.navigate.mock.calls[0][1].queryParams).toHaveProperty('abi');
+        });
+    });
+
+    describe('ABI textarea helpers', () => {
+        it('onScrollAbi mirrors scroll position to the highlight element', () => {
+            const parent = document.createElement('div');
+            const highlight = document.createElement('div');
+            highlight.className = 'json-highlight';
+            const textarea = document.createElement('textarea');
+            parent.append(highlight, textarea);
+            textarea.scrollTop = 12;
+            textarea.scrollLeft = 4;
+            comp.onScrollAbi({target: textarea} as any);
+            expect(highlight.scrollTop).toBe(textarea.scrollTop);
+        });
+
+        it('escapes HTML in the highlighted ABI', () => {
+            comp.form.controls['abi'].setValue('["<img src=x onerror=alert(1)>"]');
+            expect(comp.highlightedAbi).toContain('&lt;img');
+            expect(comp.highlightedAbi).not.toContain('<img');
+        });
+
+        it('reloadPage delegates to UtilsService.reloadAfterUpdate', () => {
+            const {UtilsService} = require('../../services/utils.service');
+            const spy = jest.spyOn(UtilsService, 'reloadAfterUpdate').mockImplementation(() => {});
+            comp.reloadPage();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+});

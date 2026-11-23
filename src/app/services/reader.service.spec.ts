@@ -516,3 +516,106 @@ describe('Reader additional unit tests', () => {
     });
 
 });
+
+describe('Reader service (additional coverage)', () => {
+    const quiet = () => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'debug').mockImplementation(() => {});
+    };
+
+    beforeEach(() => {
+        quiet();
+        EventData.clear();
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    const newReader = (params: any = {}) => {
+        const entity: any = {
+            isConnectionWorking: () => false, isSyncing: () => false, setProvider: jest.fn(),
+            web3: null, currentBlock: 0
+        };
+        return new Reader(makeRoute(params), entity);
+    };
+
+    it('takes start, end, contract, abi and provider from the query params', () => {
+        const r = newReader({start: '5', end: '9', contract: '0xabc', abi: 'W10', provider: 'http://n'});
+        expect(r.startBlock).toBe('5');
+        expect(r.endBlock).toBe('9');
+        expect(r.contract).toBe('0xabc');
+        expect(r.abiBase64Data).toBe('W10');
+        expect(r.provider).toBe('http://n');
+        expect(r.entity.setProvider).toHaveBeenCalledWith('http://n');
+    });
+
+    it('rejects an oversized ABI parameter', () => {
+        const r = newReader();
+        r.abiBase64Data = 'A'.repeat(200_001);
+        r.createActiveContract();
+        expect(r.abi).toBe('');
+        expect(r['contractInstance']).toBeNull();
+    });
+
+    it('sets abi to empty for input that is neither base64 nor hex', () => {
+        const r = newReader();
+        r.abiBase64Data = '***not*valid***';
+        r.createActiveContract();
+        expect(r.abi).toBe('');
+    });
+
+    it('decodes URL-safe base64 JSON ABI', () => {
+        const r = newReader();
+        const json = '[{"type":"event","name":"E"}]';
+        r.abiBase64Data = Buffer.from(json).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        r.createActiveContract();
+        expect(r.abi).toBe(json);
+    });
+
+    it('marks block data as n.a. when loading fails', async () => {
+        const r = newReader();
+        r.entity = {web3: {eth: {getBlock: () => Promise.reject(new Error('x'))}}} as any;
+        r.getCachedMiner('42');
+        await new Promise((res) => setTimeout(res, 0));
+        expect(r.getCachedTimestamp('42')).toBe('n.a.');
+        expect(r.getCachedMiner('42')).toBe('n.a.');
+    });
+
+    it('escapes HTML in event keys and values', async () => {
+        const r = newReader();
+        r['contractInstance'] = {
+            getPastEvents: () => Promise.resolve([{
+                returnValues: {'<b>k': '<script>alert(1)</script>,x'},
+                transactionHash: '0x1', event: 'E', blockNumber: 1, logIndex: 0
+            }])
+        } as any;
+        r.callbackUpdateUI = jest.fn();
+        r.readEventsRange(1, 1, r as any);
+        await new Promise((res) => setTimeout(res, 0));
+        const value = Array.from(EventData.values())[0].value;
+        expect(value).not.toContain('<script>');
+        expect(value).toContain('&lt;script&gt;');
+        expect(value).toContain('&lt;b&gt;k');
+        expect(value).toContain('</br>');
+    });
+
+    it('splits ranges above the block limit into several queries', async () => {
+        const r = newReader();
+        const calls: any[] = [];
+        r['contractInstance'] = {
+            getPastEvents: (_: any, o: any) => {
+                calls.push(o);
+                return Promise.resolve([]);
+            }
+        } as any;
+        r.callbackUpdateUI = jest.fn();
+        r.readEventsRange(0, 250_000, r as any);
+        await new Promise((res) => setTimeout(res, 10));
+        expect(calls.length).toBeGreaterThanOrEqual(3);
+        expect(calls[0].fromBlock).toBe(0);
+        expect(Math.max(...calls.map(c => c.toBlock))).toBe(250_000);
+    });
+});
+

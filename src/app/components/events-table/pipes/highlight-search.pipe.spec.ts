@@ -18,4 +18,9 @@ describe('HighlightSearch Pipe', () => {
         expect(pipe.transform('a(b)', '(')).toBe('a<mark>(</mark>b)');
         expect(pipe.transform('<b>abc</b>', 'b')).toBe('<b><mark>b</mark>c</b>'.replace('<mark>b</mark>c', 'a<mark>b</mark>c'));
     });
+
+    it('handles null and non-string values', () => {
+        expect(pipe.transform(null, 'a')).toBe('');
+        expect(pipe.transform(12345, '23')).toBe('1<mark>23</mark>45');
+    });
 });
